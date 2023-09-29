@@ -1,0 +1,38 @@
+$font-family-sans-serif: 'Noto Sans SC', sans-serif;
+$enable-shadows: false;
+// $input-btn-focus-box-shadow: none;
+$body-bg: #E4E7ED;
+// $input-focus-border-color: var(--secondary);
+
+$theme-colors: (
+  "light-gray": #F5F7FA,
+  "light-blue": #91c5fb,
+  "primary": #04427c,
+  "bg": $body-bg,
+  "light": #DCDFE6,
+  "color": #303133,
+  "input-border": #E4E7ED
+);
+$primary: #065cac;
+$danger: #F56C6C;
+//$warning: #E6A23C;
+$info: #909399;
+$light: #EBEEF5;
+
+$wr-sidebar-bg: rgb(255, 255, 255);
+$wr-sidebar-submenu-bg: var(--light-gray);
+$wr-sidebar-item-hover-bg: #ddd;
+$wr-sidebar-item-color: #000;
+$wr-sidebar-item-hover-color: #111;
+
+$wr-nav-menu-height: 70px;
+$sidebar-size: 100px;
+$sidebar-size-expand: 180px;
+
+$header-bg: #da2d2d;
+$header-text: #fff;
+$sm: 576px;
+$md: 768px;
+$lg: 992px;
+$xl: 1200px;
+$new-header-height: 60px;
