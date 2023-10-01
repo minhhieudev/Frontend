@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import Question from './Question.vue';
+import Question from './Question';
 import { saveData, getCollection } from '@/api/question'
 import { getAll } from '@/api/question'; // Import các phương thức từ tệp api/question.js
 import { format } from 'date-fns'; 

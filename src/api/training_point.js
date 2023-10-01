@@ -7,3 +7,17 @@ export function getAll() {
     method: "get",
   });
 }
+export function getDetail(id) {
+  return request({
+    url: `/${modelCode}/${id}`,
+    method: "get",
+  });
+}
+
+export function saveData(data) {
+  return request({
+    url: `/result_TrainingPoint`,
+    method: "post",
+    data,
+  });
+}
