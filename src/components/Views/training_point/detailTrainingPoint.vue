@@ -3,47 +3,45 @@
     <el-card>
       <el-table :data="listDetailTrainingPoint" style="width: 100%">
         <el-table-column type="index" label="STT"></el-table-column>
-        <el-table-column prop="content" label="MSV" width="80">
+        <el-table-column prop="studentCode" label="MSV" width="80">
           <template slot-scope="{ row }">
-            {{ row.content }}
+            {{ row.studentDetails.studentCode }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="" label="Phiếu điểm" width="80">
-        </el-table-column>
-
-        <el-table-column prop="user.fullname" label="Tình trạng chấm điểm" width="90">
-          <template slot-scope="scope">
-            <el-button @click.prevent="gotoDetail(scope.row)" type="success" size="mini">
-              Xem
-            </el-button>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="createdAt" label="Ngày SV chấm" width="80">
+        <el-table-column prop="fullName" label="Tên người đăng" width="100">
           <template slot-scope="{ row }">
-            {{ formatDate(row.createdAt) }}
+            {{ row.studentDetails.fullName }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="user.fullname" label="Tên người đăng" width="100">
+        <el-table-column prop="semester" label="Học kỳ" width="80">
           <template slot-scope="{ row }">
-            {{ row.user.fullname }}
+            {{ row.semester }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="" label="Học kỳ" width="80">
-        </el-table-column>
-
-        <el-table-column prop="namhoc" label="Năm học" width="80">
+        <el-table-column prop="schoolYear" label="Năm học" width="80">
+          <template slot-scope="{ row }">
+            {{ row.schoolYear }}
+          </template>
         </el-table-column>
 
         <el-table-column label="Điểm rèn luyện">
-          <el-table-column prop="svTucham" label="SV tự chấm">
+          <el-table-column prop="Total_selfAssessment" label="SV tự chấm">
+            <template slot-scope="{ row }">
+              {{ row.Total_selfAssessment }}
+            </template>
           </el-table-column>
-          <el-table-column prop="lopCham" label="Lớp chấm">
+          <el-table-column prop="Total_groupAssessment" label="Lớp chấm">
+            <template slot-scope="{ row }">
+              {{ row.Total_groupAssessment }}
+            </template>
           </el-table-column>
-          <el-table-column prop="coVan" label="Cố vấn (xét duyệt)">
+          <el-table-column prop="Total_consultantAssessment" label="Cố vấn (xét duyệt)">
+            <template slot-scope="{ row }">
+              {{ row.Total_consultantAssessment }}
+            </template>
           </el-table-column>
         </el-table-column>
 
@@ -110,14 +108,13 @@ export default {
   getAll()
     .then((response) => {
       if (response && response.data && response.data.success) {
-        this.questions = response.data.questions;
-        this.questions = this.questions.reverse();
+        this.listDetailTrainingPoint = response.data.detailTrainingPoints;
       } else {
         console.error("Không thành công: ", response.data);
       }
     })
     .catch((error) => {
-      console.error("Lỗi khi tải câu hỏi: ", error);
+      console.error("Lỗi khi tải điểm rèn luyện: ", error);
     });
 },
 

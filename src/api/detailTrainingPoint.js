@@ -3,7 +3,7 @@ const modelCode = "training_point";
 
 export function getAll() {
   return request({
-    url: `/detail_TrainingPoint`, // Đã thay đổi địa chỉ API để lấy tất cả dữ liệu điểm rèn luyện
+    url: `/detailTrainingPoint`, // Đã thay đổi địa chỉ API để lấy tất cả dữ liệu điểm rèn luyện
     method: "get",
   });
 }
@@ -16,7 +16,15 @@ export function getDetail(id) {
 
 export function saveData(data) {
   return request({
-    url: `/detail_TrainingPoint`,
+    url: `/detailTrainingPoint`,
+    method: "post",
+    data,
+  });
+}
+
+export function saveDatas(data) {
+  return request({
+    url: `/detailTrainingPoint`,
     method: "post",
     data,
   });

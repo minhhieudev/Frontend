@@ -2,42 +2,32 @@
   <div class="">
     <el-card>
       <div class="d-flex justify-content-between my-2">
-        <div>
-    <!-- Thanh lọc theo vai trò -->
-    <el-select v-model="selectedRole" placeholder="Chọn vai trò" @change="loadData">
-      <el-option label="Tất cả" value="all"></el-option>
-      <el-option label="Sinh viên" value="student"></el-option>
-      <el-option label="Cố vấn" value="consultant"></el-option>
-      <el-option label="Admin" value="admin"></el-option>
-    </el-select>
-  </div>
+        <div></div>
         <div>
           <el-button @click="goToAddNewPage()" type="primary" size="small">
             Tạo mới
           </el-button>
         </div>
       </div>
-      <el-table 
-        :data="$store.getters.users"
-        style="width: 100%" indent>
-         <el-table-column type="index" label="STT"></el-table-column>
-        <el-table-column prop="fullname" label="Tên"></el-table-column>
+      <el-table :data="$store.getters.users" style="width: 100%" i:indent="0">
+        <el-table-column type="index" label="STT"></el-table-column>
         <el-table-column prop="email" label="Email"></el-table-column>
-        <el-table-column prop="phone" label="SĐT"></el-table-column>
-        <el-table-column prop="role" label="Quyền">
-          <template slot-scope="{row}">
-            {{ roleMap[row.role] }}
-          </template>
-        </el-table-column>
-        <el-table-column 
-        
-        label="Thao tác" width="150">
-        <!-- :fixed="$isMobile?false:'right'"  -->
-          <template slot-scope="scope">
-            <el-button @click.prevent="gotoDetail(scope.row)" type="success" size="mini">
+<el-table-column label="Tên">
+   <template slot-scope="{ row }">
+      {{ row.studentInfo ? row.studentInfo.fullName : '' }}
+   </template>
+</el-table-column>
+<el-table-column prop="role" label="Quyền">
+   <template slot-scope="{ row }">
+      {{ roleMap[row.role] }}
+   </template>
+</el-table-column>
+        <el-table-column label="Thao tác" width="150">
+          <template slot-scope="{ row }">
+            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
               Xem
             </el-button>
-            <el-button @click.prevent="confirmDelete(scope.row)" type="danger" size="mini">
+            <el-button @click.prevent="confirmDelete(row)" type="danger" size="mini">
               Xóa
             </el-button>
           </template>
@@ -45,16 +35,20 @@
       </el-table>
       <div class="mt-2">
         <el-pagination
-          background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[25, 50, 100]" :pager-count="5"
-          :page-size.sync="pagination.page_size" :total="$store.getters.total_users" :current-page.sync="pagination.current_page"
-          @current-change="loadData" @size-change="handlePageSizeChange"
+          background
+          layout="jumper, prev, pager, next, sizes, total"
+          :page-sizes="[25, 50, 100]"
+          :pager-count="5"
+          :page-size.sync="pagination.page_size"
+          :total="$store.getters.total_users"
+          :current-page.sync="pagination.current_page"
+          @current-change="loadData"
+          @size-change="handlePageSizeChange"
         />
       </div>
-      
     </el-card>
   </div>
 </template>
-
 <script>
 const ModelCode = 'user';
 import { getCollection, handleDelete } from '@/api/user';
@@ -102,6 +96,8 @@ export default {
       }).catch()
     },
     loadData() {
+      console.log(this.$store.getters.users);
+
       const params = {
         pagination: this.pagination,
         role: this.selectedRole === 'all' ? undefined : this.selectedRole // Truyền vai trò chỉ khi đã chọn
@@ -128,20 +124,3 @@ export default {
 }
 </script>
 
-<style>
-/* Thêm lớp first-row cho dòng đầu tiên */
-
-
-/* Tùy chỉnh màu nền cho các hàng xen kẽ */
-.el-table .el-table__body-wrapper .el-table__body tbody tr.el-table__row:nth-child(even) {
-   background-color: rgb(229, 241, 232); /* Thay #your-desired-color bằng mã màu bạn muốn */
- /* Thay #your-even-row-color bằng mã màu bạn muốn */
-}
-
-/* Thay đổi màu nền cho tiêu đề của bảng */
-.el-table .el-table__header-wrapper th {
-  background-color: rgb(199, 233, 247); /* Thay #your-desired-color bằng mã màu bạn muốn */
-  color: rgb(8, 1, 1); /* Thay #your-text-color bằng mã màu bạn muốn cho văn bản trong tiêu đề */
-}
-
-</style>

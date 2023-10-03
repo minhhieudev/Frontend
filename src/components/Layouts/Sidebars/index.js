@@ -33,7 +33,7 @@ export default {
     },
     {
       name: "Quản trị điểm rèn luyện",
-      url: "/training_point/inforTrainingPoint",
+      url: "/training_point/detailTrainingPoint",
       icon: "el-icon-plus",
       color_icon: "#84e8c3",
     },

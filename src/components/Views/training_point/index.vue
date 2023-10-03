@@ -69,7 +69,8 @@
       <p style="text-align: center;color: rgb(38, 212, 22);font-size: bold;">Total: {{ Total_groupAssessment }}</p>
       <p style="text-align: center;color: rgb(38, 212, 22);font-size: bold;">Total: {{ Total_consultantAssessment }}</p>
 
-      <el-button type="primary" @click="handleSubmit">Gửi</el-button>
+      <el-button type="primary" @click="handleSave">Lưu</el-button>
+      <el-button type="primary" @click="handleSubmit">Nộp</el-button>
     </el-card>
   </div>
 </template>
@@ -77,6 +78,7 @@
 <script>
 const ModelCode = 'training_point';
 import { saveData } from '@/api/detailTrainingPoint';
+import { saveDatas } from '@/api/detailTrainingPoint';
 import { getAll } from '@/api/training_point';
 export default {
   data() {
@@ -196,16 +198,29 @@ export default {
     }
   });
 
-  return { criteriaList };
+  const criteriaLists = {
+    user: this.$store.getters.user._id,
+    semester: this.semester,
+    schoolYear: this.schoolYear,
+    criteriaList: criteriaList,
+    Total_selfAssessment: this.Total_selfAssessment,
+    Total_groupAssessment: this.Total_groupAssessment,
+    Total_consultantAssessment: this.Total_consultantAssessment
+
+
+  }
+
+  return criteriaLists ;
 },
 
 
-    handleSubmit() {
-      
-     
-      
-
-    
+    handleSave() {
+      // Kiểm tra xem học kỳ và năm học có được nhập không
+      if (!this.semester || !this.schoolYear) {
+        this.$message.error('Vui lòng nhập học kỳ và năm học.');
+        return;
+      }
+      console.log(this.combineObjects(this.resultArray));
       saveData(this.combineObjects(this.resultArray))
         .then(response => {
           if (response && response.data) {
@@ -220,6 +235,27 @@ export default {
         });
 
     },
+    handleSubmit(){
+
+      const data ={
+        semester: this.semester,
+        schoolYear: this.schoolYear,
+        consultantAssessment: this.consultantAssessment
+      }
+
+      saveDatas(data)
+        .then(response => {
+          if (response && response.data) {
+            this.$message.success('Lưu dữ liệu thành công');
+          } else {
+            this.$message.error('Lưu dữ liệu không thành công');
+          }
+        })
+        .catch(error => {
+          console.error('Lỗi khi lưu dữ liệu: ', error);
+          this.$message.error('Lỗi khi lưu dữ liệu');
+        });
+    }
 
   },
 };

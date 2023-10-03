@@ -13,7 +13,7 @@ import settingRoute from './children/setting'
 import questionRoute from './children/question'
 import questionsRoute from './children/questions'
 import training_pointRoute from "./children/training_point";
-import inforTrainingPointRoute from "./children/inforTrainingPoint";
+import detailTrainingPointRoute from "./children/detailTrainingPoint";
 import resultTraningPointRoute from "./children/resultTraningPoint";
 import note_bookRoute from "./children/note_book";
 
@@ -53,7 +53,7 @@ let adminRoutes = {
     ...questionRoute,
     ...questionsRoute,
     ...training_pointRoute,
-    ...inforTrainingPointRoute,
+    ...detailTrainingPointRoute,
     ...resultTraningPointRoute,
     ...note_bookRoute,
     ...userRoutes,
