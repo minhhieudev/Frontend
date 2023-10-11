@@ -16,6 +16,8 @@ import training_pointRoute from "./children/training_point";
 import detailTrainingPointRoute from "./children/detailTrainingPoint";
 import resultTraningPointRoute from "./children/resultTraningPoint";
 import note_bookRoute from "./children/note_book";
+import studentRoute from "./children/student";
+import consultantRoute from "./children/consultant";
 
 Vue.use(Router)
 
@@ -57,6 +59,8 @@ let adminRoutes = {
     ...resultTraningPointRoute,
     ...note_bookRoute,
     ...userRoutes,
+    ...studentRoute,
+    ...consultantRoute,
   ],
 };
 

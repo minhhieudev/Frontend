@@ -20,19 +20,6 @@
           @active_item="handleClickItem"
         ></sidebar-item>
       </ul>
-      <!-- <template v-if="isHeader">
-        <el-collapse accordion class="px-3 py-0 border-0">
-          <template v-for="(sidebar, idx) in sidebars">
-            <sidebar-item-collapse
-              :sidebar="sidebar"
-              :key="sidebar.url + idx"
-              :index="idx"
-              class="my-2"
-            ></sidebar-item-collapse>
-          </template>
-          
-        </el-collapse>
-      </template> -->
       
     </div>
   </aside>

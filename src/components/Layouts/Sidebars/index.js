@@ -10,7 +10,7 @@ export default {
     {
       name: "Câu hỏi",
       url: "/question",
-      icon: "el-icon-s-order",
+      icon: "el-icon-question",
       color_icon: "#ff4d4d",
     },
     {
@@ -22,26 +22,38 @@ export default {
     {
       name: "Quản lý người dùng",
       url: "/user",
+      icon: "el-icon-user-solid",
+      color_icon: "#84e8c8",
+    },
+    {
+      name: "Quản trị thông tin sinh viên",
+      url: "/student",
+      icon: "el-icon-user",
+      color_icon: "#84e8c8",
+    },
+    {
+      name: "Quản trị thông tin cố vấn",
+      url: "/consultant",
       icon: "el-icon-s-custom",
       color_icon: "#84e8c8",
     },
     {
       name: "Điểm rèn luyện",
       url: "/training_point",
-      icon: "el-icon-switch-button",
-      color_icon: "#3366CC",
+      icon: "el-icon-reading",
+      color_icon: "#0000FF",
     },
     {
       name: "Quản trị điểm rèn luyện",
       url: "/training_point/detailTrainingPoint",
-      icon: "el-icon-plus",
-      color_icon: "#84e8c3",
+      icon: "el-icon-tickets",
+      color_icon: "#0000FF",
     },
     {
       name: "Kết quả rèn luyện",
       url: "/training_point/resultTraningPoint",
-      icon: "el-icon-plus",
-      color_icon: "#84e8c3",
+      icon: "el-icon-notebook-2",
+      color_icon: "#0000FF",
     },
     {
       name: "Tra cứu thông tin",
@@ -54,6 +66,12 @@ export default {
       url: "/setting",
       icon: "el-icon-s-tools",
       color_icon: "#010101",
+    },
+    {
+      name: "",
+      url: "",
+      icon: "el-icon-loading",
+      color_icon: "#00EE00",
     },
   ],
   student: [],

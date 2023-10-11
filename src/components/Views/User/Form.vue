@@ -24,22 +24,6 @@
           <el-form-item label="SĐT">
             <el-input v-model="form.phone" type="number"/>
           </el-form-item>
-          <!-- <el-form-item label="Địa chỉ">
-            <div class="field-box">
-              <el-form-item label="home" class="mt-1">
-                <el-input v-model="form.address.home"/>
-              </el-form-item>
-              <el-form-item label="ward" class="mt-1">
-                <el-input v-model="form.address.ward"/>
-              </el-form-item>
-              <el-form-item label="district" class="mt-1">
-                <el-input v-model="form.address.district"/>
-              </el-form-item>
-              <el-form-item label="city" class="mt-1">
-                <el-input v-model="form.address.city"/>
-              </el-form-item>
-            </div>
-          </el-form-item> -->
           <el-form-item label="Quyền">
             <el-select
               v-model="form.role"

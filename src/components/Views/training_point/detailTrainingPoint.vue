@@ -1,44 +1,52 @@
 <template>
   <div class="user">
     <el-card>
-      <el-table :data="listDetailTrainingPoint" style="width: 100%">
-        <el-table-column type="index" label="STT"></el-table-column>
-        <el-table-column prop="studentCode" label="MSV" width="80">
+      <el-table :data="listDetailTrainingPoint" style="width: 100%" align="center">
+        <el-table-column type="index" label="STT" align="center"></el-table-column>
+        <el-table-column prop="studentCode" label="MSV" width="80" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.studentCode }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="fullName" label="Tên người đăng" width="100">
+        <el-table-column label="Xem phiếu điểm " width="150" align="center">
+          <template slot-scope="{ row }">
+            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
+              Phiếu điểm
+            </el-button>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="fullName" label="Tên sinh viên" width="150" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.fullName }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="semester" label="Học kỳ" width="80">
+        <el-table-column prop="semester" label="Học kỳ" width="80" align="center">
           <template slot-scope="{ row }">
             {{ row.semester }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="schoolYear" label="Năm học" width="80">
+        <el-table-column prop="schoolYear" label="Năm học" width="80" align="center">
           <template slot-scope="{ row }">
             {{ row.schoolYear }}
           </template>
         </el-table-column>
 
-        <el-table-column label="Điểm rèn luyện">
-          <el-table-column prop="Total_selfAssessment" label="SV tự chấm">
+        <el-table-column label="Điểm rèn luyện" align="center">
+          <el-table-column prop="Total_selfAssessment" label="SV tự chấm" align="center">
             <template slot-scope="{ row }">
               {{ row.Total_selfAssessment }}
             </template>
           </el-table-column>
-          <el-table-column prop="Total_groupAssessment" label="Lớp chấm">
+          <el-table-column prop="Total_groupAssessment" label="Lớp chấm" align="center">
             <template slot-scope="{ row }">
               {{ row.Total_groupAssessment }}
             </template>
           </el-table-column>
-          <el-table-column prop="Total_consultantAssessment" label="Cố vấn (xét duyệt)">
+          <el-table-column prop="Total_consultantAssessment" label="Cố vấn (xét duyệt)" align="center">
             <template slot-scope="{ row }">
               {{ row.Total_consultantAssessment }}
             </template>
@@ -55,7 +63,7 @@
           :page-size.sync="pagination.page_size"
           :total="$store.getters.total_questions"
           :current-page.sync="pagination.current_page"
-          @current-change="loadData"
+          @current-change="loadDetailTrainingPoint"
           @size-change="handlePageSizeChange"
         />
       </div>
@@ -64,8 +72,6 @@
 </template>
 
 <script>
-const ModelCode = 'question';
-import { getCollection, handleDelete } from '@/api/question';
 import { getAll } from '@/api/detailTrainingPoint';
 import { format } from 'date-fns';
 export default {
@@ -85,24 +91,8 @@ export default {
   },
   methods: {
   
-
     gotoDetail(row) {
-      this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } })
-    },
-    confirmDelete(row) {
-      this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
-        confirmButtonText: 'Xóa',
-        type: 'warning'
-      }).then(() => {
-        handleDelete(row._id).then(({data}) => {
-          console.log(data);
-          if (data.success) {
-            this.loadData()
-          }
-        }).finally(() => {
-          this.$wrLoading(false)
-        })
-      }).catch()
+      this.$router.push({ name: 'detailTrainingPoint_edit', params: { id: row._id } });
     },
     loadDetailTrainingPoint() {
   getAll()
@@ -128,5 +118,6 @@ export default {
   }
 }
 </script>
+
 
 

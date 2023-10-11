@@ -11,36 +11,6 @@
         </div>
       </el-button>
     </template>
-    <!-- <template v-if="hasChildren">
-      <div class="wrapper-hidden-submenu" v-show="getCurrentSidebar === $props.sidebar.url" :ref="'sidebar' + index">
-        <ul class="submenu">
-          <li class="submenu-column" v-for="(children, index) in sidebar.children" :key="'children' + index">
-            <div class="wrapper-submenu" v-for="(column, indexColumn) in children.column" :key="'column' + indexColumn">
-              <strong v-if="column['name']">{{ column.name }}</strong>
-              <ul class="column-menu">
-                <template v-for="(item, indexItem) in column.item">
-                  <template v-if="item.url.startsWith('/')">
-                    <li :key="'item' + indexItem" class="menu-item" @click="hideSidebarItem()">
-                      <router-link :to="item.url">{{ item.name }}</router-link>
-                    </li>
-                  </template>
-                  <template v-else>
-                    <li
-                      :key="'item' + indexItem"
-                      class="menu-item"
-                      @click="hideSidebarItem()"
-                    >
-                      <router-link :to="'/' + sidebar.url + '/' + item.url">{{ item.name }}</router-link>
-                    </li>
-                  </template>
-                </template>
-              </ul>
-            </div>
-          </li>
-        </ul>
-        <span @click="hideSidebarItem()"><i class="el-icon-close"></i></span>
-      </div>
-    </template> -->
   </li>
 </template>
 <script>

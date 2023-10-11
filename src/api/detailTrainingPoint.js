@@ -9,7 +9,7 @@ export function getAll() {
 }
 export function getDetail(id) {
   return request({
-    url: `/${modelCode}/${id}`,
+    url: `/detailTrainingPoint/${id}`,
     method: "get",
   });
 }

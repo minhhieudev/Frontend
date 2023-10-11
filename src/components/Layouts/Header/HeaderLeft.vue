@@ -1,6 +1,6 @@
 <template>
-  <div :class="$isMobile ? 'w-100' : ''">
-    <div class="d-flex align-items-center">
+  <div :class="$isMobile ? 'w-100' : ''" >
+    <div class="d-flex align-items-center" >
       <h4 class="ml-2 font-weight-bold d-flex align-items-center justify-content-between justify-content-md-between mb-0">
         <i v-if="$isMobile" class="fa fa-bars mr-3" @click="drawer = true"></i>
         <b>{{ activeItem.name }}</b>
@@ -28,7 +28,7 @@
 <script>
 import sidebars from '../Sidebars'
 import Sidebar from '../SideBar.vue'
-import AccountInfo from './AccountInfo.vue'
+import AccountInfo from './AccountInfo'
 import Breadcrumb from './Breadcrumb.vue'
 export default {
   components: {
