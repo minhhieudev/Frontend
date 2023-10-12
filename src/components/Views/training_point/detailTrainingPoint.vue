@@ -9,7 +9,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="Xem phiếu điểm " width="150" align="center">
+        <el-table-column label="Xem phiếu điểm " width="100" align="center">
           <template slot-scope="{ row }">
             <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
               Phiếu điểm
@@ -29,7 +29,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="schoolYear" label="Năm học" width="80" align="center">
+        <el-table-column prop="schoolYear" label="Năm học" width="130" align="center">
           <template slot-scope="{ row }">
             {{ row.schoolYear }}
           </template>

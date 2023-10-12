@@ -11,7 +11,7 @@
     </el-form>
   </el-col>
   <el-col :span="6">
-    <el-form :model="formData" label-width="80px">
+    <el-form  label-width="80px">
       <el-form-item label="Năm học" class="bold-text">
         <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input"></el-input>
       </el-form-item>
@@ -75,11 +75,17 @@
 
       </el-table>
       <el-descriptions title="Kết quả">
+          <el-descriptions-item  label="Sinh viên tự chấm">{{ Total_selfAssessment }}</el-descriptions-item>
+          <el-descriptions-item  label="Lớp chấm">{{ Total_groupAssessment }}</el-descriptions-item>
+          <el-descriptions-item label="Cố vấn chấm">{{ Total_consultantAssessment }}</el-descriptions-item>
+      </el-descriptions>
+      
+      <!-- <el-descriptions title="Kết quả">
           <el-descriptions-item :content-style="{'color': ' #FDE2E2'}" label="Sinh viên tự chấm">{{ Total_selfAssessment }}</el-descriptions-item>
           <el-descriptions-item :labelStyle="{'color': ' #FDE2E2'}" label="Lớp chấm">{{ Total_groupAssessment }}</el-descriptions-item>
           <el-descriptions-item label="Cố vấn chấm">{{ Total_consultantAssessment }}</el-descriptions-item>
       </el-descriptions>
-      
+       -->
       <el-button type="primary" @click="handleSave">Lưu</el-button>
       <el-button type="primary" @click="handleSubmit">Nộp</el-button>
     </el-card>
