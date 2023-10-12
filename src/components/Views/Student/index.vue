@@ -1,7 +1,17 @@
 <template>
-    <div class="user">
-      <el-card>
-        <el-table :data="tableData" style="width: 100%">
+  <div class="user">
+    <el-card>
+      <div class="search-bar">
+        <el-input
+          v-model="search"
+          size="medium" 
+          placeholder="Type to search"
+          class="custom-input"
+        >
+          <el-button slot="append" icon="el-icon-search" class="search-icon"></el-button>
+        </el-input>
+      </div>
+      <el-table   :data="tableData.filter(data => !search || data.fullName.toLowerCase().includes(search.toLowerCase()))"  style="width: 100%">
   
           <el-table-column type="index" label="STT" align="center"></el-table-column>
   
@@ -76,6 +86,7 @@
           page_size: 25,
         },
         totalData: 0,
+        search: '',
       };
     },
     created() {
@@ -111,5 +122,23 @@
   </script>
   
   <style scoped>
-  </style>
+  .search-bar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
   
+  .custom-input {
+    width: 200px;  /* Điều chỉnh chiều rộng theo nhu cầu */
+    font-weight: bold;  /* Đậm hơn */
+    background-color: #eaeaea;  /* Màu sắc nền */
+  }
+  
+  .custom-input input {
+    color: #333;  /* Màu chữ */
+  }
+  
+  .search-icon {
+    color: #1890ff;  /* Màu sắc của icon tìm kiếm */
+  }
+  </style>

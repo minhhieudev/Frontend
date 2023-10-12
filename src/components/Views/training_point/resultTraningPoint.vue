@@ -1,5 +1,5 @@
 <template>
-  <div class="user">
+  <div class="Result">
     <el-card>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column type="index" label="STT" align="center"></el-table-column>
@@ -10,15 +10,21 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="fullName" label="Tên sinh viên" width="150" align="center">
+        <el-table-column prop="fullName" label="Tên sinh viên" width="100" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.fullName }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="className" label="Lớp" width="150" align="center">
+        <el-table-column prop="className" label="Lớp" width="100" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.className }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="schoolYear" label="Năm học" width="100" align="center">
+          <template slot-scope="{ row }">
+            {{ row.schoolYear}}
           </template>
         </el-table-column>
 
@@ -107,5 +113,14 @@
   </script>
   
   <style scoped>
-  </style>
-  
+  .Result.el-table .el-table__body-wrapper .el-table__body tbody tr.el-table__row:nth-child(even) {
+  background-color: rgb(91, 128, 33) !important; /* Thêm !important để ghi đè */
+}
+
+/* Thay đổi màu nền cho tiêu đề của bảng */
+.Result.el-table .el-table__header-wrapper th {
+  background-color: rgb(180, 207, 25) !important; /* Thêm !important để ghi đè */
+  color: rgb(8, 1, 1) !important; /* Thêm !important để ghi đè */
+}
+</style>
+

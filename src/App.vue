@@ -7,6 +7,7 @@
 <script>
 export default {
   mounted() {
+    console.log(this.$isMoble)
     if (['admin', 'consultant'].includes(this.$store.getters.user.role)) {
       this.loadAllUsers()
       this.loadAllQuestions()

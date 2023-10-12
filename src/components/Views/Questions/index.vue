@@ -132,12 +132,12 @@ export default {
 
 /* Tùy chỉnh màu nền cho các hàng xen kẽ */
 .user.el-table .el-table__body-wrapper .el-table__body tbody tr.el-table__row:nth-child(even) {
-  background-color: rgb(199, 16, 77) !important; /* Thêm !important để ghi đè */
+  background-color: rgb(91, 128, 33) !important; /* Thêm !important để ghi đè */
 }
 
 /* Thay đổi màu nền cho tiêu đề của bảng */
 .user.el-table .el-table__header-wrapper th {
-  background-color: rgb(53, 25, 207) !important; /* Thêm !important để ghi đè */
+  background-color: rgb(180, 207, 25) !important; /* Thêm !important để ghi đè */
   color: rgb(8, 1, 1) !important; /* Thêm !important để ghi đè */
 }
 </style>
