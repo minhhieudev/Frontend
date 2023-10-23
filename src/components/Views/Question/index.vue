@@ -83,7 +83,7 @@ export default {
   data() {
     return {
       logo: "https://upload.wikimedia.org/wikipedia/vi/2/2e/Dai_hoc_phu_yen_logo.png",
-        replyText: "",
+      replyText: "",
 
       inputValue: "",
       questions: [], // Mảng câu hỏi

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="font-weight: 500;">
     <el-card class="table-info center">
       <h4 class="table-title">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
       <el-row>

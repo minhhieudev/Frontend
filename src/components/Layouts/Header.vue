@@ -2,8 +2,12 @@
   <header class="navbar app-navbar px-4 bg-white v2-theme custom">
     <header-left />
     <!-- <Search /> -->
-    <div class="ml-auto mr-1" v-if="!$isMobile">
+    <div class="ml-auto mr-1 d-flex" v-if="!$isMobile">
       <account-info></account-info>
+      <el-badge :value="200" :max="99" class="item mr-3">
+      <!-- Biểu tượng chuông -->
+      <el-icon class="el-icon-message-solid" name="bell"></el-icon>
+    </el-badge>
     </div>
   </header>
 </template>
@@ -42,7 +46,10 @@ header {
     @media (min-width: $md) {
       height: $new-header-height;
     }
-    background: white;
+    background-image: url(https://png.pngtree.com/background/20210716/original/pngtree-soft-pink-background-picture-image_1332401.jpg);
+//     background: rgb(175, 238, 247);
+// background: linear-gradient(90deg, rgb(125, 208, 247) 0%, rgb(127, 217, 233) 8%, rgb(176, 219, 233) 19%, rgb(182, 228, 231) 33%, rgb(187, 222, 238) 73%, rgb(185, 225, 240) 86%, rgb(185, 217, 238) 100%);
+
     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.04);
     a > img {
       width: 125px;

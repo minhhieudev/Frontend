@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard" v-loading="loading">
-   
+   Hello
   </div>
 </template>
 

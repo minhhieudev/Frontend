@@ -1,7 +1,7 @@
 <template>
   <div class="user">
     <el-card>
-      <el-table :data="listDetailTrainingPoint" style="width: 100%" align="center">
+      <el-table  :data="listDetailTrainingPoint"  align="center" class="custom-table">
         <el-table-column type="index" label="STT" align="center"></el-table-column>
         <el-table-column prop="studentCode" label="MSV" width="80" align="center">
           <template slot-scope="{ row }">
@@ -61,7 +61,7 @@
           :page-sizes="[25, 50, 100]"
           :pager-count="5"
           :page-size.sync="pagination.page_size"
-          :total="$store.getters.total_questions"
+          :total="this.tableData.length"
           :current-page.sync="pagination.current_page"
           @current-change="loadDetailTrainingPoint"
           @size-change="handlePageSizeChange"
@@ -118,6 +118,25 @@ export default {
   }
 }
 </script>
+<style >
+.custom-table th {
+  background-color: #bff5d4 !important;
+  color: black !important;
+}
 
+.custom-table tr:nth-child(even) {
+  background-color: #f8d0cf !important;
+}
+
+.custom-table tr:nth-child(odd) {
+  background-color: #ffffff !important;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #f8be97;
+    color: #fff;
+    border-radius: 50%;
+}
+</style>
 
 

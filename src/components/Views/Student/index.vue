@@ -11,7 +11,7 @@
           <el-button slot="append" icon="el-icon-search" class="search-icon"></el-button>
         </el-input>
       </div>
-      <el-table   :data="tableData.filter(data => !search || data.fullName.toLowerCase().includes(search.toLowerCase()))"  style="width: 100%">
+      <el-table   :data="tableData.filter(data => !search || data.fullName.toLowerCase().includes(search.toLowerCase()))"  style="width: 100%" class="custom-table">
   
           <el-table-column type="index" label="STT" align="center"></el-table-column>
   
@@ -51,6 +51,18 @@
             </template>
           </el-table-column>
 
+          <el-table-column prop="dateOfBirth" label="Chức năng"  align="center">
+            <template slot-scope="scope">
+              <el-button
+                size="mini"
+                @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+            </template>
+          </el-table-column>
+
   
          
   
@@ -62,7 +74,7 @@
             :page-sizes="[25, 50, 100]"
             :pager-count="5"
             :page-size.sync="pagination.page_size"
-            :total="$store.getters.total_questions"
+            :total="this.tableData.length"
             :current-page.sync="pagination.current_page"
             @current-change="loadData"
             @size-change="handlePageSizeChange"
@@ -121,7 +133,7 @@
   };
   </script>
   
-  <style scoped>
+  <style >
   .search-bar {
     display: flex;
     justify-content: flex-end;
@@ -141,4 +153,23 @@
   .search-icon {
     color: #1890ff;  /* Màu sắc của icon tìm kiếm */
   }
+
+  .custom-table th {
+  background-color: #f1f1cc !important;
+  color: black !important;
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: #f8d0cf !important;
+}
+
+.custom-table tr:nth-child(odd) {
+  background-color: #ffffff !important;
+}
+
+.el-pagination.is-background .el-pager li:not(.disabled).active {
+    background-color: #cdf3aa;
+    color: #fff;
+    border-radius: 50%;
+}
   </style>

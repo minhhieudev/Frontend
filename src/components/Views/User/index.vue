@@ -9,7 +9,7 @@
           </el-button>
         </div>
       </div>
-      <el-table :data="$store.getters.users" style="width: 100%" i:indent="0">
+      <el-table :data="$store.getters.users" style="width: 100%" i:indent="0" class="custom-table">
         <el-table-column type="index" label="STT"></el-table-column>
         <el-table-column prop="email" label="Email"></el-table-column>
 <el-table-column label="Tên">
@@ -37,7 +37,7 @@
         <el-pagination
           background
           layout="jumper, prev, pager, next, sizes, total"
-          :page-sizes="[25, 50, 100]"
+          :page-sizes="[5, 50, 100]"
           :pager-count="5"
           :page-size.sync="pagination.page_size"
           :total="$store.getters.total_users"
@@ -96,7 +96,6 @@ export default {
       }).catch()
     },
     loadData() {
-      console.log(this.$store.getters.users);
 
       const params = {
         pagination: this.pagination,
@@ -124,3 +123,17 @@ export default {
 }
 </script>
 
+<style >
+.custom-table th {
+  background-color: #c9f1d9 !important;
+  color: black !important;
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: #e0f8e4 !important;
+}
+
+.custom-table tr:nth-child(odd) {
+  background-color: #ffffff !important;
+}
+</style>

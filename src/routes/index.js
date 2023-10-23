@@ -11,7 +11,7 @@ import NotFound from '@/components/GeneralView/NotFoundPage'
 import userRoutes from './children/user'
 import settingRoute from './children/setting'
 import questionRoute from './children/question'
-import questionsRoute from './children/questions'
+import questionTableRoute from './children/questionTables'
 import training_pointRoute from "./children/training_point";
 import detailTrainingPointRoute from "./children/detailTrainingPoint";
 import resultTraningPointRoute from "./children/resultTraningPoint";
@@ -53,7 +53,7 @@ let adminRoutes = {
     },
     ...settingRoute,
     ...questionRoute,
-    ...questionsRoute,
+    ...questionTableRoute,
     ...training_pointRoute,
     ...detailTrainingPointRoute,
     ...resultTraningPointRoute,

@@ -15,7 +15,7 @@ export default {
     },
     {
       name: "Quản trị câu hỏi / Trả lời",
-      url: "/questions",
+      url: "/question/questionTables",
       icon: "el-icon-menu",
       color_icon: "#ca2c2a",
     },
