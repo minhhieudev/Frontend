@@ -13,7 +13,7 @@ export default {
         basicEntities: false,
         entities_greek: false,
         entities_processNumerical: false,
-        forcePasteAsPlainText: true,
+        forcePasteAsPlainText: false, 
         filebrowserImageUploadUrl: FILE_URL,
       },
       editorConfig: {

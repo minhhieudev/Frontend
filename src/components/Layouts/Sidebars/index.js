@@ -16,6 +16,12 @@ export default {
     {
       name: "Quản trị câu hỏi / Trả lời",
       url: "/question/questionTables",
+      icon: "el-icon-s-grid",
+      color_icon: "#f9b651",
+    },
+    {
+      name: "Quản trị tài liệu / Bài đăng",
+      url: "/post/postTables",
       icon: "el-icon-menu",
       color_icon: "#ca2c2a",
     },
