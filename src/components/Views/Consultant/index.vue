@@ -1,18 +1,23 @@
 <template>
   <div class="Consultant">
     <el-card>
-      <div class="search-bar">
-        <!-- Lọc theo lớp -->
+      <div class="search-bar ">
+        
+        
 
         <el-input
           v-model="search"
-          size="medium"
+          size="medium" 
           placeholder="Type to search"
-          class="custom-input search-input"
-          @input="applyFilters"
+          class="custom-input"
         >
-          <el-button slot="prepend" icon="el-icon-search" class="search-icon"></el-button>
+          <el-button slot="append" icon="el-icon-search" class="search-icon"></el-button>
         </el-input>
+        <div class="">
+          <el-button @click="goToAddNewPage()" type="primary" size="small">
+            Tạo mới
+          </el-button>
+          </div>
       </div>
 
       <el-table  :data="filteredTableData" style="width: 100%" class="custom-table" >
@@ -36,25 +41,27 @@
             {{ row.department }}
           </template>
         </el-table-column>
-
+<!-- 
         <el-table-column prop="dateOfBirth" label="Ngày sinh" width="150" align="center">
           <template slot-scope="{ row }">
             {{ formatDate(row.dateOfBirth) }}
           </template>
         </el-table-column>
+ -->
 
+     
+ <el-table-column label="Thao tác" width="150" >
+          <template slot-scope="{ row }">
+            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
+              Xem
+            </el-button>
+            <el-button @click.prevent="confirmDelete(row)" type="danger" size="mini">
+              Xóa
+            </el-button>
+          </template>
+        </el-table-column>
 
-        <el-table-column prop="dateOfBirth" label="Chức năng"  align="center">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
-            </template>
-          </el-table-column>
+  
        
 
       </el-table>
@@ -78,7 +85,7 @@
 
 <script>
 const ModelCode = 'consultant';
-import { getAll } from '@/api/consultant';
+import { getAll, handleDelete } from '@/api/consultant';
 import { format } from 'date-fns';
 
 export default {
@@ -99,8 +106,26 @@ export default {
     console.log(this.totalData.length);
   },
   methods: {
+   
+    goToAddNewPage() {
+      this.$router.push({ name: `${ModelCode}_new` })
+    },
     gotoDetail(row) {
-      this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } });
+      this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } })
+    },
+    confirmDelete(row) {
+      this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
+        confirmButtonText: 'Xóa',
+        type: 'warning'
+      }).then(() => {
+        handleDelete(row._id).then(({data}) => {
+          if (data.success) {
+            this.loadData()
+          }
+        }).finally(() => {
+          this.$wrLoading(false)
+        })
+      }).catch()
     },
 
     loadData() {
@@ -134,7 +159,7 @@ export default {
 };
 </script>
 
-<style >
+<style scoped>
 
 .custom-table th {
   background-color: #7ab7e0 !important;
@@ -157,7 +182,7 @@ export default {
 
 .search-bar {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 

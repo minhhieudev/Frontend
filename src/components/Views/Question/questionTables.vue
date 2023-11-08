@@ -16,16 +16,21 @@
 
       <el-table :data="filteredTableData" style="width: 100%" class="custom-table">
         <el-table-column type="index" label="STT"></el-table-column>
+
         <el-table-column prop="title" label="Tiêu đề">
           <template slot-scope="{ row }">
             {{ row.title }}
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="Nội dung">
+
+        <el-table-column label="Trạng thái"  align="center">
           <template slot-scope="{ row }">
-            {{ row.content }}
+            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
+              Chưa trả lời
+            </el-button>
           </template>
         </el-table-column>
+        
         <el-table-column prop="createdAt" label="Ngày, tháng đăng">
           <template slot-scope="{ row }">
             {{ formatDate(row.createdAt) }}
@@ -155,7 +160,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
 .custom-table th {
   background-color: #bff5d4 !important;
   color: black !important;

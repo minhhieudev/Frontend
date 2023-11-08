@@ -1,7 +1,10 @@
 <template>
   <div class="user">
     <el-card>
-      <div class="search-bar">
+      <div class="search-bar ">
+        
+        
+
         <el-input
           v-model="search"
           size="medium" 
@@ -10,7 +13,13 @@
         >
           <el-button slot="append" icon="el-icon-search" class="search-icon"></el-button>
         </el-input>
+        <div class="">
+          <el-button @click="goToAddNewPage()" type="primary" size="small">
+            Tạo mới
+          </el-button>
+          </div>
       </div>
+      
       <el-table   :data="tableData.filter(data => !search || data.fullName.toLowerCase().includes(search.toLowerCase()))"  style="width: 100%" class="custom-table">
   
           <el-table-column type="index" label="STT" align="center"></el-table-column>
@@ -45,23 +54,22 @@
             </template>
           </el-table-column>
 
-          <el-table-column prop="dateOfBirth" label="Ngày sinh" width="150" align="center">
+          <!-- <el-table-column prop="dateOfBirth" label="Ngày sinh" width="150" align="center">
             <template slot-scope="{ row }">
               {{ formatDate(row.dateOfBirth) }}
             </template>
-          </el-table-column>
+          </el-table-column> -->
 
-          <el-table-column prop="dateOfBirth" label="Chức năng"  align="center">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
-            </template>
-          </el-table-column>
+          <el-table-column label="Thao tác" width="150">
+          <template slot-scope="{ row }">
+            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
+              Xem
+            </el-button>
+            <el-button @click.prevent="confirmDelete(row)" type="danger" size="mini">
+              Xóa
+            </el-button>
+          </template>
+        </el-table-column>
 
   
          
@@ -86,7 +94,7 @@
   
   <script>
   const ModelCode = 'student';
-  import { getAll } from '@/api/student';
+  import { getAll ,handleDelete} from '@/api/student';
   import { format } from 'date-fns';
   
   export default {
@@ -105,9 +113,26 @@
       this.loadData();
     },
     methods: {
-      gotoDetail(row) {
-        this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } });
-      },
+      goToAddNewPage() {
+      this.$router.push({ name: `${ModelCode}_new` })
+    },
+    gotoDetail(row) {
+      this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } })
+    },
+    confirmDelete(row) {
+      this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
+        confirmButtonText: 'Xóa',
+        type: 'warning'
+      }).then(() => {
+        handleDelete(row._id).then(({data}) => {
+          if (data.success) {
+            this.loadData()
+          }
+        }).finally(() => {
+          this.$wrLoading(false)
+        })
+      }).catch()
+    },
   
       loadData() {
         getAll()
@@ -133,11 +158,12 @@
   };
   </script>
   
-  <style >
+  <style scoped>
   .search-bar {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom:10px ;
   }
   
   .custom-input {

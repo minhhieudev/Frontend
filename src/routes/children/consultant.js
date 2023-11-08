@@ -12,7 +12,7 @@ export default [
   },
   {
     path: `${path_code}/new`,
-    component: () => import('@/components/Views/User/Form'),
+    component: () => import('@/components/Views/Consultant/Form'),
     name: `${path_code}_new`,
     meta: {
       title: `Tạo ${name}`
@@ -20,7 +20,7 @@ export default [
   },
   {
     path: `${path_code}/edit/:id`,
-    component: () => import('@/components/Views/User/Form'),
+    component: () => import('@/components/Views/Consultant/Form'),
     name: `${path_code}_edit`,
     meta: {
       title: `Chỉnh Sửa ${name}`

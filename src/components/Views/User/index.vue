@@ -4,17 +4,28 @@
       <div class="d-flex justify-content-between my-2">
         <div></div>
         <div>
+          <el-select v-model="value" placeholder="Quyền" @input="applyFilters">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+      >
+      
+    </el-option>
+  </el-select>
           <el-button @click="goToAddNewPage()" type="primary" size="small">
             Tạo mới
           </el-button>
         </div>
+        
       </div>
-      <el-table :data="$store.getters.users" style="width: 100%" i:indent="0" class="custom-table">
+      <el-table :data="filteredData" style="width: 100%" i:indent="0" class="custom-table">
         <el-table-column type="index" label="STT"></el-table-column>
         <el-table-column prop="email" label="Email"></el-table-column>
 <el-table-column label="Tên">
    <template slot-scope="{ row }">
-      {{ row.studentInfo ? row.studentInfo.fullName : '' }}
+      {{  getName(row) }}
    </template>
 </el-table-column>
 <el-table-column prop="role" label="Quyền">
@@ -61,14 +72,30 @@ export default {
       },
       roleMap: {
         admin: 'Quản trị',
-        consultant: 'Quản trị nhóm',
+        consultant: 'Cố vấn',
         student: 'Sinh viên',
       },
-      selectedRole: 'all' // Mặc định hiển thị tất cả
+      options: [{
+          value: 'All',
+          label: 'Tất cả'
+        }, {
+          value: 'student',
+          label: 'Sinh viên'
+        }, {
+          value: 'consultant',
+          label: 'Cố vấn'
+        }, {
+          value: 'admin',
+          label: 'Admin'
+        }],
+        value: 'All',
+        filteredData: [],  
     };
   },
   created () {
-    this.loadData()
+    this.loadData();
+    this.applyFilters();
+
   },
   methods: {
     /** some handle methods */
@@ -78,31 +105,35 @@ export default {
       this.$router.push({ name: `${ModelCode}_new` })
     },
     gotoDetail(row) {
+      console.log(row.data  + '24124')
+
       this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } })
     },
     confirmDelete(row) {
-      this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
-        confirmButtonText: 'Xóa',
-        type: 'warning'
-      }).then(() => {
-        handleDelete(row._id).then(({data}) => {
-          console.log(data);
-          if (data.success) {
-            this.loadData()
-          }
-        }).finally(() => {
-          this.$wrLoading(false)
-        })
-      }).catch()
-    },
+  if (!row._id) {
+    // Xử lý trường hợp _id không được định nghĩa
+    console.error("ID người dùng không được định nghĩa.");
+    return;
+  }
+
+  this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
+    confirmButtonText: 'Xóa',
+    type: 'warning'
+  }).then(() => {
+    handleDelete(row._id).then(({ data }) => {
+      if (data.success) {
+        this.loadData();
+      }
+    }).finally(() => {
+      this.$wrLoading(false);
+    });
+  }).catch();
+},
+
     loadData() {
 
-      const params = {
-        pagination: this.pagination,
-        role: this.selectedRole === 'all' ? undefined : this.selectedRole // Truyền vai trò chỉ khi đã chọn
-      };
 
-      getCollection(params).then(({ data }) => {
+      getCollection().then(({ data }) => {
         if (data.success) {
           this.setData({
             key: 'users',
@@ -118,6 +149,20 @@ export default {
     handlePageSizeChange() {
       this.pagination.current_page = 1
       this.loadData()
+    },
+
+    applyFilters() {
+      // Lấy giá trị quyền được chọn từ el-select
+      const selectedRole = this.value;
+
+      this.filteredData = this.$store.getters.users.filter(data => {
+        return selectedRole === 'All' || data.role === selectedRole.toLowerCase();
+      });
+    },
+    getName(row){
+      if (row.role == 'admin') return row.fullname;
+      if (row.role == 'student') return row.studentInfo.fullName;
+      if (row.role == 'consultant') return row.fullname;
     }
   }
 }

@@ -1,14 +1,10 @@
 import request from "@/utils/request";
-const modelCode = 'users'
+const modelCode = 'user'
 
 export function getCollection(data) {
   return request({
     url: `/${modelCode}/collection`,
     method: "post",
-    data: {
-      ...data,
-      role: data.role, // Truyền vai trò từ frontend lên API
-    },
   });
 }
 

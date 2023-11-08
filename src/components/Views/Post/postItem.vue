@@ -143,8 +143,6 @@
   
     methods: {
       downloadAttachment(attachment) {
-        console.log( attachment.path);
-      // Sử dụng thư viện Axios để tải xuống tệp
       axios({
         url: attachment.path,
         method: 'GET',

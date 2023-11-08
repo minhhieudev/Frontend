@@ -9,33 +9,17 @@
           label-position="left"
           :model="form"
         >
-          <el-form-item label="Tên" required>
-            <el-input v-model="form.fullname" autofocus />
+          <el-form-item label="Tên cố vấn" required>
+            <el-input v-model="form.fullName" autofocus />
           </el-form-item>
           <el-form-item label="Email" required>
             <el-input v-model="form.email" />
           </el-form-item>
-          <el-form-item v-if="!form._id" label="Password" required>
-            <el-input v-model="form.password" />
+          <el-form-item label="Khoa">
+            <el-input v-model="form.department" type="text"/>
           </el-form-item>
-          <el-form-item v-else label="Renew Password">
-            <el-input v-model="form.renew_password" />
-          </el-form-item>
-          <el-form-item label="SĐT">
-            <el-input v-model="form.phone" type="number"/>
-          </el-form-item>
-          <el-form-item label="Quyền">
-            <el-select
-              v-model="form.role"
-              placeholder="Select">
-              <el-option label="Sinh viên" value="student"></el-option>
-              <el-option label="Cố vấn" value="consultant"></el-option>
-              <el-option label="Quản trị" value="admin"></el-option>
-            </el-select>
-          </el-form-item>
-          <!-- <el-form-item label="Verified">
-            <el-switch v-model="form.verified"/>
-          </el-form-item> -->
+         
+      
         </el-form>
       </div>
     </el-card>
@@ -43,18 +27,17 @@
 </template>
 
 <script>
-const ModelCode = 'user'
-import { saveData, getDetail } from "@/api/user";
-import { getFullNameCV } from "@/api/consultant";
-import { getFullNameSV } from "@/api/student";
+const ModelCode = 'consultant'
+import { saveData, getDetail,getAll } from "@/api/consultant";
 export default {
   data: function () {
     return {
-      form: {
-        fullname:'',
-        role: 'student'
-      },
       hasChange: false,
+       form: {
+        fullName: '',
+        email: '',
+        department: '',
+      }
     }
   },
   watch: {
@@ -115,27 +98,39 @@ export default {
     saveAndContinue() {
       this.handleSave(true);
     },
-    async handleSave(isContinue = false) {
-      // Gọi setFullName để cập nhật fullname trước khi lưu
-      if ( this.form.fullname == ''){
-        await this.setFullName();
-      }
+    loadDataStudent() {
+      getAll()
+        .then((response) => {
+          if (response && response.data && response.data.success) {
+            this.tableData = response.data.posts;
+            this.posts = this.tableData.reverse();
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Lỗi khi bài đăng: ", error);
+        });
+    },
+    handleSave: function (isContinue = false) {
+      console.log(this.form.Json + 'alo');
+      let currentId;
       this.$refs.form_data.validate(async (valid) => {
         if (valid == false) {
           return false
         } else {
           this.$wrLoading(true)
-          let currentId
+          
           await saveData(this.form).then(({data}) => {
             if (data.success == true) {
-              this.loadAllUsers()
+             // this.loadDataStudent()
               if (isContinue === false) {
                 this.$router.push({ name: `${ModelCode}_main` });
               } else {
                 if (data.doc) {
                   currentId = data.doc._id;
                 } else {
-                  currentId = this.form._id;
+                  currentId = null;
                 }
               }
             }
@@ -157,38 +152,9 @@ export default {
         }
       })
     },
-    async setFullName() {
-      try {
-
-        const emailValue = String(this.form.email); // Chuyển đổi thành chuỗi
-
-        if ( this.form.role == 'consultant'){
-
-          const response = await getFullNameCV({ email: emailValue });
-          if (response && response.data && response.data.success) {
-          this.form.fullname = response.data.fullName;
-        } else {
-          console.error("Không thành công: ", response.data);
-        }
-        return ;
-        } else if ( this.form.role == 'student') {
-
-          const response = await getFullNameSV({ email: emailValue });
-          if (response && response.data && response.data.success) {
-          this.form.fullname = response.data.fullName;
-        } else {
-          console.error("Không thành công: ", response.data);
-        }
-        return;
-        }
-     
-      } catch (error) {
-        console.error("Lỗi khi lấy tên: ", error);
-      }
-    },
- }
     
 
 
+  }
 }
 </script>

@@ -2,7 +2,7 @@
   <div class="chatroom">
     <el-container>
       <el-main style="height: calc(100% - 56px); padding: 11px;">
-        <div class="question-button-container">
+        <div class="post-button-container">
           <div class="avatar">
             <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
           </div>
@@ -23,7 +23,7 @@
             :content="mes.content"
             :attachmentPath="mes.attachmentPath"
             :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
-            :user="mes.title"
+            :user="mes.user.fullname"
             :createdAt="formatDate(mes.createdAt)"
             :likes="mes.likes"
             :comments="mes.comments"
@@ -227,30 +227,33 @@ export default {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
-.question-button-container {
+.post-button-container {
   display: flex;
-  margin-top: 10px;
+  margin-top: 2 px;
   border: 1px solid white;
   border-radius: 10px;
-  padding: 5px;
+  padding: 4px;
   background-color: white;
-  width: 70%;
+  width: 90%;
   margin-left: auto;
 }
 
+
 .input-box {
   flex-grow: 1;
-  background-color: white;
+  background-color: rgb(129, 117, 117);
 }
 
 .reply-inputs {
   width: 100%;
-  padding: 5px;
-  border: none;
+  padding: 10px;
   outline: none;
-  background-color: white;
+  border: none;
+  background-color: rgb(247, 243, 243);
+  margin-bottom: 5px;
   color: rgb(12, 11, 11);
 }
+
 
 .avatar {
   margin-right: 10px;

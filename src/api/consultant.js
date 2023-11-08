@@ -42,3 +42,10 @@ export function saveData (data) {
   })
 }
 
+export function getFullNameCV({ email }) {
+  return request({
+    url: `/${modelCode}/get-fullName/${encodeURIComponent(email)}`,
+    method: 'get',
+  });
+}
+

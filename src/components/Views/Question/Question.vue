@@ -2,15 +2,22 @@
   <div>
     <div class="question" @click="openDetailQuestion($event)" >
      <div class="info" >
-        <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+ <div style="display: flex;justify-content: center;align-items: center;">
+  <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
         
 
-        <span class="author">{{ user }}</span>
+        <div style="display: flex;flex-direction: column;">
+          <span class="author">{{ user }}</span>
         <span class="date">{{ createdAt }}</span>
+        </div>
+ </div>
 
       </div>
 
-      <!-- Hiển thị nội dung câu hỏi -->
+      <div class="title">
+        [Câu hỏi] {{ title }}
+      </div>
+      
       <div class="content" v-if="showFullContent" >
         {{ content }}
         <div class="toggle-button-full-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
@@ -70,7 +77,7 @@
 
 
 <script>
-import detailQuestionVue from './detailQuestion.vue'; 
+import detailQuestionVue from './detailQuestion'; 
 import { formatRelative, parseISO } from 'date-fns';
 import { format } from 'date-fns';
 import { updateLike } from '../../../api/question';
@@ -80,6 +87,7 @@ import { id } from 'date-fns/locale';
 
 export default {
   props: {
+    title: String,
     content: String,
     id:String,
     user: String,
@@ -196,7 +204,7 @@ export default {
 }
 
 .author {
-  margin-left: 5px;
+  margin-left: 10px;
   font-weight: bold;
   color:rgb(7, 131, 7);
 }
@@ -244,10 +252,16 @@ export default {
   border-radius: 20px; /* Bo tròn các góc của ô nhập phản hồi */
   padding: 5px;
   background-color: #f1e8e8; /* Màu nền của ô nhập phản hồi */
+  font-weight: bold;
 }
 
 .avatar {
   margin-right: 10px;
+}
+
+.title{
+  font-weight: bold;
+  margin-bottom: 6px;
 }
 
 .input-box {
