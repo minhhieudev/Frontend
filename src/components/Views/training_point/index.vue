@@ -87,7 +87,7 @@
       </el-descriptions>
        -->
       <el-button type="primary" @click="handleSave">Lưu</el-button>
-      <el-button type="primary" @click="handleSubmit">Nộp</el-button>
+      <el-button type="success" @click="handleSubmit">Xác nhận</el-button>
     </el-card>
   </div>
 </template>

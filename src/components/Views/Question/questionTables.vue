@@ -94,7 +94,7 @@ export default {
       this.$router.push({ name: `${ModelCode}_new` });
     },
     gotoDetail(row) {
-      this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } });
+      this.$router.push({ name: `question_detail`, params: { id: row._id } });
     },
     confirmDelete(row) {
       this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
@@ -161,7 +161,7 @@ export default {
 </script>
 
 <style >
-.custom-table th {
+/* .custom-table th {
   background-color: #bff5d4 !important;
   color: black !important;
 }
@@ -172,7 +172,7 @@ export default {
 
 .custom-table tr:nth-child(odd) {
   background-color: #ffffff !important;
-}
+} */
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #f08294;

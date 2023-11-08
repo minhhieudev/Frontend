@@ -3,13 +3,13 @@
     <el-card>
       <el-table  :data="listDetailTrainingPoint"  align="center" class="custom-table">
         <el-table-column type="index" label="STT" align="center"></el-table-column>
-        <el-table-column prop="studentCode" label="MSV" width="80" align="center">
+        <el-table-column prop="studentCode" label="MSV" width="100" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.studentCode }}
           </template>
         </el-table-column>
 
-        <el-table-column label="Xem phiếu điểm " width="100" align="center">
+        <el-table-column label="Xem phiếu điểm " width="130" align="center">
           <template slot-scope="{ row }">
             <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
               Phiếu điểm
@@ -119,7 +119,7 @@ export default {
 }
 </script>
 <style >
-.custom-table th {
+/* .custom-table th {
   background-color: #bff5d4 !important;
   color: black !important;
 }
@@ -130,7 +130,7 @@ export default {
 
 .custom-table tr:nth-child(odd) {
   background-color: #ffffff !important;
-}
+} */
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
     background-color: #f8be97;

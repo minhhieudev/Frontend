@@ -169,7 +169,7 @@ export default {
 </script>
 
 <style >
-.custom-table th {
+/* .custom-table th {
   background-color: #c9f1d9 !important;
   color: black !important;
 }
@@ -180,5 +180,5 @@ export default {
 
 .custom-table tr:nth-child(odd) {
   background-color: #ffffff !important;
-}
+} */
 </style>

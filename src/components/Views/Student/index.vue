@@ -180,18 +180,18 @@
     color: #1890ff;  /* Màu sắc của icon tìm kiếm */
   }
 
-  .custom-table th {
+  /* .custom-table th {
   background-color: #f1f1cc !important;
   color: black !important;
-}
+} */
 
-.custom-table tr:nth-child(even) {
+/* .custom-table tr:nth-child(even) {
   background-color: #f8d0cf !important;
 }
 
 .custom-table tr:nth-child(odd) {
   background-color: #ffffff !important;
-}
+} */
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
     background-color: #cdf3aa;

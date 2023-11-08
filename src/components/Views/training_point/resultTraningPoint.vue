@@ -38,11 +38,11 @@
       <el-table :data="filteredTableData" style="width: 100%" class="custom-table">
         <el-table-column type="index" label="STT" align="center"></el-table-column>
 
-        <el-table-column prop="studentCode" label="MSV" width="80" align="center">
+        <el-table-column prop="studentCode" label="MSV" width="100" align="center">
           <template slot-scope="{ row }">{{ row.studentDetails.studentCode }}</template>
         </el-table-column>
 
-        <el-table-column prop="fullName" label="Tên SV" width="100" align="center">
+        <el-table-column prop="fullName" label="Tên SV" width="150" align="center">
           <template slot-scope="{ row }">{{ row.studentDetails.fullName }}</template>
         </el-table-column>
 
@@ -54,7 +54,7 @@
           <template slot-scope="{ row }">{{ row.schoolYear }}</template>
         </el-table-column>
 
-        <el-table-column label="Kỳ 1" align="center">
+        <el-table-column label="Kỳ 1" align="center" width="100">
           <el-table-column prop="semester1.point" label="Điểm" align="center"></el-table-column>
           <el-table-column prop="semester1.classify" label="Xếp loại" align="center"></el-table-column>
           <el-table-column prop="semester1.note" label="Ghi chú" align="center"></el-table-column>
@@ -373,7 +373,7 @@ exportToPDF() {
 </script>
 
 <style >
-.custom-table th {
+/* .custom-table th {
   background-color: #cbf1f3 !important;
   color: black !important;
 }
@@ -384,7 +384,7 @@ exportToPDF() {
 
 .custom-table tr:nth-child(odd) {
   background-color: #ffffff !important;
-}
+} */
 .search-bar {
   display: flex;
   justify-content: space-between;

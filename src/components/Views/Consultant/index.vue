@@ -161,7 +161,7 @@ export default {
 
 <style scoped>
 
-.custom-table th {
+/* .custom-table th {
   background-color: #7ab7e0 !important;
   color: black !important;
 }
@@ -172,7 +172,7 @@ export default {
 
 .custom-table tr:nth-child(odd) {
   background-color: #ffffff !important;
-}
+} */
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
     background-color: #db8ceb;

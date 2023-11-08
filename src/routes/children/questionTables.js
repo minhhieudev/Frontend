@@ -11,5 +11,13 @@ export default [
       title: name
     }
   },
+  {
+    path: `${path_code}/edit/:id`,
+    component: () => import('@/components/Views/Question/detailQuestion'),
+    name: `question_detail`,
+    meta: {
+      title: ` ${name}`
+    }
+  }
  
 ]
