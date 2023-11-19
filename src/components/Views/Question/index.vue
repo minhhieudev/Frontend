@@ -1,5 +1,5 @@
 <template>
-  <div class="chatroom">
+  <div class="chatroom" ref="questionTableContainer">
     <el-container>
       <el-header style="height: 120px; padding: 0; position: relative;">
         <!-- Ảnh nền -->
@@ -10,8 +10,6 @@
         </div>
       </el-header>
       <el-main style="height: calc(100% - 56px); padding: 11px;">
-        <el-tabs type="border-card" class="mt-5" tab-position="top">
-          <el-tab-pane label="">
             <span slot="label"><i class="el-icon-date"></i> Hỏi đáp</span>
             <div class="question-button-container">
           <div class="avatar">
@@ -27,38 +25,35 @@
             />
           </div>
         </div>
-        <el-scrollbar wrap-class="question-list">
-          <question
-            v-for="mes in questions"
-            :key="mes._id"
-            :title="mes.title"
-            :content="mes.content"
-            :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
-            :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
-            :createdAt="formatDate(mes.createdAt)"
-            :likes="mes.likes"
-            :comments="mes.comments"
-            :id="mes._id"
-          />
-        </el-scrollbar>
-          </el-tab-pane>
-          <el-tab-pane >
-            <span slot="label"><i class="el-icon-date"></i> Tài liệu / Bài đăng</span>
-            <post/>
-          </el-tab-pane>
-        </el-tabs>
+       
+        <div class="question-container" style="max-height: 700px; overflow-y: auto;">
+           <!-- Trong template của index.vue -->
+<question
+  v-for="mes in questions"
+  :ref="mes._id"
+  :key="mes._id"
+  :title="mes.title"
+  :content="mes.content"
+  :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
+  :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
+  :createdAt="formatDate(mes.createdAt)"
+  :likes="mes.likes"
+  :comments="mes.comments"
+  :id="mes._id"
+/>
+
+          </div>
+        
+        
        
       </el-main>
     </el-container>
 
-    <!-- Popup nhập nội dung câu hỏi -->
     <el-dialog class="custom-dialog" title="Nhập nội dung câu hỏi" :visible.sync="isQuestionPopupVisible">
-      <!-- Sử dụng textarea thay vì el-input để có vùng nhập lớn hơn -->
       <div class="el-dialog__body">
         <input v-model="titleQuestion" placeholder="Nhập tiêu đề câu hỏi ..." class="reply-inputs" />
         <ckeditor :config="ckEditorConfig" v-model="questionText"></ckeditor>
         <div class="button-container-tall">
-          <!-- Thêm icon cho các button bằng cách sử dụng thuộc tính icon của el-button -->
           <el-button @click="isQuestionPopupVisible = false" class="close-button" icon="el-icon-close">Đóng</el-button>
           <el-button @click="resetQuestionText" class="refresh-button" icon="el-icon-refresh">Làm mới</el-button>
           <el-button @click="showTimestampPicker" class="timestamp-button" icon="el-icon-time">Thời gian đăng</el-button>
@@ -89,16 +84,32 @@ export default {
       isInviteMemberVisible: false,
       isQuestionPopupVisible: false,
       questionText: "",
-      titleQuestion:''
+      titleQuestion:'',
+      selectedQuestionId: null, 
     };
   },
   components: {
-    Question,
-    Post
+    Question
   },
+
+
+
   created() {
-    this.loadQuestions();
-  },
+  this.loadQuestions();
+  // Gọi phương thức scrollToQuestion sau khi dữ liệu đã được tải
+ 
+},
+updated() {
+  if (this.$route.params.id){
+  console.log('Component updated');
+
+    this.scrollToQuestion();
+
+  };
+
+}
+,
+
   computed: {
     avatarSize() {
       return 'small';
@@ -110,6 +121,16 @@ export default {
     },
   },
   methods: {
+    scrollToQuestion() {
+
+    // Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
+    const element = document.getElementById(this.$route.params.id);
+    //console.log( element);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  },
+
     showInviteDialog() {
       this.isInviteMemberVisible = true;
     },
@@ -121,7 +142,6 @@ export default {
     },
     onReplyInputChange() {},
     submitQuestion() {
-      console.log('123' + this.$store.getters.user._id);
 
       if (this.questionText.trim() !== "") {
         const newQuestion = {
@@ -176,7 +196,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style >
 .question-list {
   max-height: 100%;
   overflow-y: auto;
@@ -260,11 +280,10 @@ export default {
 .logo {
   position: absolute;
   bottom: -60px;
-  left: 10%;
+  left: 7%;
   transform: translateX(-60%);
   z-index: 100;
 }
-
 
 
 

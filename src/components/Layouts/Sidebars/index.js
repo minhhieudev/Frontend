@@ -1,11 +1,5 @@
 export default {
-  admin: [
-    {
-      name: "Home",
-      url: "/dashboard",
-      icon: "el-icon-platform-eleme",
-      color_icon: "#f9b651",
-    },
+  Admin: [
 
     {
       name: "Câu hỏi",
@@ -50,7 +44,7 @@ export default {
       color_icon: "#0000FF",
     },
     {
-      name: "Quản trị điểm rèn luyện",
+      name: "Duyệt phiếu điểm",
       url: "/training_point/detailTrainingPoint",
       icon: "el-icon-tickets",
       color_icon: "#0000FF",
@@ -67,21 +61,17 @@ export default {
       icon: "el-icon-search",
       color_icon: "#FF6600	",
     },
-    {
-      name: "",
-      url: "",
-      icon: "el-icon-loading",
-      color_icon: "#00EE00",
-    },
+    
   ],
   student: [
-    {
-      name: "Home",
-      url: "/dashboard",
-      icon: "el-icon-platform-eleme",
-      color_icon: "#f9b651",
-    },
+   
 
+    {
+      name: "Tài liệu / Bài đăng",
+      url: "/post",
+      icon: "el-icon-question",
+      color_icon: "#ff4d4d",
+    },
     {
       name: "Câu hỏi",
       url: "/question",
@@ -148,20 +138,10 @@ export default {
       icon: "el-icon-s-tools",
       color_icon: "#010101",
     },
-    {
-      name: "",
-      url: "",
-      icon: "el-icon-loading",
-      color_icon: "#00EE00",
-    },
+   
   ],
   consultant: [
-    {
-      name: "Home",
-      url: "/dashboard",
-      icon: "el-icon-platform-eleme",
-      color_icon: "#f9b651",
-    },
+   
 
     {
       name: "Câu hỏi",
@@ -229,12 +209,7 @@ export default {
       icon: "el-icon-s-tools",
       color_icon: "#010101",
     },
-    {
-      name: "",
-      url: "",
-      icon: "el-icon-loading",
-      color_icon: "#00EE00",
-    },
+    
   ],
 };
 

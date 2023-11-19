@@ -12,9 +12,9 @@ export default [
     }
   },
   {
-    path: `${path_code}/edit/:id`,
-    component: () => import('@/components/Views/Question/detailQuestion'),
-    name: `question_detail`,
+    path: `Question/:id`,
+    component: () => import('@/components/Views/Question'),
+    name: `Question`,
     meta: {
       title: ` ${name}`
     }

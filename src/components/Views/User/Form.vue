@@ -28,9 +28,9 @@
             <el-select
               v-model="form.role"
               placeholder="Select">
-              <el-option label="Sinh viên" value="student"></el-option>
-              <el-option label="Cố vấn" value="consultant"></el-option>
-              <el-option label="Quản trị" value="admin"></el-option>
+              <el-option label="Sinh viên" value="Sinh viên"></el-option>
+              <el-option label="Cố vấn" value="Cố vấn"></el-option>
+              <el-option label="Admin" value="Admin"></el-option>
             </el-select>
           </el-form-item>
           <!-- <el-form-item label="Verified">
@@ -52,7 +52,7 @@ export default {
     return {
       form: {
         fullname:'',
-        role: 'student'
+        role: 'Sinh viên'
       },
       hasChange: false,
     }

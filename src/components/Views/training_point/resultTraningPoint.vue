@@ -2,37 +2,33 @@
   <div class="Result">
     <el-card>
       <div class="search-bar">
-        <!-- Lọc theo lớp -->
-        <div style="display: flex; justify-content: space-between;">
-          <el-input
-            v-model="filterClass"
-            size="medium"
-            placeholder="Filter by class"
-            class="custom-input filter-input"
-            @input="applyFilters"
-          ></el-input>
-
-          <!-- Tìm kiếm theo tên sinh viên -->
-
-          <!-- Lọc theo năm học -->
-          <el-input
-            v-model="filterYear"
-            size="medium"
-            placeholder="Filter by year"
-            class="custom-input filter-input"
-            @input="applyFilters"
-          ></el-input>
-        </div>
+        <i class="fa-solid fa-rotate-right" @click="resetData"></i>
+        <i class="fa-solid fa-download"></i>
+        <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
+        
+        <!-- Khoa Dropdown -->
+        <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
+          <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+        
+        <!-- Ngành Dropdown -->
+        <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
+          <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+        
+        <!-- Lớp Dropdown -->
+        <el-select v-model="selectedLop" filterable placeholder="Lớp">
+  <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
+</el-select>
 
         <el-input
           v-model="search"
-          size="medium"
-          placeholder="Type to search"
-          class="custom-input search-input"
-          @input="applyFilters"
+          size="medium" 
+          placeholder="Tìm theo tên, email..."
+          class="custom-input-result"
         >
-          <el-button slot="prepend" icon="el-icon-search" class="search-icon"></el-button>
         </el-input>
+        <i class="fa-solid fa-magnifying-glass"></i>
       </div>
 
       <el-table :data="filteredTableData" style="width: 100%" class="custom-table">
@@ -77,12 +73,11 @@
         <el-pagination
           background
           layout="jumper, prev, pager, next, sizes, total"
-          :page-sizes="[25, 50, 100]"
-          :pager-count="5"
+          :page-sizes="[10, 25, 50, 100]"
           :page-size.sync="pagination.page_size"
-          :total="$store.getters.total_questions"
+          :total="filteredTableData.length"
           :current-page.sync="pagination.current_page"
-          @current-change="loadData"
+          @current-change="handleCurrentPageChange"
           @size-change="handlePageSizeChange"
         />
       </div>
@@ -105,6 +100,10 @@ import 'jspdf-autotable';
 import html2pdf from 'html2pdf.js';
 import mammoth from 'mammoth';
 import htmlDocx from 'html-docx-js/dist/html-docx';
+import {  getClassList,getKhoaList,getNghanhList} from '@/api/student';
+import '@fortawesome/fontawesome-free/css/all.css';
+
+
 
 
 
@@ -114,20 +113,44 @@ export default {
   data() {
     return {
       tableData: [],
-      filteredTableData: [],
       pagination: {
         current_page: 1,
         page_size: 25
       },
       totalData: 0,
       search: '',
-      filterClass: '',
-      filterYear: '',
+      selectedKhoa: '',
+      selectedNganh: '',
+      selectedLop: '',
+      khoaList: [],
+      nganhList: [],
+      lopList: [],
       loading: false,
     };
   },
   created() {
     this.loadData();
+    this.fetchClassLists();
+
+  },
+  computed: {
+    filteredTableData() {
+      return this.tableData.filter(data =>
+        (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
+        (!this.selectedKhoa || data.studentDetails.department === this.selectedKhoa) &&
+        (!this.selectedNganh || data.studentDetails.nganh === this.selectedNganh) &&
+        (!this.selectedLop || data.studentDetails.className === this.selectedLop)
+      );
+    },
+    
+    currentPageData() {
+      const start = (this.pagination.current_page - 1) * this.pagination.page_size;
+      const end = start + this.pagination.page_size;
+      
+      return this.filteredTableData.slice(start, end);
+
+      
+    },
   },
   methods: {
     gotoDetail(row) {
@@ -138,7 +161,6 @@ export default {
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.tableData = response.data.resultTrainingPoints;
-            this.applyFilters(); // Áp dụng bộ lọc khi dữ liệu được tải
           } else {
             console.error("Không thành công: ", response.data);
           }
@@ -147,20 +169,47 @@ export default {
           console.error("Lỗi khi tải điểm rèn luyện: ", error);
         });
     },
-    handlePageSizeChange() {
+    handlePageSizeChange(newSize) {
+      this.pagination.page_size = newSize;
       this.pagination.current_page = 1;
-      this.loadData();
+    },
+
+    handleCurrentPageChange(newPage) {
+      this.pagination.current_page = newPage;
     },
     formatDate(date) {
       return format(new Date(date), 'dd/MM/yyyy ');
     },
-    applyFilters() {
-      this.filteredTableData = this.tableData.filter(data =>
-        (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
-        (!this.filterClass || data.studentDetails.className.toLowerCase().includes(this.filterClass.toLowerCase())) &&
-        (!this.filterYear || data.schoolYear.toLowerCase().includes(this.filterYear.toLowerCase()))
-      );
-      this.totalData = this.filteredTableData.length;
+    fetchClassLists() {
+      getClassList()
+        .then(response => {
+          this.lopList = response.data.classLists;
+        })
+        .catch(error => {
+          console.error('Error fetching Lop list:', error);
+        });
+
+        getNghanhList()
+        .then(response => {
+          this.nganhList = response.data.nganhLists;
+        })
+        .catch(error => {
+          console.error('Error fetching Nganh list:', error);
+        });
+
+        getKhoaList()
+        .then(response => {
+          this.khoaList = response.data.khoaLists;
+        })
+        .catch(error => {
+          console.error('Error fetching Khoa list:', error);
+        });
+    },
+    resetData(){
+      this.selectedKhoa='';
+      this.selectedNganh='';
+      this.selectedLop='';
+      this.search=''
     },
 
     exportToCSV() {
@@ -373,21 +422,11 @@ exportToPDF() {
 </script>
 
 <style >
-/* .custom-table th {
-  background-color: #cbf1f3 !important;
-  color: black !important;
-}
 
-.custom-table tr:nth-child(even) {
-  background-color: #e0f5e5 !important;
-}
-
-.custom-table tr:nth-child(odd) {
-  background-color: #ffffff !important;
-} */
 .search-bar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -399,17 +438,27 @@ exportToPDF() {
   color: #fff;
   border-radius: 50%;
 }
-
-.custom-input {
-  width: 200px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s, box-shadow 0.2s;
+.custom-input-result  {
+    width: 200px;  /* Điều chỉnh chiều rộng theo nhu cầu */
+    font-weight: bold;  /* Đậm hơn */
+    background-color: #eaeaea;  /* Màu sắc nền */
+    border: none;
+  }
+  
+  .custom-input-result input {
+    color: #333;  /* Màu chữ */
+  }
+  .custom-input-result .el-input__inner {
+  border: none;
+  border-right: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
+  border-radius: 0; /* Tùy chọn: Loại bỏ đường cong biên */
 }
-
-.custom-input:focus {
+  .custom-input-result input {
+    color: #333;  /* Màu chữ */
+    border: none;
+    border-right: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
+  }
+.custom-input-result:focus {
   border-color: #409eff;
   box-shadow: 0 0 6px rgba(64, 158, 255, 0.5);
 }

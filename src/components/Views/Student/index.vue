@@ -1,119 +1,127 @@
 <template>
   <div class="user">
     <el-card>
-      <div class="search-bar ">
+      <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH SINH VIÊN</h4>
+      <div class="action-student mb-4">
+        <i class="fa-solid fa-rotate-right" @click="resetData"></i>
+        <i class="fa-solid fa-download"></i>
+        <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
         
+        <!-- Khoa Dropdown -->
+        <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
+          <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
         
+        <!-- Ngành Dropdown -->
+        <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
+          <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+        
+        <!-- Lớp Dropdown -->
+        <el-select v-model="selectedLop" filterable placeholder="Lớp">
+  <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
+</el-select>
 
         <el-input
           v-model="search"
           size="medium" 
-          placeholder="Type to search"
-          class="custom-input"
+          placeholder="Tìm theo tên, email..."
+          class="search-input"
         >
-          <el-button slot="append" icon="el-icon-search" class="search-icon"></el-button>
         </el-input>
+        <i class="fa-solid fa-magnifying-glass"></i>
         <div class="">
-          <el-button @click="goToAddNewPage()" type="primary" size="small">
-            Tạo mới
-          </el-button>
-          </div>
+          <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
+        </div>
       </div>
       
-      <el-table   :data="tableData.filter(data => !search || data.fullName.toLowerCase().includes(search.toLowerCase()))"  style="width: 100%" class="custom-table">
-  
-          <el-table-column type="index" label="STT" align="center"></el-table-column>
-  
-          <el-table-column prop="studentCode" label="MSV" width="80" align="center">
-            <template slot-scope="{ row }">
-              {{ row.studentCode }}
-            </template>
-          </el-table-column>
-  
-          <el-table-column prop="fullName" label="Tên sinh viên"  align="center">
-            <template slot-scope="{ row }">
-              {{ row.fullName }}
-            </template>
-          </el-table-column>
-
-          <el-table-column prop="email" label="Email"  align="center">
-            <template slot-scope="{ row }">
-              {{ row.email }}
-            </template>
-          </el-table-column>
-
-          <el-table-column prop="className" label="Lớp"  align="center">
-            <template slot-scope="{ row }">
-              {{ row.className }}
-            </template>
-          </el-table-column>
-
-          <el-table-column prop="department" label="Khoa"  align="center">
-            <template slot-scope="{ row }">
-              {{ row.department }}
-            </template>
-          </el-table-column>
-
-          <!-- <el-table-column prop="dateOfBirth" label="Ngày sinh" width="150" align="center">
-            <template slot-scope="{ row }">
-              {{ formatDate(row.dateOfBirth) }}
-            </template>
-          </el-table-column> -->
-
-          <el-table-column label="Thao tác" width="150">
+      <el-table :data="currentPageData" style="width: 100%" class="custom-table">
+        <el-table-column label="STT">
+    <template slot-scope="{ $index, row }">
+      <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+    </template>
+  </el-table-column>
+        <el-table-column prop="studentCode" label="MSV" width="80" align="center">
           <template slot-scope="{ row }">
-            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
-              Xem
-            </el-button>
-            <el-button @click.prevent="confirmDelete(row)" type="danger" size="mini">
-              Xóa
-            </el-button>
+            {{ row.studentCode }}
           </template>
         </el-table-column>
+        <el-table-column prop="fullName" label="Tên sinh viên" align="center">
+          <template slot-scope="{ row }">
+            {{ row.fullName }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="email" label="Email" align="center">
+          <template slot-scope="{ row }">
+            {{ row.email }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="className" label="Lớp" align="center">
+          <template slot-scope="{ row }">
+            {{ row.className }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="department" label="Khoa" align="center">
+          <template slot-scope="{ row }">
+            {{ row.department }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Thao tác" width="150">
+          <template slot-scope="{ row }">
+            <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small" circle></el-button>
+            <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small" circle></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="mt-2">
+        <el-pagination
+          background
+          layout="jumper, prev, pager, next, sizes, total"
+          :page-sizes="[10, 25, 50, 100]"
+          :page-size.sync="pagination.page_size"
+          :total="filteredTableData.length"
+          :current-page.sync="pagination.current_page"
+          @current-change="handleCurrentPageChange"
+          @size-change="handlePageSizeChange"
+        />
+      </div>
+    </el-card>
+  </div>
+</template>
 
+<script>
+const ModelCode = 'student';
+import { getAll, handleDelete} from '@/api/student';
+
+import { format } from 'date-fns';
+import '@fortawesome/fontawesome-free/css/all.css';
+
+export default {
+  data() {
+    return {
+      tableData: [],
+      pagination: {
+        current_page: 1,
+        page_size: 25,
+      },
+      totalData: 0,
+      search: '',
+      selectedKhoa: '',
+      selectedNganh: '',
+      selectedLop: '',
+      khoaList: [],
+      nganhList: [],
+      lopList: [],
+    };
+  },
+  created() {
+    this.loadData();
+    this.loadInfoToFilter();
+ 
+  },
   
-         
-  
-        </el-table>
-        <div class="mt-2">
-          <el-pagination
-            background
-            layout="jumper, prev, pager, next, sizes, total"
-            :page-sizes="[25, 50, 100]"
-            :pager-count="5"
-            :page-size.sync="pagination.page_size"
-            :total="this.tableData.length"
-            :current-page.sync="pagination.current_page"
-            @current-change="loadData"
-            @size-change="handlePageSizeChange"
-          />
-        </div>
-      </el-card>
-    </div>
-  </template>
-  
-  <script>
-  const ModelCode = 'student';
-  import { getAll ,handleDelete} from '@/api/student';
-  import { format } from 'date-fns';
-  
-  export default {
-    data() {
-      return {
-        tableData: [],
-        pagination: {
-          current_page: 1,
-          page_size: 25,
-        },
-        totalData: 0,
-        search: '',
-      };
-    },
-    created() {
-      this.loadData();
-    },
-    methods: {
-      goToAddNewPage() {
+  methods: {
+    goToAddNewPage() {
       this.$router.push({ name: `${ModelCode}_new` })
     },
     gotoDetail(row) {
@@ -124,7 +132,7 @@
         confirmButtonText: 'Xóa',
         type: 'warning'
       }).then(() => {
-        handleDelete(row._id).then(({data}) => {
+        handleDelete(row._id).then(({ data }) => {
           if (data.success) {
             this.loadData()
           }
@@ -133,69 +141,112 @@
         })
       }).catch()
     },
-  
-      loadData() {
-        getAll()
-          .then((response) => {
-            if (response && response.data && response.data.success) {
-              this.tableData = response.data.students;
-            } else {
-              console.error("Không thành công: ", response.data);
-            }
-          })
-          .catch((error) => {
-            console.error("Lỗi khi tải điểm rèn luyện: ", error);
-          });
-      },
-      handlePageSizeChange() {
-        this.pagination.current_page = 1;
-        this.loadData();
-      },
-      formatDate(date) {
-        return format(new Date(date), 'dd/MM/yyyy ');
-      },
+    loadData() {
+      getAll()
+        .then((response) => {
+          if (response && response.data && response.data.success) {
+            this.tableData = response.data.students;
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Lỗi khi tải điểm rèn luyện: ", error);
+        });
+       
     },
-  };
-  </script>
-  
-  <style scoped>
-  .search-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom:10px ;
-  }
-  
-  .custom-input {
-    width: 200px;  /* Điều chỉnh chiều rộng theo nhu cầu */
-    font-weight: bold;  /* Đậm hơn */
-    background-color: #eaeaea;  /* Màu sắc nền */
-  }
-  
-  .custom-input input {
-    color: #333;  /* Màu chữ */
-  }
-  
-  .search-icon {
-    color: #1890ff;  /* Màu sắc của icon tìm kiếm */
-  }
+    handlePageSizeChange(newSize) {
+      this.pagination.page_size = newSize;
+      this.pagination.current_page = 1;
+    },
 
-  /* .custom-table th {
-  background-color: #f1f1cc !important;
-  color: black !important;
-} */
+    handleCurrentPageChange(newPage) {
+      this.pagination.current_page = newPage;
+    },
+    formatDate(date) {
+      return format(new Date(date), 'dd/MM/yyyy ');
+    },
+  
+    resetData(){
+      this.selectedKhoa='';
+      this.selectedNganh='';
+      this.selectedLop='';
+      this.search=''
+    },
+    loadInfoToFilter(){
+      this.khoaList=this.$store.getters.khoaList
+    this.nghanhList=this.$store.getters.nghanhList
+    this.lopList=this.$store.getters.lopList
+    }
+  },
+  computed: {
+    filteredTableData() {
+      return this.tableData.filter(data =>
+        (!this.search || data.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
+        (!this.selectedKhoa || data.department === this.selectedKhoa) &&
+        (!this.selectedNganh || data.nganh === this.selectedNganh) &&
+        (!this.selectedLop || data.className === this.selectedLop)
+      );
+    },
+    
+    currentPageData() {
+      const start = (this.pagination.current_page - 1) * this.pagination.page_size;
+      const end = start + this.pagination.page_size;
+      
+      return this.filteredTableData.slice(start, end);
 
-/* .custom-table tr:nth-child(even) {
-  background-color: #f8d0cf !important;
+      
+    },
+  },
+};
+</script >
+
+<style >
+.action-student {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
-.custom-table tr:nth-child(odd) {
-  background-color: #ffffff !important;
-} */
+.input-student {
+  width: auto;
+  font-weight: bold;
+  border: none;
+  border-right: 1px solid #6d7583; /* Màu đường biên bên phải */
+}
+
+.input-student .el-input__inner {
+  border: none;
+  background-color: white;
+  font-weight: bold;
+}
+
+.input-student input {
+  color: #333;
+  border: none;
+  font-weight: bold;
+  border-right: 1px solid #6d7583; /* Màu đường biên bên phải */
+
+}
+
+.search-icon {
+  color: #1890ff;
+}
+
+.search-input {
+  width: auto;
+  border: none;
+}
+
+.search-input .el-input__inner {
+  border: none;
+  background-color: white;
+}
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
-    background-color: #cdf3aa;
-    color: #fff;
-    border-radius: 50%;
+  background-color: #cdf3aa;
+  color: #fff;
+  border-radius: 50%;
 }
-  </style>
+</style>

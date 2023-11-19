@@ -31,7 +31,7 @@
                 class="reply-input"
               />
             </div>
-            <div class="emoji-button" @click="showEmojiPicker">
+            <div class="emoji-button " @click="showEmojiPicker">
     <!-- Hiển thị biểu tượng emoji hoặc nút để mở emoji picker -->
     😃
   </div>
@@ -67,6 +67,7 @@ import { saveData, getAnswersByQuestionId } from '@/api/answer'
 import { updateComments } from '@/api/question'
 import { format } from 'date-fns'; 
 import EmojiPicker from './EmojiPicker';
+import { updateStatus } from '@/api/question';
 
 
 export default {
@@ -141,20 +142,17 @@ export default {
     },
     async saveAnswerCount() {
       try {
-      // Gửi yêu cầu lên máy chủ để cập nhật lượt thích
       await updateComments(this.id,this.answers.length);
     } catch (error) {
       console.error("Lỗi khi cập nhật lượt thích: ", error);
     }
     },
     loadAnswers() {
-    // Sử dụng ID của câu hỏi để lấy danh sách câu trả lời
     getAnswersByQuestionId(this.id)
       .then((response) => {
         if (response && response.data && response.data.success) {
-          this.answers = response.data.answers; // Lưu danh sách câu trả lời vào biến answers
+          this.answers = response.data.answers;
           this.saveAnswerCount();
-          //console.log("Dữ liệu câu trả lời đã được tải:", this.answers);
         } else {
           console.error("Không thành công: ", response.data);
         }
@@ -164,14 +162,12 @@ export default {
       });
   },
   childFunction() {
-    // Thực hiện các thao tác khác ở đây
     this.isInviteMemberVisible = true;
     },
     showInviteDialog() {
       this.isInviteMemberVisible = true;
     },
     onReplyInputChange() {
-      // Xử lý khi người dùng nhập vào ô phản hồi
     },
     sendReply(event) {
   if (this.replyText.trim() !== "") {
@@ -181,7 +177,6 @@ export default {
       question: this.id,
       user: this.$store.getters.user._id
     };
-    console.log(newReply);
     saveData(newReply)
       .then((response) => {
         if (response && response.status === 200) {
@@ -192,8 +187,10 @@ export default {
             // Nếu lưu thành công, thêm phản hồi mới vào danh sách phản hồi
             this.loadAnswers();
 
+
             // Xóa nội dung phản hồi sau khi đã gửi thành công
             this.replyText = "";
+            updateStatus(this.id);
           } else {
             // Xử lý trường hợp lỗi khi lưu phản hồi (API trả về success: false)
             console.error("Lỗi khi lưu phản hồi: ", responseData);
@@ -324,10 +321,12 @@ export default {
 .avatar {
   margin-right: 10px;
 }
-
+.emoji-button:hover{
+  cursor: pointer;
+}
 .input-box {
   flex-grow: 1;
-  background-color: #f1e8e8;; /* Đặt màu nền của ô nhập phản hồi giống màu nền của phần câu hỏi */
+  background-color: #f1e8e8;
 }
 
 .reply-input {

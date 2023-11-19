@@ -1,8 +1,8 @@
 <template>
   <div class="emoji-picker">
     <div
-      v-for="emoji in emojis"
-      :key="emoji"
+    v-for="(emoji, index) in emojis"
+    :key="index"
       @click="insertEmoji(emoji)"
       class="emoji"
     >

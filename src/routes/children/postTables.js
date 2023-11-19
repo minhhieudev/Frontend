@@ -10,5 +10,13 @@ export default [
       title: name
     }
   },
+  {
+    path: `Post/:id`,
+    component: () => import(`@/components/Views/Post`),
+    name: 'Post',
+    meta: {
+      title: name
+    }
+  },
  
 ]

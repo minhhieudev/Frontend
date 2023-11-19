@@ -58,13 +58,9 @@ export default {
   users: (state) => state.data.users.docs,
   total_users: (state) => state.data.users.total,
 
-  answers: (state) => state.data.answers.docs,
-  total_answers: (state) => state.data.answers.total,
-
-  questions: (state) => state.data.questions.docs,
-  total_questions: (state) => state.data.questions.total,
 
   allUsers: (state) => state.data.allUsers,
-  allQuestions: (state) => state.data.allQuestions,
-  allAnswers: (state) => state.data.allUsers,
+  khoaList: (state) => state.data.khoaList,
+  nghanhList: (state) => state.data.nghanhList,
+  lopList: (state) => state.data.lopList,
 };

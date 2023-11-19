@@ -1,6 +1,6 @@
   <template>
-  <div>
-    <div class="question" @click="openDetailQuestion($event)" >
+    <div>
+    <div :id="id" class="question"  @click="openDetailQuestion($event)" ref="questionContainer">
      <div class="info" >
  <div style="display: flex;justify-content: center;align-items: center;">
   <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
@@ -133,6 +133,7 @@ export default {
   created() {
   this.likesCount = this.likes;
 },
+
 
   methods: {
     formatDate(date) {

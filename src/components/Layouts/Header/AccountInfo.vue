@@ -17,7 +17,7 @@
         >
           <span class="text-black" style="cursor: pointer">
             <b>{{ this.$store.getters.user.fullname }}</b>
-            <el-badge :value="this.$store.getters.user.is_admin ? 'admin':''" class="item">
+            <el-badge :value="this.$store.getters.user.is_admin ? 'Admin':''" class="item">
               <img
                 :src="user.avatar_url ? user.avatar_url : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'"
                 alt="avatar"

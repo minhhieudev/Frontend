@@ -1,16 +1,23 @@
 <template>
     <div>
-      <div class="question"  >
+      <div :id="id" class="question"  @click="openDetailQuestion($event)" ref="questionContainer">
+
         <!-- @click="openDetailQuestion($event)" -->
-       <div class="info" >
-          <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
-          
-  
-          <span class="author">{{ user }}</span>
-          <span class="date">{{ createdAt }}</span>
-  
+        <div class="info" >
+ <div style="display: flex;justify-content: center;align-items: center;">
+  <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+        
+
+        <div style="display: flex;flex-direction: column;">
+          <span class="author ml-2">{{ user }}</span>
+        <span class="date">{{ createdAt }}</span>
         </div>
-  
+ </div>
+
+      </div>
+      <p class="font-weight-bold mt-1">
+      <span class="post-type" :class="getPostTypeClass()">{{ getPostType() }}</span>
+    </p>
         <!-- Hiển thị nội dung câu hỏi -->
         <div class="content" v-if="showFullContent" >
         {{ content }}
@@ -93,6 +100,8 @@
     type: [String, Array], // adjust the type based on your requirements
     default: "", // or default: [] for an array
   },
+  postType: String,
+
   attachmentPath: {
     type: Array,
     default: () => [],
@@ -234,6 +243,25 @@
           this.replyText = '';
         }
       },
+
+      getPostType() {
+      return `[ ${this.postType.toUpperCase()} ] ${this.title.toUpperCase()}`;
+    },
+
+    getPostTypeClass() {
+      switch (this.postType.toLowerCase()) {
+        case 'thông báo':
+          return 'thong-bao';
+        case 'tài liệu':
+          return 'tai-lieu';
+        case 'bài đăng':
+          return 'bai-dang';
+        default:
+          return '';
+      }
+    },
+
+
     },
   };
   </script>
@@ -383,5 +411,24 @@
   margin-bottom: 5px;
 }
 
+
+
+
+
+.post-type {
+    font-weight: bold;
+  }
+
+  .thong-bao {
+    color: red;
+  }
+
+  .tai-lieu {
+    color: rgb(177, 42, 230);
+  }
+
+  .bai-dang {
+    color: rgb(25, 176, 247);
+  }
   </style>
    

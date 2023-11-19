@@ -1,6 +1,6 @@
 const path_code = 'post'
 const name = 'Bài đăng'
-const routeName = 'post'
+const routeName = 'Post'
 export default [
   {
     path: path_code,
@@ -10,5 +10,13 @@ export default [
       title: name
     }
   },
+  {
+    path: `${path_code}/edit/:id`,
+    component: () => import('@/components/Views/Post'),
+    name: `Post`,
+    meta: {
+      title: ` ${name}`
+    }
+  }
  
 ]

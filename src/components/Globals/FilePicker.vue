@@ -111,7 +111,7 @@
             class="upload-demo"
             drag
             :action="uploadImageActionURL"
-            :headers="{ Authorization: jwtAuthToken, 'client-id': $store.getters['client'], 'hm-context': 'admin' }"
+            :headers="{ Authorization: jwtAuthToken, 'client-id': $store.getters['client'], 'hm-context': 'Admin' }"
             :auto-upload="false"
             :on-change="handleChangeUploader"
             list-type="picture"

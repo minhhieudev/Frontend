@@ -1,8 +1,7 @@
 import { snakeCase } from 'lodash'
 import slugify from 'slugify'
 import { uploadImage } from '@/api/media'
-import * as questionAPI from "@/api/question";
-import * as traning_pointAPI from "@/api/training_point";
+import * as studentAPI from '@/api/student'
 import * as userAPI from '@/api/user'
 const FILE_URL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH + '/file'
 export default {
@@ -63,15 +62,35 @@ export default {
       });
     },
 
-    loadAllQuestions() {
-      questionAPI.getAll().then(({ data }) => {
-        if (data.success) {
-          this.$store.dispatch("setData", {
-            key: "allQuestions",
-            data: data.docs,
-          });
+    loadKhoaList(){
+      studentAPI.getKhoaList().then(({data})=>{
+        if (data.success){
+          this.$store.dispatch("setData",{
+            key:"khoaList",
+            data: data.khoaLists,
+          })
         }
-      });
+      })
+    },
+    loadNghanhList(){
+      studentAPI.getNghanhList().then(({data})=>{
+        if (data.success){
+          this.$store.dispatch("setData",{
+            key:"nganhList",
+            data: data.nganhLists,
+          })
+        }
+      })
+    },
+    loadLopList(){
+      studentAPI.getClassList().then(({data})=>{
+        if (data.success){
+          this.$store.dispatch("setData",{
+            key:"lopList",
+            data: data.classLists,
+          })
+        }
+      })
     },
     setData(payload) {
       this.$store.dispatch("setData", payload);
@@ -184,7 +203,7 @@ export default {
   },
   computed: {
     isAdminRole() {
-      return this.$store.getters.user.role == "admin";
+      return this.$store.getters.user.role == "Admin";
     },
     taskStatusMap() {
       return this.$store.getters.taskStatusMap;

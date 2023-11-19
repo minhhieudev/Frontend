@@ -1,6 +1,14 @@
 <template>
   <div class="chatroom">
     <el-container>
+      <el-header style="height: 120px; padding: 0; position: relative;">
+        <!-- Ảnh nền -->
+        <div class="background-image"></div>
+        <!-- Avatar -->
+        <div class="logo">
+          <el-avatar :size="150" :src="logo"></el-avatar>
+        </div>
+      </el-header>
       <el-main style="height: calc(100% - 56px); padding: 11px;">
         <div class="post-button-container">
           <div class="avatar">
@@ -15,13 +23,14 @@
             />
           </div>
         </div>
-        <el-scrollbar wrap-class="question-list">
+        <el-scrollbar wrap-class="post-list" style="max-height: 700px; overflow-y: auto;">
           <postItem
             v-for="mes in posts"
             :key="mes._id"
             :title="mes.title"
             :content="mes.content"
             :attachmentPath="mes.attachmentPath"
+            :postType="mes.postType"
             :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
             :user="mes.user.fullname"
             :createdAt="formatDate(mes.createdAt)"
@@ -33,11 +42,21 @@
       </el-main>
     </el-container>
 
-    <!-- Popup nhập nội dung câu hỏi -->
-    <el-dialog class="custom-dialog" title="Nhập nội dung muốn đăng" :visible.sync="isQuestionPopupVisible">
+    <el-dialog class="custom-dialog" title="Nhập thông tin muốn đăng tải" :visible.sync="isQuestionPopupVisible">
       <div class="el-dialog__body">
+        <p class="font-weight-bold">Tiêu đề</p>
         <input v-model="title" placeholder="Nhập tiêu đề bài đăng ..." class="reply-inputs" />
+        <p class="font-weight-bold mt-1">Loại</p>
+        <div class="post-type-container mt-2">
+          <el-radio-group v-model="postType">
+            <el-radio label="Tài liệu">Tài liệu</el-radio>
+            <el-radio label="Bài đăng">Bài đăng</el-radio>
+            <el-radio label="Thông báo">Thông báo</el-radio>
+          </el-radio-group>
+        </div>
+
         <ckeditor :config="ckEditorConfig" v-model="postText"></ckeditor>
+        <p class="font-weight-bold mt-1">Đính kèm</p>
         <el-upload
           class="upload-demo"
           ref="upload"
@@ -45,17 +64,16 @@
           :auto-upload="false"
           :before-upload="beforeUpload"
           :on-success="handleFileUploadSuccess"
-          :file-list="fileList"
+          :on-change="handleFileChange"
           multiple
         >
-          <el-button slot="trigger" size="small" type="primary">Chọn tệp</el-button>
-          <div class="el-upload__tip" slot="tip">Tệp jpg/png có kích thước nhỏ hơn 2MB</div>
+          <el-button slot="trigger" round size="small" type="primary" plain class="">Chọn tệp</el-button>
+          <div class="el-upload__tip" slot="tip">Tải tệp đính kèm</div>
         </el-upload>
 
         <div class="button-container-tall">
           <el-button @click="isQuestionPopupVisible = false" class="close-button" icon="el-icon-close">Đóng</el-button>
-          <el-button @click="resetQuestionText" class="refresh-button" icon="el-icon-refresh">Làm mới</el-button>
-          <el-button @click="showTimestampPicker" class="timestamp-button" icon="el-icon-time">Thời gian đăng</el-button>
+          <el-button @click="resetText" class="refresh-button" icon="el-icon-refresh">Làm mới</el-button>
           <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">Đăng</el-button>
         </div>
       </div>
@@ -72,6 +90,7 @@ export default {
   data() {
     return {
       avatarSize: 'small',
+      logo: "https://upload.wikimedia.org/wikipedia/vi/2/2e/Dai_hoc_phu_yen_logo.png",
       inputValue: "",
       tableData: [],
       posts: [],
@@ -82,7 +101,9 @@ export default {
       title: "",
       uploadActionURL: `http://localhost:8001/public/upload`,
       fileList:[],
-      pathList:[]
+      pathList:[],
+      isFileSelected: false,
+      postType:''
     };
   },
   components: {
@@ -91,6 +112,16 @@ export default {
   created() {
     this.loadData();
   },
+  updated() {
+  if (this.$route.params.id){
+  console.log('Component updated');
+
+    this.scrollToQuestion();
+
+  };
+
+}
+,
   computed: {
     cleanQuestionText() {
       const tempDiv = document.createElement('div');
@@ -99,6 +130,15 @@ export default {
     },
   },
   methods: {
+    scrollToQuestion() {
+
+// Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
+const element = document.getElementById(this.$route.params.id);
+//console.log( element);
+if (element) {
+  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+},
     showInviteDialog() {
       this.isInviteMemberVisible = true;
     },
@@ -109,21 +149,25 @@ export default {
       return String(format(new Date(date), 'dd/MM/yyyy HH:mm'));
     },
     onReplyInputChange() {},
+    handleFileChange(file, fileList) {
+      this.isFileSelected = fileList.length > 0;
+      console.log(fileList.length)
+    },
 
     submitUpload() {
+      if (this.isFileSelected && this.checkData()) {
         this.$refs.upload.submit();
+      } else if(this.checkData()) {
+        // Hiển thị một thông báo hoặc thực hiện hành động phù hợp nếu không có tệp nào được chọn.
+        this.submitNoFile();
+      }
     },
     
     beforeUpload(file) {
       this.fileList.push(file);
-      const isLt2MB = file.size / 1024 / 1024 < 2;
-      if (!isLt2MB) {
-        this.$message.error('Kích thước ảnh phải nhỏ hơn 2MB!');
-      }
       return file;
     },
     handleFileUploadSuccess(response, file, filePath) {
-
       const attachmentData = response.files.map(file => ({
         filename: file.filename, 
         path: file.path
@@ -137,16 +181,29 @@ export default {
           content: this.cleanQuestionText,
           user: this.$store.getters.user._id,
           attachmentPath: this.pathList, 
+          postType: this.postType,
         };
 
         this.submitData(newPost);
-
-        console.log(newPost)
       }
     },
+    submitNoFile() {
+      const newPost = {
+        title: this.title,
+        content: this.cleanQuestionText,
+        user: this.$store.getters.user._id,
+        postType: this.postType,
+      };
 
-
-
+      this.submitData(newPost);
+    },
+    checkData(){
+      if (this.title == '' || this.postText == '' || this.postType == ''){
+        this.$message.error('Vui lòng nhập đủ thông tin !');
+        return false;
+      }
+      return true;
+    },
     async submitData(newPost) {
       try {
         const saveResponse = await saveData(newPost);
@@ -154,7 +211,7 @@ export default {
           const responseData = saveResponse.data;
           if (responseData && responseData.success) {
             this.loadData();
-            this.postText = "";
+            this.resetText();
             this.isQuestionPopupVisible = false;
           } else {
             console.error("Lỗi khi lưu bài đăng: ", responseData);
@@ -181,14 +238,36 @@ export default {
     showTimestampPicker() {
       console.log('123');
     },
-    resetQuestionText() {
-      console.log('123423');
+    resetText() {
+      this.postText = '';
+      this.title = '';
+      this.postType = '';
+      this.$refs.upload.clearFiles();
     },
   },
 };
 </script>
 
+
 <style scoped>
+.background-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../../assets/8.jpg');
+  background-size: cover;
+  background-position: center;
+  z-index: 99;
+  opacity: 1;
+  border-radius: 25px;
+}
+.logo {
+  position: absolute;
+  bottom: -60px;
+  left: 10%;
+  transform: translateX(-60%);
+  z-index: 100;
+}
 .question-list {
   max-height: 100%;
   overflow-y: auto;
@@ -274,7 +353,7 @@ export default {
 .logo {
   position: absolute;
   bottom: -60px;
-  left: 10%;
+  left: 7%;
   transform: translateX(-60%);
   z-index: 100;
 }

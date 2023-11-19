@@ -6,18 +6,11 @@ export default {
       total: 0
     },
    
-    answers: {
-      docs: [],
-      total: 0
-    },
-    questions: {
-      docs: [],
-      total: 0
-    },
+    khoaList:[],
+    nghanhList:[],
+    lopList:[],
 
     allUsers: [],
-    allQuestions:[],
-    allAnswers:[],
   },
   mutations: {
     SET_DATA: function(state, payload) {

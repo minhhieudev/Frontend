@@ -1,24 +1,51 @@
 <template>
   <div style="font-weight: 500;">
     <el-card class="table-info center">
-      <h4 class="table-title">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
+      <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
       <el-row>
-  <el-col :span="6">
-    <el-form  label-width="80px">
-      <el-form-item label="Học kỳ" class="bold-text">
-        <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input"></el-input>
-      </el-form-item>
-    </el-form>
-  </el-col>
-  <el-col :span="6">
-    <el-form  label-width="80px">
-      <el-form-item label="Năm học" class="bold-text">
-        <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input"></el-input>
-      </el-form-item>
-    </el-form>
-  </el-col>
-</el-row>
-
+        <el-col :span="6">
+          <el-form label-width="80px">
+            <el-form-item label="Học kỳ" class="bold-text">
+              <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoint"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="6">
+          <el-form label-width="80px">
+            <el-form-item label="Năm học" class="bold-text">
+              <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoint"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="6">
+          <el-form label-width="80px">
+            <el-form-item label="Học kỳ" class="bold-text">
+              <el-input v-model="semester" placeholder="Họ và tên" class="custom-input-trainingPoint"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="6">
+          <el-form label-width="80px">
+            <el-form-item label="Năm học" class="bold-text">
+              <el-input v-model="schoolYear" placeholder="Lớp" class="custom-input-trainingPoint"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="6">
+          <el-form label-width="80px">
+            <el-form-item label="Mã sinh viên" class="bold-text">
+              <el-input v-model="semester" placeholder="Họ và tên" class="custom-input-trainingPoint"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+        <el-col :span="6">
+          <el-form label-width="80px">
+            <el-form-item label="Khoa" class="bold-text">
+              <el-input v-model="schoolYear" placeholder="Lớp" class="custom-input-trainingPoint"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
 
       <el-table :data="flattenedCriteriaList" style="width: 100%" border>
         <el-table-column label="STT" width="50" style="font-weight: bold;">
@@ -75,17 +102,11 @@
 
       </el-table>
       <el-descriptions title="Kết quả">
-          <el-descriptions-item  label="Sinh viên tự chấm">{{ Total_selfAssessment }}</el-descriptions-item>
-          <el-descriptions-item  label="Lớp chấm">{{ Total_groupAssessment }}</el-descriptions-item>
-          <el-descriptions-item label="Cố vấn chấm">{{ Total_consultantAssessment }}</el-descriptions-item>
+        <el-descriptions-item label="Sinh viên tự chấm">{{ Total_selfAssessment }}</el-descriptions-item>
+        <el-descriptions-item label="Lớp chấm">{{ Total_groupAssessment }}</el-descriptions-item>
+        <el-descriptions-item label="Cố vấn chấm">{{ Total_consultantAssessment }}</el-descriptions-item>
       </el-descriptions>
-      
-      <!-- <el-descriptions title="Kết quả">
-          <el-descriptions-item :content-style="{'color': ' #FDE2E2'}" label="Sinh viên tự chấm">{{ Total_selfAssessment }}</el-descriptions-item>
-          <el-descriptions-item :labelStyle="{'color': ' #FDE2E2'}" label="Lớp chấm">{{ Total_groupAssessment }}</el-descriptions-item>
-          <el-descriptions-item label="Cố vấn chấm">{{ Total_consultantAssessment }}</el-descriptions-item>
-      </el-descriptions>
-       -->
+
       <el-button type="primary" @click="handleSave">Lưu</el-button>
       <el-button type="success" @click="handleSubmit">Xác nhận</el-button>
     </el-card>
@@ -126,6 +147,7 @@ export default {
       this.isEditMode = false;
       this.loadData();
     }
+    console.log( this.$store.getters.user);
   },
 
   computed: {
@@ -367,13 +389,18 @@ export default {
 </script>
 
 
-<style>
-.custom-input .el-input__inner {
+<style >
+
+.custom-input-trainingPoint .el-input__inner {
   border: none;
   border-bottom: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
   border-radius: 0; /* Tùy chọn: Loại bỏ đường cong biên */
 }
-
+  .custom-input-trainingPoint input {
+    color: #333;  /* Màu chữ */
+    border: none;
+    border-bottom: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
+  }
 .table-info {
   margin-bottom: 20px;
 }
@@ -386,8 +413,9 @@ export default {
 
 .bold-text {
   font-weight: bold;
+  border: none;
 }
-.custom-input .el-form-item__label {
+.custom-input-trainingPoint .el-form-item__label {
   font-weight: bold;
 }
 </style>

@@ -47,6 +47,12 @@ export function updateLike(id) {
     method: "post",
   });
 }
+export function updateStatus(id) {
+  return request({
+    url: `/${modelCode}/status/${id}`, // Địa chỉ API để cập nhật lượt thích
+    method: "post",
+  });
+}
 export function updateComments(id, answersCount) {
   return request({
     url: `/${modelCode}/${id}/count`,

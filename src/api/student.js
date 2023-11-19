@@ -19,6 +19,25 @@ export function getAll () {
     method: 'get'
   })
 }
+export function getClassList() {
+  return request({
+    url: `/${modelCode}/class-list`,
+    method: 'get'
+  })
+}
+
+export function getKhoaList () {
+  return request({
+    url: `/${modelCode}/khoaList`,
+    method: 'get'
+  })
+}
+export function getNghanhList () {
+  return request({
+    url: `/${modelCode}/nganhList`,
+    method: 'get'
+  })
+}
 
 export function handleDelete (id) {
   return request({

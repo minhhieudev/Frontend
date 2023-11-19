@@ -71,8 +71,15 @@ let adminRoutes = {
 const router = new Router({
   routes: [
     adminRoutes, ...pageRoutes, { path: '*', name: 'not_found', component: NotFound, meta: { title: '404 Not Found' } }
-  ]
-})
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { x: 0, y: 0 };
+    }
+  }
+});
 
 router.onError((error) =>{
   if (/Loading (chunk|CSS chunk) [\w|-]* failed/gi.test(error.message) && navigator.onLine) {

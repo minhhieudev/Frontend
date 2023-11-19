@@ -1,26 +1,40 @@
 <template>
   <div class="Consultant">
     <el-card>
-      <div class="search-bar ">
-        
-        
+      <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH CỐ VẤN</h4>
+      <div class="action-cv justify-content-between mb-4">
+        <div class="d-flex justify-content-start">
+          <div class="d-flex align-items-center p-2" style="color: rgb(1, 6, 12);">
+            <i class="fa-solid fa-rotate-right" @click="resetFilters"></i>
+            <div class="d-flex  align-items-center ml-5 border-right">
+              <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
+              
+              <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
+  <el-option v-for="item in khoaLists" :key="item" :label="item" :value="item"></el-option>
+</el-select>
 
-        <el-input
-          v-model="search"
-          size="medium" 
-          placeholder="Type to search"
-          class="custom-input"
-        >
-          <el-button slot="append" icon="el-icon-search" class="search-icon"></el-button>
-        </el-input>
-        <div class="">
-          <el-button @click="goToAddNewPage()" type="primary" size="small">
-            Tạo mới
-          </el-button>
+            </div>
           </div>
+
+          <div class="d-flex  align-items-center p-2">
+            <el-input
+              v-model="search"
+              size="medium" 
+              placeholder="Tìm theo tên, email..."
+              class="custom-input-post"
+            >
+            </el-input>
+            <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
+            
+          </div>
+          
+        </div>
+        <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
+
+
       </div>
 
-      <el-table  :data="filteredTableData" style="width: 100%" class="custom-table" >
+      <el-table  :data="currentPageData" style="width: 100%" class="custom-table" >
 
         <el-table-column type="index" label="STT" align="center"></el-table-column>
 
@@ -33,6 +47,12 @@
         <el-table-column prop="email" label="Email"  align="center">
           <template slot-scope="{ row }">
             {{ row.email }}
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="phone" label="Số điện thoại"  align="center">
+          <template slot-scope="{ row }">
+            {{ row.phone }}
           </template>
         </el-table-column>
 
@@ -50,14 +70,10 @@
  -->
 
      
- <el-table-column label="Thao tác" width="150" >
+ <el-table-column label="Thao tác" width="150">
           <template slot-scope="{ row }">
-            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
-              Xem
-            </el-button>
-            <el-button @click.prevent="confirmDelete(row)" type="danger" size="mini">
-              Xóa
-            </el-button>
+            <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small" circle></el-button>
+            <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small" circle></el-button>
           </template>
         </el-table-column>
 
@@ -69,14 +85,12 @@
         <el-pagination
           background
           layout="jumper, prev, pager, next, sizes, total"
-          :page-sizes="[25, 50, 100]"
-          :pager-count="5"
+          :page-sizes="[10, 25, 50, 100]"
           :page-size.sync="pagination.page_size"
-          :total="this.totalData"
+          :total="filteredTableData.length"
           :current-page.sync="pagination.current_page"
-          @current-change="loadData"
+          @current-change="handleCurrentPageChange"
           @size-change="handlePageSizeChange"
-          
         />
       </div>
     </el-card>
@@ -86,7 +100,10 @@
 <script>
 const ModelCode = 'consultant';
 import { getAll, handleDelete } from '@/api/consultant';
+import {getKhoaList} from '@/api/student';
 import { format } from 'date-fns';
+import '@fortawesome/fontawesome-free/css/all.css';
+
 
 export default {
   data() {
@@ -97,13 +114,33 @@ export default {
         page_size: 25,
       },
       totalData: 0,
-      filteredTableData: [],
       search:'',
+      selectedKhoa:'',
+      khoaLists:[]
     };
   },
   created() {
     this.loadData();
-    console.log(this.totalData.length);
+this.fetchClassLists()  },
+computed: {
+  filteredTableData() {
+    return this.tableData.filter(data =>
+      (!this.search ||
+        data.fullName.toLowerCase().includes(this.search.toLowerCase()) ||
+        data.email.toLowerCase().includes(this.search.toLowerCase())
+      ) &&
+      (!this.selectedKhoa || data.department === this.selectedKhoa) 
+    );
+  },
+    
+    currentPageData() {
+      const start = (this.pagination.current_page - 1) * this.pagination.page_size;
+      const end = start + this.pagination.page_size;
+      
+      return this.filteredTableData.slice(start, end);
+
+      
+    },
   },
   methods: {
    
@@ -133,7 +170,6 @@ export default {
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.tableData = response.data.consultants;
-            this.applyFilters();
           } else {
             console.error("Không thành công: ", response.data);
           }
@@ -149,17 +185,35 @@ export default {
     formatDate(date) {
       return format(new Date(date), 'dd/MM/yyyy ');
     },
-    applyFilters() {
-      this.filteredTableData = this.tableData.filter(data =>
-        (!this.search || data.fullName.toLowerCase().includes(this.search.toLowerCase())) 
-      );
-      this.totalData = this.filteredTableData.length;
+    
+    resetFilters() {
+      this.selectedKhoa = '';
+      this.search='';
     },
+    fetchClassLists() {
+
+        getKhoaList()
+        .then(response => {
+          this.khoaLists = response.data.khoaLists;
+        })
+        .catch(error => {
+          console.error('Error fetching Khoa list:', error);
+        });
+    },
+    handlePageSizeChange(newSize) {
+      this.pagination.page_size = newSize;
+      this.pagination.current_page = 1;
+    },
+
+    handleCurrentPageChange(newPage) {
+      this.pagination.current_page = newPage;
+    },
+    
   },
 };
 </script>
 
-<style scoped>
+<style >
 
 /* .custom-table th {
   background-color: #7ab7e0 !important;
@@ -180,9 +234,10 @@ export default {
     border-radius: 50%;
 }
 
-.search-bar {
+.action-cv {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 10px;
 }
 
@@ -190,16 +245,38 @@ export default {
   order: -1;
 }
 
-.custom-input {
-  width: 200px;
-  border: 1px solid #dcdfe6;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: border-color 0.2s, box-shadow 0.2s;
+.custom-input-cv  {
+  width: 100px;
+  font-weight: bold;
+  border: none;
+  border-right: 1px solid #6d7583; /* Màu đường biên bên phải */
+  }
+  
+  .custom-input-cv .el-input__inner {
+    border: none;
+  background-color: white;
+  font-weight: bold;
+}
+.custom-input-cv input {
+  color: #333;
+  border: none;
+  font-weight: bold;
 }
 
-.custom-input:focus {
+.search-icon {
+  color: #1890ff;
+}
+
+.search-input {
+  width: auto;
+  border: none;
+}
+
+.search-input .el-input__inner {
+  border: none;
+  background-color: white;
+}
+.custom-input-cv:focus {
   border-color: #409eff;
   box-shadow: 0 0 6px rgba(64, 158, 255, 0.5);
 }
