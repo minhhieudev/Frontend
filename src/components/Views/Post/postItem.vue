@@ -9,7 +9,7 @@
         
 
         <div style="display: flex;flex-direction: column;">
-          <span class="author ml-2">{{ user }}</span>
+          <span class="author ml-2">{{ user }} ( CVHT )</span>
         <span class="date">{{ createdAt }}</span>
         </div>
  </div>

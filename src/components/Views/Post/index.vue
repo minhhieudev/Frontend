@@ -72,8 +72,8 @@
         </el-upload>
 
         <div class="button-container-tall">
-          <el-button @click="isQuestionPopupVisible = false" class="close-button" icon="el-icon-close">Đóng</el-button>
-          <el-button @click="resetText" class="refresh-button" icon="el-icon-refresh">Làm mới</el-button>
+          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
+          <el-button @click="resetText" class="refresh-button"  type="warning" icon="el-icon-refresh">Làm mới</el-button>
           <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">Đăng</el-button>
         </div>
       </div>

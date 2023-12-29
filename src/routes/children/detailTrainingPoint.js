@@ -1,4 +1,4 @@
-const path_code = "training_point/detailTrainingPoint";
+const path_code = "/detailTrainingPoint";
 const name = "Quản trị điểm rèn luyện";
 const routeName = "training_point";
 export default [

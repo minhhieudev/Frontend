@@ -31,17 +31,17 @@
       </div>
 
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT">
+        <el-table-column label="STT" width="80">
     <template slot-scope="{ $index, row }">
       <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
     </template>
   </el-table-column>
-        <el-table-column prop="title" label="Tên Tài liệu / Bài đăng">
+        <el-table-column prop="title" label="Tên Tài liệu / Bài đăng" width="500">
           <template slot-scope="{ row }">
             <span style="font-weight: bold; color: #09af09;">{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="Loại">
+        <el-table-column prop="type" label="Loại" width="160">
           <template slot-scope="{ row }">{{ row.postType }}</template>
         </el-table-column>
         <el-table-column prop="createdAt" label="Ngày, tháng đăng">
@@ -49,9 +49,10 @@
         </el-table-column>
 
         <el-table-column label="Đính kèm">
-          <template slot-scope="{ row }">
-            <div v-for="attachment in row.attachmentPath" :key="attachment._id">
-              <el-dropdown @command="(command) => handleCommand(command, attachment)">
+          <template slot-scope="{ row }" class="d-flex">
+           <div class="d-flex">
+            <div v-for="attachment in row.attachmentPath" :key="attachment._id" class="mx-2">
+              <el-dropdown @command="(command) => handleCommand(command, attachment) " >
                 <el-button type="text" :class="getFileButtonClass(attachment)">
                   <i class="size-icon" :class="getFileIconClass(attachment.filename).class" :style="{ color: getFileIconClass(attachment.filename).color }"></i>
                 </el-button>
@@ -63,6 +64,7 @@
                 </el-dropdown-menu>
               </el-dropdown>
             </div>
+           </div>
           </template>
         </el-table-column>
 
@@ -71,11 +73,10 @@
         </el-table-column>
         <el-table-column label="Thao tác" width="150">
           <template slot-scope="scope">
-            <el-button type="warning" icon="el-icon-star-off" size="small" circle></el-button>
             <router-link :to="{ name: 'Post', params: { id: scope.row._id } }" @click="scrollToQuestion(scope.row._id)">
   <el-button type="primary" icon="el-icon-edit" size="small" circle></el-button>
 </router-link>
-            <el-button type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
+            <el-button class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
           </template>
         </el-table-column>
       </el-table>

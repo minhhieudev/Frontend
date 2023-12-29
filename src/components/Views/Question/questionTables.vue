@@ -38,11 +38,11 @@
 
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
         <!-- STT Column -->
-        <el-table-column label="STT">
-          <template slot-scope="{ $index, row }">
-            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="STT" width="60">
+    <template slot-scope="{ $index, row }">
+      <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+    </template>
+  </el-table-column>
 
         <!-- Tên câu hỏi / Bài đăng Column -->
         <el-table-column prop="row.title" label="Tên câu hỏi / Bài đăng">
@@ -95,12 +95,12 @@
         <el-table-column label="Thao tác" width="150">
           <template slot-scope="scope">
             <router-link :to="{ name: 'Question', params: { id: scope.row._id } }" @click="scrollToQuestion(scope.row._id)">
-  <el-button type="primary" icon="el-icon-edit" size="small" circle></el-button>
+  <el-button  type="primary" icon="el-icon-view" size="small" circle></el-button>
 </router-link>
 
 
 
-            <el-button type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
+            <el-button class="ml-3"  type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -177,7 +177,7 @@ export default {
 
 
     confirmDelete(row) {
-      this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
+      this.$confirm(`Xác nhận xóa câu hỏi ?`, 'Cảnh báo', {
         confirmButtonText: 'Xóa',
         type: 'warning',
       })

@@ -1,4 +1,4 @@
-const path_code = 'Post/PostTables'
+const path_code = 'PostTables'
 const name = 'Bài đăng'
 const routeName = 'postTables'
 export default [

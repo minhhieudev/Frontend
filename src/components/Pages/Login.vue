@@ -3,7 +3,7 @@
     <el-main class="m-3" :class="$isMobile?'':'h-100'">
       <div class="row" :class="$isMobile?'':'h-100'">
         <div class="col-md-6 d-flex justify-content-center align-items-center">
-          <img src="@/assets/logo.png" alt="logo" style="width: 100%; max-width: 500px;"/>
+          <img src="@/assets/Picture1.png" alt="logo" style="width: 100%; max-width: 500px;"/>
         </div>
         <div class="col-md-6 d-flex align-items-center text-center">
           <div class="" style="width: inherit; max-width: 500px">

@@ -7,7 +7,10 @@
             <span class="author">{{ user }}</span>
             <span class="date">{{ createdAt }}</span>
           </div>
-          <div class="content">{{ content }}</div>
+          <div class="title">
+        [Câu hỏi] {{ title }}
+      </div>
+          <div class="content" v-html="formattedContent"></div>
           <div class="actions">
             <div class="like-container">
               <i class="fa fa-heart-o" aria-hidden="true"></i>
@@ -72,7 +75,7 @@ import { updateStatus } from '@/api/question';
 
 export default {
   props: {
-    
+    title: String,
     content: String,
     id:String,
     user: String,
@@ -85,6 +88,9 @@ export default {
   computed: {
     avatarSize() {
       return 'small';
+    },
+    formattedContent() {
+      return this.content.replace(/\n/g, '<br>');
     },
     
     formattedDate() {
@@ -278,7 +284,6 @@ export default {
 }
 
 .content {
-  margin-left: 30px;
 }
 
 /* CSS cho biểu tượng lượt thích và phản hồi */
@@ -355,5 +360,11 @@ export default {
 .reply {
   /* CSS cho từng phản hồi */
   /* Giống với CSS của question.vue */
+}
+.title{
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.content {
 }
 </style>   

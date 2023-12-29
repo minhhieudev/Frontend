@@ -1,4 +1,4 @@
-const path_code = 'Question/questionTables'
+const path_code = 'questionTables'
 const name = 'Quản trị câu hỏi'
 const routeName = 'Question'
 export default [

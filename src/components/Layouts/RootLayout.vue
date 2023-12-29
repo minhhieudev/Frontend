@@ -11,6 +11,7 @@
 <script>
 import HeaderComponent from './Header.vue'
 import RootContent from './RootContent'
+import chat from './chat'
 import SideBarComponent from './SideBar'
 import { firstRequest } from '../../api/helper'
 import { getOne } from '../../utils/app'
@@ -25,7 +26,8 @@ export default {
   components: {
     HeaderComponent,
     RootContent,
-    SideBarComponent
+    SideBarComponent,
+    chat
   },
   created() {
     firstRequest().then(res => {
@@ -74,4 +76,6 @@ export default {
       }
     }
   }
+
+
 </style>

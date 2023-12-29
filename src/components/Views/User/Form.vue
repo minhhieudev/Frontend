@@ -21,15 +21,13 @@
           <el-form-item v-else label="Renew Password">
             <el-input v-model="form.renew_password" />
           </el-form-item>
-          <el-form-item label="SĐT">
-            <el-input v-model="form.phone" type="number"/>
-          </el-form-item>
+         
           <el-form-item label="Quyền">
             <el-select
               v-model="form.role"
               placeholder="Select">
-              <el-option label="Sinh viên" value="Sinh viên"></el-option>
-              <el-option label="Cố vấn" value="Cố vấn"></el-option>
+              <el-option label="Sinh viên" value="student"></el-option>
+              <el-option label="Cố vấn" value="consultant"></el-option>
               <el-option label="Admin" value="Admin"></el-option>
             </el-select>
           </el-form-item>
@@ -52,7 +50,7 @@ export default {
     return {
       form: {
         fullname:'',
-        role: 'Sinh viên'
+        role: 'student'
       },
       hasChange: false,
     }

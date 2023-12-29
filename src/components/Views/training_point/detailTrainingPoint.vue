@@ -2,9 +2,21 @@
   <div class="">
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH PHIẾU ĐIỂM</h4>
+      
       <div class="action-trainingPoint mb-4">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
         <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
+
+        <div class="filter-options pr-4">
+                <span
+                  v-for="(option, index) in filterOptions"
+                  :key="index"
+                  :class="{ 'selected': selectedFilter === option }"
+                  @click="selectFilter(option)"
+                >
+                  {{ option }}
+                </span>
+              </div>
         
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
@@ -25,11 +37,16 @@
           class="search-input-trainingPoint"
         >
         </el-input>
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
+
        
       </div>
       <el-table :data="filteredTableData"  align="center" class="custom-table">
-        <el-table-column type="index" label="STT" align="center"></el-table-column>
+        <el-table-column label="STT" width="50">
+    <template slot-scope="{ $index, row }">
+      <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+    </template>
+  </el-table-column>
         <el-table-column prop="studentCode" label="MSV" width="100" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.studentCode }}
@@ -38,8 +55,32 @@
 
         <el-table-column label="Xem phiếu điểm " width="130" align="center">
           <template slot-scope="{ row }">
-            <el-button @click.prevent="gotoDetail(row)" type="success" size="mini">
+            <el-button @click.prevent="gotoDetail(row)" type="warning" plain size="mini" round>
               Phiếu điểm
+            </el-button>
+          </template>
+        </el-table-column>
+
+         <!-- Trạng thái Column -->
+         <el-table-column label="Trạng thái" align="center">
+          <template slot-scope="{ row }">
+            <el-button
+              v-if="row.status"
+              type="success"
+              size="mini"
+              round
+              class="answered-button"
+            >
+              Đã duyệt
+            </el-button>
+            <el-button
+              v-else
+              type="danger"
+              size="mini"
+              round
+              class="unanswered-button"
+            >
+              Chưa duyệt
             </el-button>
           </template>
         </el-table-column>
@@ -48,6 +89,10 @@
           <template slot-scope="{ row }">
             {{ row.studentDetails.fullName }}
           </template>
+        </el-table-column>
+
+        <el-table-column prop="createdAt" label="Ngày chấm" align="center">
+          <template slot-scope="{ row }">{{ formatDate(row.createdAt) }}</template>
         </el-table-column>
 
         <el-table-column prop="semester" label="Học kỳ" width="80" align="center">
@@ -79,6 +124,12 @@
             </template>
           </el-table-column>
         </el-table-column>
+        <el-table-column label="Thao tác" width="150" align="center">
+          <template slot-scope="scope">
+            <el-button type="danger"   @click.prevent="confirmDelete(scope.row)"  icon="el-icon-delete" size="small" circle></el-button>
+           
+          </template>
+        </el-table-column>
 
       </el-table>
       <div class="mt-2">
@@ -98,7 +149,7 @@
 </template>
 
 <script>
-import { getAll } from '@/api/detailTrainingPoint';
+import { getAll,handleDelete } from '@/api/detailTrainingPoint';
 import { format } from 'date-fns';
 import {  getClassList,getKhoaList,getNghanhList} from '@/api/student';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -120,22 +171,33 @@ export default {
       khoaList: [],
       nganhList: [],
       lopList: [],
+      filterOptions: ['Tất cả', 'Chưa duyệt', 'Đã duyệt'],
+      selectedFilter: 'Tất cả', // default filter option
     };
   },
   created () {
     this.loadDetailTrainingPoint()
-    this.fetchClassLists();
+    this.loadInfoToFilter()
 
   },
   computed: {
+
     filteredTableData() {
-      return this.tableData.filter(data =>
-        (!this.search || data.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
-        (!this.selectedKhoa || data.department === this.selectedKhoa) &&
-        (!this.selectedNganh || data.nganh === this.selectedNganh) &&
-        (!this.selectedLop || data.className === this.selectedLop)
-      );
-    },
+  return this.tableData.filter(data =>
+    (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
+    (!this.selectedKhoa || data.studentDetails.department === this.selectedKhoa) &&
+    (!this.selectedNganh || data.studentDetails.nganh === this.selectedNganh) &&
+    (!this.selectedLop || data.studentDetails.className === this.selectedLop) &&
+    (
+      (this.selectedFilter === 'Tất cả' || data.status === this.selectedFilter) ||
+      (this.selectedFilter === 'Chưa duyệt' && !data.status) ||
+      (this.selectedFilter === 'Đã duyệt' && data.status)
+    )
+  );
+},
+
+
+    
     
     currentPageData() {
       const start = (this.pagination.current_page - 1) * this.pagination.page_size;
@@ -164,6 +226,25 @@ export default {
       console.error("Lỗi khi tải điểm rèn luyện: ", error);
     });
 },
+confirmDelete(row) {
+      this.$confirm(`Xác nhận xóa phiếu điểm`, 'Cảnh báo', {
+        confirmButtonText: 'Xóa',
+        type: 'warning',
+      })
+        .then(() => {
+          handleDelete(row._id)
+            .then(({ data }) => {
+              console.log(data);
+              if (data.success) {
+                this.loadDetailTrainingPoint();
+              }
+            })
+            .finally(() => {
+              this.$wrLoading(false);
+            });
+        })
+        .catch();
+    },
 
 handlePageSizeChange(newSize) {
       this.pagination.page_size = newSize;
@@ -176,30 +257,14 @@ handlePageSizeChange(newSize) {
      formatDate(date) {
       return format(new Date(date), 'dd/MM/yyyy ');
     },
-    fetchClassLists() {
-      getClassList()
-        .then(response => {
-          this.lopList = response.data.classLists;
-        })
-        .catch(error => {
-          console.error('Error fetching Lop list:', error);
-        });
-
-        getNghanhList()
-        .then(response => {
-          this.nganhList = response.data.nganhLists;
-        })
-        .catch(error => {
-          console.error('Error fetching Nganh list:', error);
-        });
-
-        getKhoaList()
-        .then(response => {
-          this.khoaList = response.data.khoaLists;
-        })
-        .catch(error => {
-          console.error('Error fetching Khoa list:', error);
-        });
+   
+    selectFilter(option) {
+      this.selectedFilter = option;
+    },
+    loadInfoToFilter(){
+      this.khoaList=this.$store.getters.khoaList
+    this.nghanhList=this.$store.getters.nghanhList
+    this.lopList=this.$store.getters.lopList
     },
     resetData(){
       this.selectedKhoa='';
@@ -249,6 +314,46 @@ handlePageSizeChange(newSize) {
   .custom-input-trainingPoint input {
     color: #333;  /* Màu chữ */
   }
+
+
+  /* Add these styles for button width and colors */
+.answered-button,
+.unanswered-button {
+  width: 95px; /* Adjust the width as needed */
+}
+
+.answered-button {
+  background-color: #67c23a; /* Green color for answered */
+  color: #fff; /* White text for contrast */
+}
+
+.unanswered-button {
+  background-color: #f56c6c; /* Red color for unanswered */
+  color: #fff; /* White text for contrast */
+}
+
+.filter-options span.selected {
+  background-color: #0c8eca;
+  color: #fff;
+}
+.filter-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter-options span {
+  cursor: pointer;
+  padding: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  width: 100px;
+  min-width: auto;
+  margin-left: 4px;
+  border-radius: 35px;
+  text-align: center;
+}
+
 </style>
 
 

@@ -15,7 +15,7 @@ export default [
     component: () => import('@/components/Views/Student/Form'),
     name: `${path_code}_new`,
     meta: {
-      title: `Tạo ${name}`
+      title: `Tạo mới sinh viên`
     }
   },
   {

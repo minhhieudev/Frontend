@@ -5,34 +5,33 @@
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
         <i class="fa-solid fa-download"></i>
         <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
-        
+
         <!-- Khoa Dropdown -->
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
-        
+
         <!-- Ngành Dropdown -->
         <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
           <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
-        
+
         <!-- Lớp Dropdown -->
         <el-select v-model="selectedLop" filterable placeholder="Lớp">
-  <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
-</el-select>
+          <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
+        </el-select>
 
-        <el-input
-          v-model="search"
-          size="medium" 
-          placeholder="Tìm theo tên, email..."
-          class="custom-input-result"
-        >
+        <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..." class="custom-input-result">
         </el-input>
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
 
       <el-table :data="filteredTableData" style="width: 100%" class="custom-table">
-        <el-table-column type="index" label="STT" align="center"></el-table-column>
+        <el-table-column label="STT" width="50">
+          <template slot-scope="{ $index, row }">
+            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+          </template>
+        </el-table-column>
 
         <el-table-column prop="studentCode" label="MSV" width="100" align="center">
           <template slot-scope="{ row }">{{ row.studentDetails.studentCode }}</template>
@@ -70,16 +69,87 @@
       </el-table>
 
       <div class="mt-2">
-        <el-pagination
-          background
-          layout="jumper, prev, pager, next, sizes, total"
-          :page-sizes="[10, 25, 50, 100]"
-          :page-size.sync="pagination.page_size"
-          :total="filteredTableData.length"
-          :current-page.sync="pagination.current_page"
-          @current-change="handleCurrentPageChange"
-          @size-change="handlePageSizeChange"
-        />
+        <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
+          :page-size.sync="pagination.page_size" :total="filteredTableData.length"
+          :current-page.sync="pagination.current_page" @current-change="handleCurrentPageChange"
+          @size-change="handlePageSizeChange" />
+      </div>
+
+      <!-- Thống kê số lượng kết quả rèn luyện -->
+      <div class="result-statistics">
+        <h4 class="table-title text-center">THỐNG KÊ KẾT QUẢ RÈN LUYỆN</h4>
+        <el-row>
+          <el-col :span="8">
+            <el-form label-width="120px">
+
+              <el-form-item label="KỲ 1" class="bold-text">
+              </el-form-item>
+              <el-form-item label="Xuất sắc" class="bold-text">
+                <el-input v-model="semester1Statistics.excellent" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Giỏi" class="bold-text">
+                <el-input v-model="semester1Statistics.good" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Khá" class="bold-text">
+                <el-input v-model="semester1Statistics.fair" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Trung bình" class="bold-text">
+                <el-input v-model="semester1Statistics.average" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Yếu" class="bold-text">
+                <el-input v-model="semester1Statistics.weak" disabled></el-input>
+              </el-form-item>
+
+            </el-form>
+          </el-col>
+          <el-col :span="8">
+            <el-form label-width="120px">
+
+              <el-form-item label="KỲ 2" class="bold-text">
+              </el-form-item>
+              <el-form-item label="Xuất sắc" class="bold-text">
+                <el-input v-model="semester2Statistics.excellent" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Giỏi" class="bold-text">
+                <el-input v-model="semester2Statistics.good" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Khá" class="bold-text">
+                <el-input v-model="semester2Statistics.fair" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Trung bình" class="bold-text">
+                <el-input v-model="semester2Statistics.average" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Yếu" class="bold-text">
+                <el-input v-model="semester2Statistics.weak" disabled></el-input>
+              </el-form-item>
+
+            </el-form>
+          </el-col>
+          <el-col :span="8">
+            <el-form label-width="120px">
+
+              <el-form-item label="CẢ NĂM" class="bold-text ">
+              </el-form-item>
+              <el-form-item label="Xuất sắc" class="bold-text ">
+                <el-input v-model="wholeYearStatistics.excellent" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Giỏi" class="bold-text ">
+                <el-input v-model="wholeYearStatistics.good" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Khá" class="bold-text">
+                <el-input v-model="wholeYearStatistics.fair" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Trung bình" class="bold-text">
+                <el-input v-model="wholeYearStatistics.average" disabled></el-input>
+              </el-form-item>
+              <el-form-item label="Yếu" class="bold-text">
+                <el-input v-model="wholeYearStatistics.weak" disabled></el-input>
+              </el-form-item>
+
+            </el-form>
+          </el-col>
+          
+        </el-row>
       </div>
       <div class="mt-4">
         <el-button size="small" type="primary" @click="exportToCSV" round>Export to CSV</el-button>
@@ -100,7 +170,7 @@ import 'jspdf-autotable';
 import html2pdf from 'html2pdf.js';
 import mammoth from 'mammoth';
 import htmlDocx from 'html-docx-js/dist/html-docx';
-import {  getClassList,getKhoaList,getNghanhList} from '@/api/student';
+import { getClassList, getKhoaList, getNghanhList } from '@/api/student';
 import '@fortawesome/fontawesome-free/css/all.css';
 
 
@@ -126,12 +196,14 @@ export default {
       nganhList: [],
       lopList: [],
       loading: false,
+      //   semester1StatsData: { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 },
+      // semester2StatsData: { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 },
+      // wholeYearStatsData: { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 },
     };
   },
   created() {
     this.loadData();
-    this.fetchClassLists();
-
+    this.loadInfoToFilter()
   },
   computed: {
     filteredTableData() {
@@ -142,19 +214,60 @@ export default {
         (!this.selectedLop || data.studentDetails.className === this.selectedLop)
       );
     },
-    
+
+    semester1Statistics() {
+      return this.calculateStatistics(this.filteredTableData, 'semester1');
+    },
+    semester2Statistics() {
+      return this.calculateStatistics(this.filteredTableData, 'semester2');
+    },
+    wholeYearStatistics() {
+      return this.calculateStatistics(this.filteredTableData, 'wholeYear');
+    },
+
     currentPageData() {
       const start = (this.pagination.current_page - 1) * this.pagination.page_size;
       const end = start + this.pagination.page_size;
-      
+
       return this.filteredTableData.slice(start, end);
 
-      
+
     },
   },
   methods: {
     gotoDetail(row) {
       this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } });
+    },
+    calculateStatistics(data, semesterKey) {
+      const statistics = { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 };
+
+      data.forEach(item => {
+        const classification = item[semesterKey].classify;
+
+        switch (classification) {
+          case 'Xuất sắc':
+            statistics.excellent++;
+            break;
+          case 'Giỏi':
+            statistics.good++;
+            break;
+          case 'Khá':
+            statistics.fair++;
+            break;
+          case 'Trung bình':
+            statistics.average++;
+            break;
+          case 'Yếu':
+            statistics.weak++;
+            break;
+          // Add more cases if needed
+
+          default:
+            break;
+        }
+      });
+
+      return statistics;
     },
     loadData() {
       getAll()
@@ -180,36 +293,17 @@ export default {
     formatDate(date) {
       return format(new Date(date), 'dd/MM/yyyy ');
     },
-    fetchClassLists() {
-      getClassList()
-        .then(response => {
-          this.lopList = response.data.classLists;
-        })
-        .catch(error => {
-          console.error('Error fetching Lop list:', error);
-        });
 
-        getNghanhList()
-        .then(response => {
-          this.nganhList = response.data.nganhLists;
-        })
-        .catch(error => {
-          console.error('Error fetching Nganh list:', error);
-        });
-
-        getKhoaList()
-        .then(response => {
-          this.khoaList = response.data.khoaLists;
-        })
-        .catch(error => {
-          console.error('Error fetching Khoa list:', error);
-        });
+    resetData() {
+      this.selectedKhoa = '';
+      this.selectedNganh = '';
+      this.selectedLop = '';
+      this.search = ''
     },
-    resetData(){
-      this.selectedKhoa='';
-      this.selectedNganh='';
-      this.selectedLop='';
-      this.search=''
+    loadInfoToFilter() {
+      this.khoaList = this.$store.getters.khoaList
+      this.nghanhList = this.$store.getters.nghanhList
+      this.lopList = this.$store.getters.lopList
     },
 
     exportToCSV() {
@@ -253,25 +347,25 @@ export default {
       return `${header}\n${body}`;
     },
     exportToWord() {
-  const dataToExport = this.filteredTableData.map(item => {
-    return {
-      MSV: item.studentDetails.studentCode,
-      'Tên sinh viên': item.studentDetails.fullName,
-      Lớp: item.studentDetails.className,
-      'Năm học': item.schoolYear,
-      'Kỳ 1 - Điểm': item.semester1.point,
-      'Kỳ 1 - Xếp loại': item.semester1.classify,
-      'Kỳ 1 - Ghi chú': item.semester1.note,
-      'Kỳ 2 - Điểm': item.semester2.point,
-      'Kỳ 2 - Xếp loại': item.semester2.classify,
-      'Kỳ 2 - Ghi chú': item.semester2.note,
-      'Cả năm - Điểm': item.wholeYear.point,
-      'Cả năm - Xếp loại': item.wholeYear.classify,
-      'Cả năm - Ghi chú': item.wholeYear.note,
-    };
-  });
+      const dataToExport = this.filteredTableData.map(item => {
+        return {
+          MSV: item.studentDetails.studentCode,
+          'Tên sinh viên': item.studentDetails.fullName,
+          Lớp: item.studentDetails.className,
+          'Năm học': item.schoolYear,
+          'Kỳ 1 - Điểm': item.semester1.point,
+          'Kỳ 1 - Xếp loại': item.semester1.classify,
+          'Kỳ 1 - Ghi chú': item.semester1.note,
+          'Kỳ 2 - Điểm': item.semester2.point,
+          'Kỳ 2 - Xếp loại': item.semester2.classify,
+          'Kỳ 2 - Ghi chú': item.semester2.note,
+          'Cả năm - Điểm': item.wholeYear.point,
+          'Cả năm - Xếp loại': item.wholeYear.classify,
+          'Cả năm - Ghi chú': item.wholeYear.note,
+        };
+      });
 
-  const table = `
+      const table = `
     <table border="1" style="width:100%; border-collapse: collapse;text-align: center;">
       <thead>
         <tr>
@@ -320,36 +414,36 @@ export default {
       </tbody>
     </table>`;
 
-  const element = document.createElement('div');
-  element.innerHTML = table;
+      const element = document.createElement('div');
+      element.innerHTML = table;
 
-  const content = element.outerHTML;  // Use outerHTML instead of innerHTML
+      const content = element.outerHTML;  // Use outerHTML instead of innerHTML
 
-  const converted = htmlDocx.asBlob(content);
+      const converted = htmlDocx.asBlob(content);
 
-  saveAs(converted, 'result_training.docx');
-},
-exportToPDF() {
-  this.loading = true;
-  const dataToExport = this.filteredTableData.map(item => {
-    return {
-      MSV: item.studentDetails.studentCode,
-      'Tên sinh viên': item.studentDetails.fullName,
-      Lớp: item.studentDetails.className,
-      'Năm học': item.schoolYear,
-      'Kỳ 1 - Điểm': item.semester1.point,
-      'Kỳ 1 - Xếp loại': item.semester1.classify,
-      'Kỳ 1 - Ghi chú': item.semester1.note,
-      'Kỳ 2 - Điểm': item.semester2.point,
-      'Kỳ 2 - Xếp loại': item.semester2.classify,
-      'Kỳ 2 - Ghi chú': item.semester2.note,
-      'Cả năm - Điểm': item.wholeYear.point,
-      'Cả năm - Xếp loại': item.wholeYear.classify,
-      'Cả năm - Ghi chú': item.wholeYear.note,
-    };
-  });
+      saveAs(converted, 'result_training.docx');
+    },
+    exportToPDF() {
+      this.loading = true;
+      const dataToExport = this.filteredTableData.map(item => {
+        return {
+          MSV: item.studentDetails.studentCode,
+          'Tên sinh viên': item.studentDetails.fullName,
+          Lớp: item.studentDetails.className,
+          'Năm học': item.schoolYear,
+          'Kỳ 1 - Điểm': item.semester1.point,
+          'Kỳ 1 - Xếp loại': item.semester1.classify,
+          'Kỳ 1 - Ghi chú': item.semester1.note,
+          'Kỳ 2 - Điểm': item.semester2.point,
+          'Kỳ 2 - Xếp loại': item.semester2.classify,
+          'Kỳ 2 - Ghi chú': item.semester2.note,
+          'Cả năm - Điểm': item.wholeYear.point,
+          'Cả năm - Xếp loại': item.wholeYear.classify,
+          'Cả năm - Ghi chú': item.wholeYear.note,
+        };
+      });
 
-  const table = `
+      const table = `
     <table border="1" style="width:100%; border-collapse: collapse;text-align: center;">
       <thead>
         <tr>
@@ -398,31 +492,31 @@ exportToPDF() {
       </tbody>
     </table>`;
 
-  const element = document.createElement('div');
-  element.innerHTML = table;
+      const element = document.createElement('div');
+      element.innerHTML = table;
 
-  const pdfOptions = {
-    orientation: 'landscape',
-    unit: 'mm',
-    format: 'a4',
-  };
+      const pdfOptions = {
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4',
+      };
 
-  html2pdf(element, {
-    margin: 10,
-    filename: 'result_training.pdf',
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: pdfOptions,
-  }).then(() => {
-    this.loading = false; // Tắt biến loading sau khi xử lý xong
-  });
-},
+      html2pdf(element, {
+        margin: 10,
+        filename: 'result_training.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: pdfOptions,
+      }).then(() => {
+        this.loading = false; // Tắt biến loading sau khi xử lý xong
+      });
+    },
+
   },
 };
 </script>
 
 <style >
-
 .search-bar {
   display: flex;
   justify-content: space-between;
@@ -433,33 +527,67 @@ exportToPDF() {
 .filter-input {
   order: -1;
 }
+
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #5ceeee;
   color: #fff;
   border-radius: 50%;
 }
-.custom-input-result  {
-    width: 200px;  /* Điều chỉnh chiều rộng theo nhu cầu */
-    font-weight: bold;  /* Đậm hơn */
-    background-color: #eaeaea;  /* Màu sắc nền */
-    border: none;
-  }
-  
-  .custom-input-result input {
-    color: #333;  /* Màu chữ */
-  }
-  .custom-input-result .el-input__inner {
+
+.custom-input-result {
+  width: 200px;
+  /* Điều chỉnh chiều rộng theo nhu cầu */
+  font-weight: bold;
+  /* Đậm hơn */
+  background-color: #eaeaea;
+  /* Màu sắc nền */
   border: none;
-  border-right: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
-  border-radius: 0; /* Tùy chọn: Loại bỏ đường cong biên */
 }
-  .custom-input-result input {
-    color: #333;  /* Màu chữ */
-    border: none;
-    border-right: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
-  }
+
+.custom-input-result input {
+  color: #333;
+  /* Màu chữ */
+}
+
+.custom-input-result .el-input__inner {
+  border: none;
+  border-right: 1px solid #e4e7ed;
+  /* Bạn có thể tùy chỉnh màu đường biên */
+  border-radius: 0;
+  /* Tùy chọn: Loại bỏ đường cong biên */
+}
+
+.custom-input-result input {
+  color: #333;
+  /* Màu chữ */
+  border: none;
+  border-right: 1px solid #e4e7ed;
+  /* Bạn có thể tùy chỉnh màu đường biên */
+}
+
 .custom-input-result:focus {
   border-color: #409eff;
   box-shadow: 0 0 6px rgba(64, 158, 255, 0.5);
+}
+
+.statistics-section {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f3f3f3;
+  border-radius: 5px;
+}
+
+.statistics-item {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.item-title {
+  font-weight: bold;
+}
+
+.item-value {
+  font-size: 18px;
+  color: #333;
 }
 </style>

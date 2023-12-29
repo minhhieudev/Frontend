@@ -31,7 +31,7 @@
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item icon="fa fa-user-o" disabled>{{this.$store.getters.user.email}}</el-dropdown-item>
-            <!-- <el-dropdown-item icon="fa fa-home" command="customer_view">Trang chủ</el-dropdown-item> -->
+            <el-dropdown-item icon="el-icon-s-custom" command="customer_view">Đổi avatar</el-dropdown-item>
             <el-dropdown-item command="logout" icon="fa fa-sign-out">Đăng xuất</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>

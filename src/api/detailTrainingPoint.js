@@ -21,6 +21,18 @@ export function saveData(data) {
     data,
   });
 }
+export function handleDelete(id) {
+  return request({
+    url: `/detailTrainingPoint/${id}`,
+    method: "delete",
+  });
+}
+export function updateStatus(id) {
+  return request({
+    url: `/detailTrainingPoint/status/${id}`, // Địa chỉ API để cập nhật lượt thích
+    method: "post",
+  });
+}
 
 export function saveDatas(data) {
   return request({

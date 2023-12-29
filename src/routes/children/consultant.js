@@ -15,7 +15,7 @@ export default [
     component: () => import('@/components/Views/Consultant/Form'),
     name: `${path_code}_new`,
     meta: {
-      title: `Tạo ${name}`
+      title: `Tạo mới cố vấn`
     }
   },
   {

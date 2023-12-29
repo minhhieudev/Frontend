@@ -17,7 +17,6 @@
           </div>
           <div class="input-box">
             <input
-              v-model="replyText"
               @input="onReplyInputChange"
               placeholder="Nhập nội dung câu hỏi mà bạn muốn hỏi Cố vấn học tập..."
               class="reply-inputs"
@@ -51,12 +50,13 @@
 
     <el-dialog class="custom-dialog" title="Nhập nội dung câu hỏi" :visible.sync="isQuestionPopupVisible">
       <div class="el-dialog__body">
+        <p class="font-weight-bold">Tiêu đề</p>
+
         <input v-model="titleQuestion" placeholder="Nhập tiêu đề câu hỏi ..." class="reply-inputs" />
         <ckeditor :config="ckEditorConfig" v-model="questionText"></ckeditor>
-        <div class="button-container-tall">
-          <el-button @click="isQuestionPopupVisible = false" class="close-button" icon="el-icon-close">Đóng</el-button>
-          <el-button @click="resetQuestionText" class="refresh-button" icon="el-icon-refresh">Làm mới</el-button>
-          <el-button @click="showTimestampPicker" class="timestamp-button" icon="el-icon-time">Thời gian đăng</el-button>
+        <div class="button-container-tall mt-3">
+          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
+          <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm mới</el-button>
           <el-button class="bg-green" type="primary" @click="submitQuestion">Đăng</el-button>
         </div>
       </div>
@@ -156,6 +156,7 @@ updated() {
               if (responseData && responseData.success) {
                 this.loadQuestions();
                 this.questionText = "";
+                this.titleQuestion="";
                 this.isQuestionPopupVisible = false;
               } else {
                 console.error("Lỗi khi lưu câu hỏi: ", responseData);

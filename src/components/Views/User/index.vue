@@ -36,7 +36,11 @@
         <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
       </div>
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column type="index" label="STT"></el-table-column>
+        <el-table-column label="STT" width="120">
+    <template slot-scope="{ $index, row }">
+      <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+    </template>
+  </el-table-column>
         <el-table-column prop="email" label="Email"></el-table-column>
 <el-table-column label="Tên">
    <template slot-scope="{ row }">
@@ -119,7 +123,7 @@ export default {
         data.role === this.selectedFilter ||
           (this.selectedFilter === 'Admin' && !data.role) ||
           (this.selectedFilter === 'student' && !data.role) ||
-          (this.selectedFilter === 'consultant' && data.role))
+          (this.selectedFilter === 'consultant' && !data.role))
       );
     },
     currentPageData() {
@@ -197,7 +201,7 @@ export default {
     },
     getName(row){
     if (row.role == 'Admin') return row.fullname;
-    if (row.role == 'student') return row.studentInfo.fullName;
+    if (row.role == 'student') return row.fullname;
     if (row.role == 'consultant') return row.fullname;
   },
     getRole(row){

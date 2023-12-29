@@ -18,18 +18,18 @@
         [Câu hỏi] {{ title }}
       </div>
       
-      <div class="content" v-if="showFullContent" >
-        {{ content }}
-        <div class="toggle-button-full-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
-          {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
-        </div>
+      <div class="content" v-if="showFullContent">
+      <div v-html="formattedContent"></div>
+      <div class="toggle-button-full-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
+        {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
       </div>
-      <div class="content" v-else>
-        {{ truncatedContent }}
-        <div class="toggle-button-truncated-content"  v-if="content.length > maxContentLength"  @click="toggleContent">
-          {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
-        </div>
+    </div>
+    <div class="content" v-else>
+      <div v-html="formattedTruncatedContent"></div>
+      <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength" @click="toggleContent">
+        {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
       </div>
+    </div>
 
       <!-- Hiển thị biểu tượng lượt thích và biểu tượng phản hồi -->
       <div class="actions">
@@ -63,7 +63,7 @@
     </div>
      <detailQuestionVue ref="childRef"
   :id="id"
-
+:title="title"
   :content="content"
   :photoURL="typeof photoURL === 'string' ? photoURL : ''" 
   :user="user"
@@ -116,7 +116,16 @@ export default {
   } else {
     return '';
   }
+  
 },
+formattedContent() {
+      return this.content.replace(/\n/g, '<br>');
+    },
+
+    formattedTruncatedContent() {
+      const truncated = this.truncatedContent.replace(/\n/g, '<br>');
+      return truncated;
+    },
 
     truncatedContent() {
       if (this.content.length > this.maxContentLength) {
