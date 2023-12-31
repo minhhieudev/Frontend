@@ -1,7 +1,7 @@
 <template>
-<el-container style="height: 500px; border: 1px solid #eee">
-    <el-aside  style="background-color: rgb(238, 241, 246)">
-      <el-menu :default-openeds="['1', '3']">
+  <el-container style="height: 500px; ">
+    <el-aside style="background-color: rgb(238, 241, 246)">
+      <el-menu :default-openeds="['1', '3']" @select="handleMenuSelect">
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-message"></i>Trang cá nhân</template>
           <el-menu-item-group>
@@ -12,62 +12,51 @@
         <el-submenu index="2">
           <template slot="title"><i class="el-icon-menu"></i>Học tập</template>
           <el-menu-item-group>
-            <el-menu-item index="2-1">Chương trình đào tạo</el-menu-item>
-            <el-menu-item index="2-2">Quyết định sinh viên</el-menu-item>
-            <el-menu-item index="2-3">Kết quả rèn luyện</el-menu-item>
-            <el-menu-item index="2-4">Kết quả học tập</el-menu-item>
-            <el-menu-item index="2-5">Biểu mẫu - giấy xác nhận</el-menu-item>
+            <el-menu-item index="2-1">Kết quả rèn luyện</el-menu-item>
+            <el-menu-item index="2-2">Kết quả học tập</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
     </el-aside>
-    
-    <el-container >
-      <el-main class="p-0 mt-0 ml-2">
-        <trainingPoint/>
 
+    <el-container>
+      <el-main class="p-0 mt-0 ml-2">
+        <trainingPoint v-if="selectedMenuItem === '2-1'" />
+        <resultLearning v-if="selectedMenuItem === '2-2'" />
       </el-main>
     </el-container>
   </el-container>
 </template>
+
 <script>
 import trainingPoint from './trainingPoint.vue';
+import resultLearning from './resultLearning.vue';
+
 export default {
   components: {
-    trainingPoint
+    trainingPoint,
+    resultLearning
   },
   data() {
-    const item = {
-      date: '2016-05-02',
-      name: 'Tom',
-      address: 'No. 189, Grove St, Los Angeles'
-    };
     return {
-      tableData: Array(20).fill(item)
+      selectedMenuItem: null,
+      // your other data...
+    };
+  },
+  methods: {
+    handleMenuSelect(index) {
+      this.selectedMenuItem = index;
     }
   }
 };
 </script>
 
 <style>
-
+.el-submenu__title {
+  background-color: rgb(115, 226, 228);
+}
 
 .el-aside {
   color: #333;
 }
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

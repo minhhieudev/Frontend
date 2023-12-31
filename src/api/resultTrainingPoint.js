@@ -7,7 +7,7 @@ export function getAll() {
     method: "get",
   });
 }
-export function getDetail(id) {
+export function getDetailForUser(id) {
   return request({
     url: `/${modelCode}/${id}`,
     method: "get",

@@ -72,6 +72,7 @@ export default {
         }
       })
     },
+  
     loadNghanhList(){
       studentAPI.getNghanhList().then(({data})=>{
         if (data.success){

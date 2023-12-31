@@ -26,6 +26,7 @@ export function getClassList() {
   })
 }
 
+
 export function getKhoaList () {
   return request({
     url: `/${modelCode}/khoaList`,

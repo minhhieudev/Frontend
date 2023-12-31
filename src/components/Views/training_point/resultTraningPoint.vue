@@ -3,10 +3,30 @@
     <el-card>
       <div class="search-bar">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
-        <i class="fa-solid fa-download"></i>
+
+
+        <el-dropdown @command="handleDownloadCommand">
+          <span class="el-dropdown-link">
+            <i class="fa-solid fa-download" slot="trigger"></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <!-- Gọi sự kiện command với các giá trị tương ứng -->
+            <el-dropdown-item command="csv"><i class="fas fa-file-pdf text-success "></i> Export to CSV
+            </el-dropdown-item>
+            <el-dropdown-item command="word"><i class="fas fa-file-word text-primary"></i> Export to Word
+            </el-dropdown-item>
+            <el-dropdown-item command="pdf"><i class="fas fa-file-excel text-danger "></i> Export to PDF
+            </el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
+
         <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
 
-        <!-- Khoa Dropdown -->
+        <el-select v-model="selectedNam" placeholder="Năm học" filterable>
+          <el-option v-for="item in namList" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
@@ -77,7 +97,7 @@
 
       <!-- Thống kê số lượng kết quả rèn luyện -->
       <div class="result-statistics">
-        <h4 class="table-title text-center">THỐNG KÊ KẾT QUẢ RÈN LUYỆN</h4>
+        <h4 class="table-title text-center text-success">THỐNG KÊ KẾT QUẢ RÈN LUYỆN</h4>
         <el-row>
           <el-col :span="8">
             <el-form label-width="120px">
@@ -148,14 +168,10 @@
 
             </el-form>
           </el-col>
-          
+
         </el-row>
       </div>
-      <div class="mt-4">
-        <el-button size="small" type="primary" @click="exportToCSV" round>Export to CSV</el-button>
-        <el-button size="small" type="success" @click="exportToWord" round>Export to Word</el-button>
-        <el-button size="small" type="danger" @click="exportToPDF" :loading="loading" round>Export to PDF</el-button>
-      </div>
+
 
 
     </el-card>
@@ -168,16 +184,8 @@ import { format } from 'date-fns';
 import { saveAs } from 'file-saver';
 import 'jspdf-autotable';
 import html2pdf from 'html2pdf.js';
-import mammoth from 'mammoth';
 import htmlDocx from 'html-docx-js/dist/html-docx';
-import { getClassList, getKhoaList, getNghanhList } from '@/api/student';
 import '@fortawesome/fontawesome-free/css/all.css';
-
-
-
-
-
-
 
 export default {
   data() {
@@ -189,26 +197,27 @@ export default {
       },
       totalData: 0,
       search: '',
+      selectedNam: '',
       selectedKhoa: '',
       selectedNganh: '',
       selectedLop: '',
+      namList: [],
       khoaList: [],
       nganhList: [],
       lopList: [],
       loading: false,
-      //   semester1StatsData: { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 },
-      // semester2StatsData: { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 },
-      // wholeYearStatsData: { excellent: 0, good: 0, fair: 0, average: 0, weak: 0 },
     };
   },
   created() {
     this.loadData();
     this.loadInfoToFilter()
+    
   },
   computed: {
     filteredTableData() {
       return this.tableData.filter(data =>
         (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
+        (!this.selectedNam || data.schoolYear === this.selectedNam) &&
         (!this.selectedKhoa || data.studentDetails.department === this.selectedKhoa) &&
         (!this.selectedNganh || data.studentDetails.nganh === this.selectedNganh) &&
         (!this.selectedLop || data.studentDetails.className === this.selectedLop)
@@ -233,8 +242,21 @@ export default {
 
 
     },
+    uniqueSchoolYears() {
+      const uniqueYears = [...new Set(this.tableData.map(item => item.schoolYear))];
+      return uniqueYears;
+    },
+  },
+  watch: {
+    uniqueSchoolYears: {
+      handler(newValues) {
+        this.namList = newValues;
+      },
+      immediate: true,
+    },
   },
   methods: {
+
     gotoDetail(row) {
       this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } });
     },
@@ -295,11 +317,29 @@ export default {
     },
 
     resetData() {
+      this.selectedNam = '';
       this.selectedKhoa = '';
       this.selectedNganh = '';
       this.selectedLop = '';
       this.search = ''
     },
+    handleDownloadCommand(command) {
+      switch (command) {
+        case 'csv':
+          this.exportToCSV();
+          break;
+        case 'word':
+          this.exportToWord();
+          break;
+        case 'pdf':
+          this.exportToPDF();
+          break;
+        default:
+          break;
+      }
+    },
+
+
     loadInfoToFilter() {
       this.khoaList = this.$store.getters.khoaList
       this.nghanhList = this.$store.getters.nghanhList
@@ -590,4 +630,13 @@ export default {
   font-size: 18px;
   color: #333;
 }
-</style>
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409EFF;
+  font-weight: bold;
+}
+
+.el-icon-arrow-down {
+  font-size: 12px;
+}</style>
