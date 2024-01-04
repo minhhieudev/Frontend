@@ -4,13 +4,11 @@
       <div class="search-bar">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
 
-
         <el-dropdown @command="handleDownloadCommand">
           <span class="el-dropdown-link">
             <i class="fa-solid fa-download" slot="trigger"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <!-- Gọi sự kiện command với các giá trị tương ứng -->
             <el-dropdown-item command="csv"><i class="fas fa-file-pdf text-success "></i> Export to CSV
             </el-dropdown-item>
             <el-dropdown-item command="word"><i class="fas fa-file-word text-primary"></i> Export to Word
@@ -19,7 +17,6 @@
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
-
 
         <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
 
@@ -31,12 +28,10 @@
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
 
-        <!-- Ngành Dropdown -->
         <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
           <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
 
-        <!-- Lớp Dropdown -->
         <el-select v-model="selectedLop" filterable placeholder="Lớp">
           <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
         </el-select>
@@ -96,82 +91,31 @@
       </div>
 
       <!-- Thống kê số lượng kết quả rèn luyện -->
-      <div class="result-statistics">
-        <h4 class="table-title text-center text-success">THỐNG KÊ KẾT QUẢ RÈN LUYỆN</h4>
-        <el-row>
-          <el-col :span="8">
-            <el-form label-width="120px">
-
-              <el-form-item label="KỲ 1" class="bold-text">
-              </el-form-item>
-              <el-form-item label="Xuất sắc" class="bold-text">
-                <el-input v-model="semester1Statistics.excellent" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Giỏi" class="bold-text">
-                <el-input v-model="semester1Statistics.good" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Khá" class="bold-text">
-                <el-input v-model="semester1Statistics.fair" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Trung bình" class="bold-text">
-                <el-input v-model="semester1Statistics.average" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Yếu" class="bold-text">
-                <el-input v-model="semester1Statistics.weak" disabled></el-input>
-              </el-form-item>
-
-            </el-form>
-          </el-col>
-          <el-col :span="8">
-            <el-form label-width="120px">
-
-              <el-form-item label="KỲ 2" class="bold-text">
-              </el-form-item>
-              <el-form-item label="Xuất sắc" class="bold-text">
-                <el-input v-model="semester2Statistics.excellent" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Giỏi" class="bold-text">
-                <el-input v-model="semester2Statistics.good" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Khá" class="bold-text">
-                <el-input v-model="semester2Statistics.fair" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Trung bình" class="bold-text">
-                <el-input v-model="semester2Statistics.average" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Yếu" class="bold-text">
-                <el-input v-model="semester2Statistics.weak" disabled></el-input>
-              </el-form-item>
-
-            </el-form>
-          </el-col>
-          <el-col :span="8">
-            <el-form label-width="120px">
-
-              <el-form-item label="CẢ NĂM" class="bold-text ">
-              </el-form-item>
-              <el-form-item label="Xuất sắc" class="bold-text ">
-                <el-input v-model="wholeYearStatistics.excellent" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Giỏi" class="bold-text ">
-                <el-input v-model="wholeYearStatistics.good" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Khá" class="bold-text">
-                <el-input v-model="wholeYearStatistics.fair" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Trung bình" class="bold-text">
-                <el-input v-model="wholeYearStatistics.average" disabled></el-input>
-              </el-form-item>
-              <el-form-item label="Yếu" class="bold-text">
-                <el-input v-model="wholeYearStatistics.weak" disabled></el-input>
-              </el-form-item>
-
-            </el-form>
-          </el-col>
-
-        </el-row>
+      <h4 class="table-title text-center text-success">THỐNG KÊ KẾT QUẢ RÈN LUYỆN</h4>
+      <div class="container-statistical">
+        <el-card v-for="(semester, key) in [semester1Statistics, semester2Statistics, wholeYearStatistics]" :key="key"
+          :style="getCardColor(key)" class="box-card">
+          <div slot="header" class="clearfix text-center">
+            <p :style="getColorStyle(key)">{{ getSemesterLabel(key) }}</p>
+          </div>
+          <el-row>
+            <el-col :span="12">
+              <div class="items" :key="index">
+                <p>XUẤT SẮC: {{ semester.excellent }}</p>
+                <p>GIỎI: {{ semester.good }}</p>
+                <p>KHÁ: {{ semester.fair }}</p>
+              </div>
+            </el-col>
+            <el-col :span="12">
+              <div class="items" :key="index">
+                <p>TRUNG BÌNH: {{ semester.average }}</p>
+                <p>YẾU: {{ semester.weak }}</p>
+                <p>KÉM: {{ semester.least }}</p>
+              </div>
+            </el-col>
+          </el-row>
+        </el-card>
       </div>
-
 
 
     </el-card>
@@ -211,7 +155,7 @@ export default {
   created() {
     this.loadData();
     this.loadInfoToFilter()
-    
+
   },
   computed: {
     filteredTableData() {
@@ -282,8 +226,6 @@ export default {
           case 'Yếu':
             statistics.weak++;
             break;
-          // Add more cases if needed
-
           default:
             break;
         }
@@ -323,6 +265,33 @@ export default {
       this.selectedLop = '';
       this.search = ''
     },
+    getCardColor(index) {
+      const colors = [
+        "rgb(168, 245, 219)",
+        "rgb(171, 223, 243)",
+        "rgb(248, 215, 241)",
+      ];
+      const color = colors[index % colors.length];
+      return { backgroundColor: color };
+    },
+    getColorStyle(key) {
+      const colorStyles = [
+        "rgba(6, 109, 14, 0.856)",
+        "rgb(45, 7, 184)",
+        "rgb(199, 7, 65)",
+      ];
+      const color = colorStyles[key];
+      return { color };
+    },
+    getSemesterLabel(key) {
+      const labels = [
+        "HỌC KỲ 1",
+        "HỌC KỲ 2",
+        "CẢ NĂM",
+      ];
+      return labels[key];
+    },
+
     handleDownloadCommand(command) {
       switch (command) {
         case 'csv':
@@ -639,4 +608,12 @@ export default {
 
 .el-icon-arrow-down {
   font-size: 12px;
-}</style>
+}
+
+.container-statistical {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+
+}
+</style>

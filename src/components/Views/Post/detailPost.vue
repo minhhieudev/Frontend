@@ -1,7 +1,7 @@
 <template>
   <div style="z-index: 9999;">
     <el-dialog class="custom-dialog " title="Chi tiết" :visible.sync="isInviteMemberVisible">
-      <div class="question p-1 ">
+      <div class="post p-1 ">
         <div class="info">
           <el-avatar :size="avatarSize"
             src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
@@ -9,7 +9,7 @@
           <span class="date">{{ createdAt }}</span>
         </div>
         <div class="title">
-          [Câu hỏi] {{ title }}
+          {{ title }}
         </div>
         <div class="content" v-html="formattedContent"></div>
         <div class="actions">
@@ -19,7 +19,7 @@
           </div>
           <div class="comment-container">
             <el-icon style="color: rgb(24, 61, 228);" class="el-icon-chat-dot-square"></el-icon>
-            <span class="comments">{{ answersCount }}</span>
+            <span class="comments">{{ comments }}</span>
           </div>
         </div>
         <div class="reply-container">
@@ -44,6 +44,7 @@
         <answer v-for="ans in answers" :key="ans.id" :content="ans.content" :photoURL="ans.photoURL"
           :user="ans.user.fullname" :createdAt="formatDate(ans.createdAt)" :likes="ans.likes" />
       </div>
+
     </el-dialog>
 
   </div>
@@ -51,12 +52,11 @@
 
 
 <script>
-import Answer from './Answer';
+import Answer from '../Question/Answer';
 import { saveData, getAnswersByQuestionId } from '@/api/answer'
-import { updateComments } from '@/api/question'
 import { format } from 'date-fns';
-import EmojiPicker from './EmojiPicker';
-import { updateStatus } from '@/api/question';
+import EmojiPicker from '../Question/EmojiPicker';
+import { updateComments } from '@/api/post';
 
 
 export default {
@@ -123,19 +123,13 @@ export default {
       this.replyText += emoji;
       this.isEmojiPickerVisible = false;
     },
-    async saveAnswerCount() {
-      try {
-        await updateComments(this.id, this.answers.length);
-      } catch (error) {
-        console.error("Lỗi khi cập nhật lượt thích: ", error);
-      }
-    },
+
     loadAnswers() {
       getAnswersByQuestionId(this.id)
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.answers = response.data.answers;
-            this.saveAnswerCount();
+            updateComments(this.id, this.answers.length);
           } else {
             console.error("Không thành công: ", response.data);
           }
@@ -166,8 +160,8 @@ export default {
 
               if (responseData && responseData.success) {
                 this.loadAnswers();
+
                 this.replyText = "";
-                updateStatus(this.id);
               } else {
                 console.error("Lỗi khi lưu phản hồi: ", responseData);
               }
@@ -210,7 +204,7 @@ export default {
   position: absolute;
 }
 
-.question {
+.post {
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -225,7 +219,7 @@ export default {
   font-size: 16px;
 }
 
-.question:hover {
+.post:hover {
   transform: scale(1.01);
 }
 
@@ -303,6 +297,7 @@ export default {
   border: none;
   outline: none;
   background-color: #f1e8e8;
+  ;
   color: rgb(12, 11, 11);
 }
 
@@ -321,5 +316,4 @@ export default {
   font-weight: bold;
   margin-bottom: 6px;
 }
-
-.content {}</style>   
+</style>   

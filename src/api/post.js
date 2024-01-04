@@ -42,8 +42,25 @@ export function saveData(data) {
 
 export function updateLike(id) {
   return request({
-    url: `/${modelCode}/${id}`,
+    url: `/${modelCode}/like/${id}`,
     method: "post",
   });
 }
 
+export function updatePinnedStatus(id, pinnedStatus) {
+  return request({
+    url: `/${modelCode}/updatePinnedStatus/${id}`,
+    method: "post",
+    data: { pinned: pinnedStatus },
+  });
+}
+
+export function updateComments(id, answersCount) {
+  return request({
+    url: `/${modelCode}/${id}/count`,
+    method: "post",
+    data: {
+      answersCount: answersCount, 
+    },
+  });
+}

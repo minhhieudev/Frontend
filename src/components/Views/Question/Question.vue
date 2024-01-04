@@ -1,40 +1,41 @@
-  <template>
-    <div>
-    <div :id="id" class="question"  @click="openDetailQuestion($event)" ref="questionContainer">
-     <div class="info" >
- <div style="display: flex;justify-content: center;align-items: center;">
-  <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
-        
+<template>
+  <div>
+    <div :id="id" class="question" @click="openDetailQuestion($event)" ref="questionContainer">
+      <div class="info">
+        <div style="display: flex;justify-content: center;align-items: center;">
+          <el-avatar :size="avatarSize"
+            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
 
-        <div style="display: flex;flex-direction: column;">
-          <span class="author">{{ user }}</span>
-        <span class="date">{{ createdAt }}</span>
+
+          <div style="display: flex;flex-direction: column;">
+            <span class="author">{{ user }}</span>
+            <span class="date">{{ createdAt }}</span>
+          </div>
         </div>
- </div>
 
       </div>
 
       <div class="title">
         [Câu hỏi] {{ title }}
       </div>
-      
+
       <div class="content" v-if="showFullContent">
-      <div v-html="formattedContent"></div>
-      <div class="toggle-button-full-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
-        {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
+        <div v-html="formattedContent"></div>
+        <div class="toggle-button-full-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
+          {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
+        </div>
       </div>
-    </div>
-    <div class="content" v-else>
-      <div v-html="formattedTruncatedContent"></div>
-      <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength" @click="toggleContent">
-        {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
+      <div class="content" v-else>
+        <div v-html="formattedTruncatedContent"></div>
+        <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength" @click="toggleContent">
+          {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
+        </div>
       </div>
-    </div>
 
       <!-- Hiển thị biểu tượng lượt thích và biểu tượng phản hồi -->
       <div class="actions">
         <div class="like-container">
-          <i class="fa fa-heart-o" aria-hidden="true"  @click.stop="likeQuestion"></i>
+          <i class="fa fa-heart-o" aria-hidden="true" @click.stop="likeQuestion"></i>
           <span class="likes">{{ likesCount }}</span>
         </div>
         <div class="comment-container">
@@ -46,38 +47,28 @@
       <!-- Ô nhập phản hồi -->
       <div class="reply-container">
         <div class="avatar">
-          <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+          <el-avatar :size="avatarSize"
+            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
         </div>
         <div class="input-box">
-          <input
-            v-model="replyText"
-            @input="onReplyInputChange"
-            placeholder="Nhập phản hồi của bạn..."
-            class="reply-input" 
-          />
+          <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
+            class="reply-input" />
         </div>
         <div class="send-button mr-3">
           <i class="fa fa-paper-plane" style="color:rgb(22, 77, 228)" @click="sendReply" aria-hidden="true"></i>
         </div>
       </div>
     </div>
-     <detailQuestionVue ref="childRef"
-  :id="id"
-:title="title"
-  :content="content"
-  :photoURL="typeof photoURL === 'string' ? photoURL : ''" 
-  :user="user"
-  :createdAt="createdAt"
-  :likes="likes"
-  :comments="comments"
-/>
+    <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content"
+      :photoURL="typeof photoURL === 'string' ? photoURL : ''" :user="user" :createdAt="createdAt" :likes="likes"
+      :comments="comments" />
 
   </div>
 </template>
 
 
 <script>
-import detailQuestionVue from './detailQuestion'; 
+import detailQuestionVue from './detailQuestion';
 import { formatRelative, parseISO } from 'date-fns';
 import { format } from 'date-fns';
 import { updateLike } from '../../../api/question';
@@ -89,7 +80,7 @@ export default {
   props: {
     title: String,
     content: String,
-    id:String,
+    id: String,
     user: String,
     createdAt: String,
     photoURL: String,
@@ -111,14 +102,14 @@ export default {
       return 'small';
     },
     formattedCreatedAt() {
-  if (this.createdAt) {
-    return this.formatDate(new Date(this.createdAt));
-  } else {
-    return '';
-  }
-  
-},
-formattedContent() {
+      if (this.createdAt) {
+        return this.formatDate(new Date(this.createdAt));
+      } else {
+        return '';
+      }
+
+    },
+    formattedContent() {
       return this.content.replace(/\n/g, '<br>');
     },
 
@@ -134,38 +125,36 @@ formattedContent() {
         return this.content;
       }
     },
-    
+
   },
   components: {
     detailQuestionVue,
   },
   created() {
-  this.likesCount = this.likes;
-},
+    this.likesCount = this.likes;
+  },
 
 
   methods: {
     formatDate(date) {
-    if (date) {
-      return format(date, 'dd/MM/yyyy HH:mm'); // Thay đổi định dạng tùy ý ở đây
-    } else {
-      return '';
-    }
+      if (date) {
+        return format(date, 'dd/MM/yyyy HH:mm'); // Thay đổi định dạng tùy ý ở đây
+      } else {
+        return '';
+      }
     },
-    
-    async likeQuestion() {
-    // Tăng lượt thích và cập nhật giá trị mới
-    this.likesCount++;
-    console.log(this.id);
 
-    try {
-      // Gửi yêu cầu lên máy chủ để cập nhật lượt thích
-      await updateLike(this.id);
-      console.log("Cập nhật lượt thích thành công");
-    } catch (error) {
-      console.error("Lỗi khi cập nhật lượt thích: ", error);
-    }
-  },
+    async likeQuestion() {
+      // Tăng lượt thích và cập nhật giá trị mới
+      this.likesCount++;
+
+      try {
+        // Gửi yêu cầu lên máy chủ để cập nhật lượt thích
+        await updateLike(this.id);
+      } catch (error) {
+        console.error("Lỗi khi cập nhật lượt thích: ", error);
+      }
+    },
     toggleContent() {
       this.showFullContent = !this.showFullContent;
     },
@@ -191,22 +180,27 @@ formattedContent() {
 
 
 <style scoped>
-
 /* CSS cho phần câu hỏi */
 .question {
-  margin: 10px; /* Khoảng cách giữa các phần câu hỏi */
+  margin: 10px;
+  /* Khoảng cách giữa các phần câu hỏi */
   padding: 15px;
   border: 1px solid #ccc;
-  border-radius: 10px; /* Bo tròn các góc của phần câu hỏi */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng cho phần câu hỏi */
-  transition: transform 0.2s ease-in-out; /* Hiệu ứng khi hover */
+  border-radius: 10px;
+  /* Bo tròn các góc của phần câu hỏi */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Đổ bóng cho phần câu hỏi */
+  transition: transform 0.2s ease-in-out;
+  /* Hiệu ứng khi hover */
   background-color: white !important;
   z-index: 999;
 }
 
 .question:hover {
-  transform: scale(1.01); /* Hiệu ứng phóng to khi hover */
+  transform: scale(1.01);
+  /* Hiệu ứng phóng to khi hover */
 }
+
 .info {
   margin-bottom: 10px;
   display: flex;
@@ -216,7 +210,7 @@ formattedContent() {
 .author {
   margin-left: 10px;
   font-weight: bold;
-  color:rgb(7, 131, 7);
+  color: rgb(7, 131, 7);
 }
 
 .date {
@@ -243,14 +237,16 @@ formattedContent() {
 
 .fa-heart-o {
   font-size: 16px;
-  color: red; /* Màu sắc của biểu tượng lượt thích */
+  color: red;
+  /* Màu sắc của biểu tượng lượt thích */
 }
 
 .likes,
 .comments {
   font-size: 14px;
   margin-left: 4px;
-  color: #555; /* Màu sắc của số liệu lượt thích và phản hồi */
+  color: #555;
+  /* Màu sắc của số liệu lượt thích và phản hồi */
 }
 
 /* CSS cho ô nhập phản hồi */
@@ -258,10 +254,13 @@ formattedContent() {
   display: flex;
   align-items: center;
   margin-top: 10px;
-  border: 1px solid #333; /* Đặt đường viền cho ô nhập phản hồi */
-  border-radius: 20px; /* Bo tròn các góc của ô nhập phản hồi */
+  border: 1px solid #333;
+  /* Đặt đường viền cho ô nhập phản hồi */
+  border-radius: 20px;
+  /* Bo tròn các góc của ô nhập phản hồi */
   padding: 5px;
-  background-color: #f1e8e8; /* Màu nền của ô nhập phản hồi */
+  background-color: #f1e8e8;
+  /* Màu nền của ô nhập phản hồi */
   font-weight: bold;
 }
 
@@ -269,14 +268,16 @@ formattedContent() {
   margin-right: 10px;
 }
 
-.title{
+.title {
   font-weight: bold;
   margin-bottom: 6px;
 }
 
 .input-box {
   flex-grow: 1;
-  background-color: #f1e8e8;; /* Đặt màu nền của ô nhập phản hồi giống màu nền của phần câu hỏi */
+  background-color: #f1e8e8;
+  ;
+  /* Đặt màu nền của ô nhập phản hồi giống màu nền của phần câu hỏi */
 }
 
 .reply-input {
@@ -284,8 +285,11 @@ formattedContent() {
   padding: 5px;
   border: none;
   outline: none;
-  background-color: #f1e8e8;; /* Đặt màu nền của ô input */
-  color: rgb(12, 11, 11); /* Màu văn bản trong ô nhập phản hồi */
+  background-color: #f1e8e8;
+  ;
+  /* Đặt màu nền của ô input */
+  color: rgb(12, 11, 11);
+  /* Màu văn bản trong ô nhập phản hồi */
 }
 
 .send-button {
@@ -299,8 +303,10 @@ formattedContent() {
 
 .toggle-button-full-content,
 .toggle-button-truncated-content {
-  text-align: right; /* Đặt nút "Xem thêm" ở bên phải */
-  margin-top: 5px; /* Khoảng cách giữa nút và nội dung */
+  text-align: right;
+  /* Đặt nút "Xem thêm" ở bên phải */
+  margin-top: 5px;
+  /* Khoảng cách giữa nút và nội dung */
   cursor: pointer;
   opacity: 0.5;
   font-size: smaller;
@@ -308,16 +314,13 @@ formattedContent() {
 
 .toggle-button-full-content {
   /* Cài đặt cho nút "Xem thêm" trong nội dung đầy đủ */
-  display: block; /* Hiển thị nút "Xem thêm" */
+  display: block;
+  /* Hiển thị nút "Xem thêm" */
 }
 
 .toggle-button-truncated-content {
   /* Cài đặt cho nút "Xem thêm" trong nội dung cắt bớt */
-  display: inline; /* Hiển thị nút "Xem thêm" cùng hàng với nội dung */
-}
-
-
-
-
-</style>
+  display: inline;
+  /* Hiển thị nút "Xem thêm" cùng hàng với nội dung */
+}</style>
  

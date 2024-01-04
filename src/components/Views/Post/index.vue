@@ -24,21 +24,23 @@
           </div>
         </div>
         <el-scrollbar wrap-class="post-list" style="max-height: 700px; overflow-y: auto;">
-          <postItem
-            v-for="mes in posts"
-            :key="mes._id"
-            :title="mes.title"
-            :content="mes.content"
-            :attachmentPath="mes.attachmentPath"
-            :postType="mes.postType"
-            :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
-            :user="mes.user.fullname"
-            :createdAt="formatDate(mes.createdAt)"
-            :likes="mes.likes"
-            :comments="mes.comments"
-            :id="mes._id"
-          />
-        </el-scrollbar>
+  <postItem
+    v-for="mes in posts"
+    :key="mes._id"
+    :title="mes.title"
+    :content="mes.content"
+    :pinned="mes.pinned"
+    :attachmentPath="mes.attachmentPath"
+    :postType="mes.postType"
+    :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
+    :user="mes.user.fullname"
+    :createdAt="formatDate(mes.createdAt)"
+    :likes="mes.likes"
+    :comments="mes.comments"
+    :id="mes._id"
+    @pinnedStatusUpdated="loadData"
+  />
+</el-scrollbar>
       </el-main>
     </el-container>
 
@@ -103,7 +105,8 @@ export default {
       fileList:[],
       pathList:[],
       isFileSelected: false,
-      postType:''
+      postType:'',
+      pinnedPosts: [], //Mảng lưu bài được ghim
     };
   },
   components: {
@@ -191,6 +194,7 @@ if (element) {
       const newPost = {
         title: this.title,
         content: this.cleanQuestionText,
+        pinned: this.pinned,
         user: this.$store.getters.user._id,
         postType: this.postType,
       };
@@ -213,6 +217,7 @@ if (element) {
             this.loadData();
             this.resetText();
             this.isQuestionPopupVisible = false;
+
           } else {
             console.error("Lỗi khi lưu bài đăng: ", responseData);
           }
@@ -221,20 +226,36 @@ if (element) {
         console.error("Lỗi khi gửi dữ liệu bài đăng: ", error);
       }
     },
-    loadData() {
-      getAll()
-        .then((response) => {
-          if (response && response.data && response.data.success) {
-            this.tableData = response.data.posts;
-            this.posts = this.tableData.reverse();
-          } else {
-            console.error("Không thành công: ", response.data);
-          }
-        })
-        .catch((error) => {
-          console.error("Lỗi khi bài đăng: ", error);
-        });
+    async loadData() {
+      try {
+        const response = await getAll();
+        if (response && response.data && response.data.success) {
+          this.tableData = response.data.posts;
+
+          // Tách bài đăng đã ghim và chưa ghim
+          const { pinnedPosts, unpinnedPosts } = this.tableData.reduce(
+            (result, post) => {
+              if (post.pinned) {
+                result.pinnedPosts.push(post);
+              } else {
+                result.unpinnedPosts.push(post);
+              }
+              return result;
+            },
+            { pinnedPosts: [], unpinnedPosts: [] }
+          );
+
+
+          // Ghim bài đăng lên đầu danh sách
+          this.posts = [...pinnedPosts, ...unpinnedPosts.reverse()];
+        } else {
+          console.error("Không thành công: ", response.data);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải bài đăng: ", error);
+      }
     },
+
     showTimestampPicker() {
       console.log('123');
     },
