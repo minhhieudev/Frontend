@@ -1,7 +1,7 @@
 <template>
-  <div :class="{'in-drawer pb-3': inDrawer}">
+  <div :class="{ 'in-drawer pb-3': inDrawer }">
     <ul class="left-navbar">
-        <!-- <li class="order-2" v-if="!$isMobile">
+      <!-- <li class="order-2" v-if="!$isMobile">
             <el-switch v-model="theme" active-color="#04747C" size="mini" @change="changeTheme" />
         </li> -->
       <!-- <li class="bg order-4">
@@ -10,44 +10,41 @@
         </i>
       </li> -->
       <li class="order-1 order-md-5 pl-5 pr-md-0">
-        <el-dropdown
-          trigger="click"
-          @command="handleCommand"
-          class="align-text-center"
-        >
+        <el-dropdown trigger="click" @command="handleCommand" class="align-text-center">
           <span class="text-black" style="cursor: pointer">
             <b>{{ this.$store.getters.user.fullname }}</b>
-            <el-badge :value="this.$store.getters.user.is_admin ? 'Admin':''" class="item">
-              <img
-                :src="user.avatar_url ? user.avatar_url : 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y'"
-                alt="avatar"
-                :width="30"
-                class="avatar rounded-pill mb-1 mr-2 ml-2"
-              />
+            <el-badge :value="this.$store.getters.user.is_admin ? 'Admin' : ''" class="item">
+              <img :src="path" alt="avatar"
+                :width="30" class="avatar rounded-pill mb-1 mr-2 ml-2" />
             </el-badge>
-            
+
             <!-- <span class="user-notification" v-if="isNewTheme">1</span> -->
             <!-- <span class="user-text"> {{ user.first_name }} {{ user.last_name }} </span> -->
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="fa fa-user-o" disabled>{{this.$store.getters.user.email}}</el-dropdown-item>
-            <el-dropdown-item icon="el-icon-s-custom" command="customer_view">Đổi avatar</el-dropdown-item>
+            <el-dropdown-item icon="fa fa-user-o" disabled>{{ this.$store.getters.user.email }}</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-s-custom" command="change_avatar">Đổi avatar</el-dropdown-item>
+            <el-dropdown-item icon="el-icon-s-custom" command="change_pass">Đổi mật khẩu</el-dropdown-item>
             <el-dropdown-item command="logout" icon="fa fa-sign-out">Đăng xuất</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </li>
     </ul>
+    <!-- Include AvatarChangeDialog component with ref -->
+    <AvatarChangeDialog ref="avatarChangeDialog" @change-avatar="handleChangeAvatar" />
   </div>
 </template>
 <script>
 import { setOne } from '../../../utils/app'
+import AvatarChangeDialog from './AvatarChangeDialog'
+
 export default {
-    props: {
-        inDrawer: {
-            type: Boolean,
-            default: false
-        }
-    },
+  props: {
+    inDrawer: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
       showDialogLockSession: false,
@@ -57,12 +54,26 @@ export default {
         enabled: false,
         period: 5
       },
-      theme: false
+      theme: false,
+      dataUser: {},
+      path: ""
     }
   },
+  components: {
+    AvatarChangeDialog, // Register the component
+  },
+
+  created() {
+    this.getUser()
+
+  },
+
   methods: {
-    
-    changeTheme(){
+    getUser() {
+        this.path = this.$store.getters.currentUser.avatarUrl
+      },
+
+    changeTheme() {
       const theme = this.theme ? 'v2' : ''
       setOne('layout', 'THEME', theme)
       this.$store.dispatch('setNewTheme', theme === 'v2')
@@ -71,7 +82,7 @@ export default {
       this.$store.dispatch('logout').then(() => {
         this.$router.push({
           path: '/login'
-        }).catch(() => {})
+        }).catch(() => { })
       })
     },
     handleCommand(cmd) {
@@ -79,9 +90,9 @@ export default {
         case 'logout':
           this.logout()
           break
-        case 'customer_view':
-          window.open(this.$store.getters['baseUrl'])
-          break
+        case 'change_avatar':
+          this.showAvatarChangeDialog();
+          break;
         case 'lock_session':
           this.showDialogLockSession = true
           break
@@ -89,6 +100,16 @@ export default {
           return false
       }
     },
+    showAvatarChangeDialog() {
+      // Show the avatar change dialog
+      this.$refs.avatarChangeDialog.dialogVisible = true;
+    },
+    // Handle change avatar event
+    handleChangeAvatar(newAvatarUrl) {
+      this.path = newAvatarUrl;
+
+    },
+
     lockSession() {
       this.showDialogLockSession = false
       this.$store.dispatch('lockSession')
@@ -112,7 +133,7 @@ export default {
       })
     },
     editUser() {
-      this.$router.push({ name: 'system_user_edit', params: { id: this.$store.state.user.user._id } }).catch(()=>{})
+      this.$router.push({ name: 'system_user_edit', params: { id: this.$store.state.user.user._id } }).catch(() => { })
     }
   },
   computed: {
@@ -153,16 +174,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 .left-navbar {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    margin: 0;
-    li {
-        + li {
-            margin-left: 20px;
-        }
-    }
-}
+  list-style: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  margin: 0;
 
+  li {
+    +li {
+      margin-left: 20px;
+    }
+  }
+}
 </style>

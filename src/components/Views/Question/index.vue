@@ -10,41 +10,28 @@
         </div>
       </el-header>
       <el-main style="height: calc(100% - 56px); padding: 11px;">
-            <span slot="label"><i class="el-icon-date"></i> Hỏi đáp</span>
-            <div class="question-button-container">
+        <span slot="label"><i class="el-icon-date"></i> Hỏi đáp</span>
+        <div class="question-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+            <el-avatar :size="avatarSize"
+              :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
           <div class="input-box">
-            <input
-              @input="onReplyInputChange"
-              placeholder="Nhập nội dung câu hỏi mà bạn muốn hỏi Cố vấn học tập..."
-              class="reply-inputs"
-              @click="showQuestionPopup"
-            />
+            <input @input="onReplyInputChange" placeholder="Nhập nội dung câu hỏi mà bạn muốn hỏi Cố vấn học tập..."
+              class="reply-inputs" @click="showQuestionPopup" />
           </div>
         </div>
-       
-        <div class="question-container" style="max-height: 700px; overflow-y: auto;">
-           <!-- Trong template của index.vue -->
-<question
-  v-for="mes in questions"
-  :ref="mes._id"
-  :key="mes._id"
-  :title="mes.title"
-  :content="mes.content"
-  :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
-  :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
-  :createdAt="formatDate(mes.createdAt)"
-  :likes="mes.likes"
-  :comments="mes.comments"
-  :id="mes._id"
-/>
 
-          </div>
-        
-        
-       
+        <div class="question-container" style="max-height: 700px; overflow-y: auto;">
+          <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
+            :avatarUrl="mes.user.avatarUrl"
+            :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'" :createdAt="formatDate(mes.createdAt)"
+            :likes="mes.likes" :comments="mes.comments" :id="mes._id" />
+
+        </div>
+
+
+
       </el-main>
     </el-container>
 
@@ -53,10 +40,15 @@
         <p class="font-weight-bold">Tiêu đề</p>
 
         <input v-model="titleQuestion" placeholder="Nhập tiêu đề câu hỏi ..." class="reply-inputs" />
-        <ckeditor :config="ckEditorConfig" v-model="questionText"></ckeditor>
+
+        <p class="font-weight-bold">Nội dung câu hỏi</p>
+
+        <ckeditor :editor="editor" v-model="questionText"></ckeditor>
         <div class="button-container-tall mt-3">
-          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
-          <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm mới</el-button>
+          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger"
+            icon="el-icon-close">Đóng</el-button>
+          <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm
+            mới</el-button>
           <el-button class="bg-green" type="primary" @click="submitQuestion">Đăng</el-button>
         </div>
       </div>
@@ -66,10 +58,12 @@
 
 <script>
 import Question from './Question';
-import Post from '../Post'
-import { saveData, getCollection } from '@/api/question';
+import { saveData } from '@/api/question';
 import { getAll } from '@/api/question';
 import { format } from 'date-fns';
+import CKEditor from '@ckeditor/ckeditor5-vue2';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 const ModelCode = 'question';
 
@@ -84,31 +78,29 @@ export default {
       isInviteMemberVisible: false,
       isQuestionPopupVisible: false,
       questionText: "",
-      titleQuestion:'',
-      selectedQuestionId: null, 
+      titleQuestion: '',
+      selectedQuestionId: null,
+      editor: ClassicEditor,
+
     };
   },
   components: {
-    Question
+    Question,
+    ckeditor: CKEditor.component,
   },
 
-
-
   created() {
-  this.loadQuestions();
-  // Gọi phương thức scrollToQuestion sau khi dữ liệu đã được tải
- 
-},
-updated() {
-  if (this.$route.params.id){
-  console.log('Component updated');
+    this.loadQuestions();
 
-    this.scrollToQuestion();
+  },
+  updated() {
+    if (this.$route.params.id) {
 
-  };
+      this.scrollToQuestion();
 
-}
-,
+    };
+
+  },
 
   computed: {
     avatarSize() {
@@ -122,15 +114,11 @@ updated() {
   },
   methods: {
     scrollToQuestion() {
-
-    // Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
-    const element = document.getElementById(this.$route.params.id);
-    //console.log( element);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  },
-
+      const element = document.getElementById(this.$route.params.id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
     showInviteDialog() {
       this.isInviteMemberVisible = true;
     },
@@ -140,7 +128,7 @@ updated() {
     formatDate(date) {
       return String(format(new Date(date), 'dd/MM/yyyy HH:mm'));
     },
-    onReplyInputChange() {},
+    onReplyInputChange() { },
     submitQuestion() {
 
       if (this.questionText.trim() !== "") {
@@ -156,7 +144,7 @@ updated() {
               if (responseData && responseData.success) {
                 this.loadQuestions();
                 this.questionText = "";
-                this.titleQuestion="";
+                this.titleQuestion = "";
                 this.isQuestionPopupVisible = false;
               } else {
                 console.error("Lỗi khi lưu câu hỏi: ", responseData);
@@ -169,8 +157,6 @@ updated() {
             console.error("Lỗi khi gửi câu hỏi: ", error);
           });
       } else {
-        // Xử lý trường hợp không có nội dung câu hỏi
-        // Hiển thị thông báo hoặc xử lý khác tùy ý
       }
     },
     loadQuestions() {
@@ -285,7 +271,4 @@ updated() {
   transform: translateX(-60%);
   z-index: 100;
 }
-
-
-
 </style>

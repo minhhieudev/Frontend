@@ -18,7 +18,7 @@ export default {
     },
     {
       name: "Quản trị câu hỏi / Trả lời",
-      url: "/question/questionTables",
+      url: "/questionTables",
       icon: "el-icon-s-grid",
       color_icon: "#f9b651",
       type: '1',
@@ -26,7 +26,7 @@ export default {
     },
     {
       name: "Quản trị tài liệu / Bài đăng",
-      url: "/post/postTables",
+      url: "/postTables",
       icon: "el-icon-menu",
       color_icon: "#ca2c2a",
       type: '1',
@@ -66,7 +66,7 @@ export default {
     },
     {
       name: "Duyệt phiếu điểm",
-      url: "/training_point/detailTrainingPoint",
+      url: "/detailTrainingPoint",
       icon: "el-icon-tickets",
       color_icon: "#0000FF",
       type: '3',
@@ -74,7 +74,7 @@ export default {
     },
     {
       name: "Kết quả rèn luyện",
-      url: "/training_point/resultTraningPoint",
+      url: "/resultTraningPoint",
       icon: "el-icon-notebook-2",
       color_icon: "#0000FF",
       type: '3',

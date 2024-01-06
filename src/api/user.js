@@ -38,3 +38,13 @@ export function saveData (data) {
   })
 }
 
+export function updateAvatarUser (id,newUrl){
+  return request({
+    url: `/${modelCode}/updateAvatarUser/${id}`,
+    method: 'post',
+    data: {
+      avatarUrl: newUrl,
+    },
+  })
+}
+

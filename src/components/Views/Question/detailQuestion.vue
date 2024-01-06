@@ -1,12 +1,14 @@
 <template>
   <div style="z-index: 9999;">
-    <el-dialog class="custom-dialog " title="Chi tiết" :visible.sync="isInviteMemberVisible">
+    <el-dialog class="custom-dialog " :visible.sync="isInviteMemberVisible">
       <div class="question p-1 ">
-        <div class="info">
-          <el-avatar :size="avatarSize"
-            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
-          <span class="author">{{ user }}</span>
-          <span class="date">{{ createdAt }}</span>
+        <div class="info ">
+          <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
+          <div class="custom-flex">
+            <span class="author">{{ user }}</span>
+            <span class="date">{{ createdAt }}</span>
+          </div>
+
         </div>
         <div class="title">
           [Câu hỏi] {{ title }}
@@ -24,7 +26,7 @@
         </div>
         <div class="reply-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" :src="photoURL"></el-avatar>
+            <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
           <div class="input-box">
             <input v-model="replyText" @input="onReplyInputChange" @keyup.enter="sendReply"
@@ -41,7 +43,7 @@
       </div>
       <emoji-picker v-if="isEmojiPickerVisible" @emoji-selected="insertEmoji" />
       <div class="answer-list mt-2" style="max-height: 200px; overflow-y: auto;">
-        <answer v-for="ans in answers" :key="ans.id" :content="ans.content" :photoURL="ans.photoURL"
+        <answer v-for="ans in answers" :key="ans.id" :content="ans.content" :avatarUrl="ans.user.avatarUrl"
           :user="ans.user.fullname" :createdAt="formatDate(ans.createdAt)" :likes="ans.likes" />
       </div>
     </el-dialog>
@@ -66,7 +68,7 @@ export default {
     id: String,
     user: String,
     createdAt: String,
-    photoURL: String,
+    avatarUrl: String,
     likes: Number,
     comments: Number,
 
@@ -95,7 +97,6 @@ export default {
     }
   },
   created() {
-    this.loadAnswers();
 
   },
   data() {
@@ -135,7 +136,9 @@ export default {
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.answers = response.data.answers;
-            this.saveAnswerCount();
+
+            //this.saveAnswerCount();
+
           } else {
             console.error("Không thành công: ", response.data);
           }
@@ -143,9 +146,12 @@ export default {
         .catch((error) => {
           console.error("Lỗi khi tải câu trả lời: ", error);
         });
+
     },
     childFunction() {
       this.isInviteMemberVisible = true;
+      this.loadAnswers();
+
     },
     showInviteDialog() {
       this.isInviteMemberVisible = true;
@@ -196,27 +202,14 @@ export default {
 };
 </script>
 
-<style scoped>
-.popup {
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-}
-
+<style >
 .question {
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
-  background-color: rgb(245, 246, 247);
-  width: 98%;
+  background-color: white;
+  width: 100%;
 }
 
 .custom-dialog .el-dialog__header {
@@ -225,9 +218,7 @@ export default {
   font-size: 16px;
 }
 
-.question:hover {
-  transform: scale(1.01);
-}
+
 
 .info {
   margin-bottom: 10px;
@@ -322,4 +313,24 @@ export default {
   margin-bottom: 6px;
 }
 
-.content {}</style>   
+.custom-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: first baseline;
+}
+
+.el-dialog__header {
+  /* padding: 20px; */
+  /* padding-bottom: 10px; */
+  padding: 0;
+}
+
+.el-dialog__body {
+  padding: 2px;
+  color: #606266;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+.content {}
+</style>   

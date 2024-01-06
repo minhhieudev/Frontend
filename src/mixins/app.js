@@ -9,6 +9,7 @@ export default {
     return {
       ckEditorConfig: {
         entities_latin: false,
+        
         basicEntities: false,
         entities_greek: false,
         entities_processNumerical: false,
@@ -60,6 +61,18 @@ export default {
           });
         }
       });
+    },
+
+    loadCurrentUser(){
+      userAPI.getDetail(this.$store.getters.user._id).then((response)=>{
+        this.$store.dispatch("setData",{
+          key:"currentUser",
+          data: response.data.doc,
+        })
+      }).catch((err) => {
+        console.log(err)
+      }).finally(() => {
+      })
     },
 
     loadKhoaList(){

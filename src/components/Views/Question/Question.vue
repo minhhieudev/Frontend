@@ -3,8 +3,7 @@
     <div :id="id" class="question" @click="openDetailQuestion($event)" ref="questionContainer">
       <div class="info">
         <div style="display: flex;justify-content: center;align-items: center;">
-          <el-avatar :size="avatarSize"
-            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+          <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
 
 
           <div style="display: flex;flex-direction: column;">
@@ -48,7 +47,7 @@
       <div class="reply-container">
         <div class="avatar">
           <el-avatar :size="avatarSize"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+          :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
@@ -60,7 +59,7 @@
       </div>
     </div>
     <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content"
-      :photoURL="typeof photoURL === 'string' ? photoURL : ''" :user="user" :createdAt="createdAt" :likes="likes"
+      :avatarUrl="avatarUrl" :user="user" :createdAt="createdAt" :likes="likes"
       :comments="comments" />
 
   </div>
@@ -69,7 +68,6 @@
 
 <script>
 import detailQuestionVue from './detailQuestion';
-import { formatRelative, parseISO } from 'date-fns';
 import { format } from 'date-fns';
 import { updateLike } from '../../../api/question';
 import { id } from 'date-fns/locale';
@@ -83,7 +81,7 @@ export default {
     id: String,
     user: String,
     createdAt: String,
-    photoURL: String,
+    avatarUrl: String,
     likes: Number,
     comments: Number,
   },

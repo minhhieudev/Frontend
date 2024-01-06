@@ -12,35 +12,21 @@
       <el-main style="height: calc(100% - 56px); padding: 11px;">
         <div class="post-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+            <el-avatar :size="avatarSize"
+              :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
           <div class="input-box">
-            <input
-              @input="onReplyInputChange"
-              placeholder="Nhập thông tin muốn đăng tải ..."
-              class="reply-inputs"
-              @click="showQuestionPopup"
-            />
+            <input @input="onReplyInputChange" placeholder="Nhập thông tin muốn đăng tải ..." class="reply-inputs"
+              @click="showQuestionPopup" />
           </div>
         </div>
         <el-scrollbar wrap-class="post-list" style="max-height: 700px; overflow-y: auto;">
-  <postItem
-    v-for="mes in posts"
-    :key="mes._id"
-    :title="mes.title"
-    :content="mes.content"
-    :pinned="mes.pinned"
-    :attachmentPath="mes.attachmentPath"
-    :postType="mes.postType"
-    :photoURL="typeof mes.photoURL === 'string' ? mes.photoURL : ''"
-    :user="mes.user.fullname"
-    :createdAt="formatDate(mes.createdAt)"
-    :likes="mes.likes"
-    :comments="mes.comments"
-    :id="mes._id"
-    @pinnedStatusUpdated="loadData"
-  />
-</el-scrollbar>
+          <postItem v-for="mes in posts" :key="mes._id" :title="mes.title" :content="mes.content" :pinned="mes.pinned"
+            :attachmentPath="mes.attachmentPath" :postType="mes.postType"
+            :avatarUrl="mes.user.avatarUrl" :user="mes.user.fullname"
+            :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :comments="mes.comments" :id="mes._id"
+            @pinnedStatusUpdated="loadData" />
+        </el-scrollbar>
       </el-main>
     </el-container>
 
@@ -57,25 +43,21 @@
           </el-radio-group>
         </div>
 
-        <ckeditor :config="ckEditorConfig" v-model="postText"></ckeditor>
+        <p class="font-weight-bold">Nội dung bài đăng</p>
+
+        <ckeditor :editor="editor" v-model="postText"></ckeditor>
+
         <p class="font-weight-bold mt-1">Đính kèm</p>
-        <el-upload
-          class="upload-demo"
-          ref="upload"
-          :action="uploadActionURL"
-          :auto-upload="false"
-          :before-upload="beforeUpload"
-          :on-success="handleFileUploadSuccess"
-          :on-change="handleFileChange"
-          multiple
-        >
+        <el-upload class="upload-demo" ref="upload" :action="uploadActionURL" :auto-upload="false"
+          :before-upload="beforeUpload" :on-success="handleFileUploadSuccess" :on-change="handleFileChange" multiple>
           <el-button slot="trigger" round size="small" type="primary" plain class="">Chọn tệp</el-button>
           <div class="el-upload__tip" slot="tip">Tải tệp đính kèm</div>
         </el-upload>
 
         <div class="button-container-tall">
-          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
-          <el-button @click="resetText" class="refresh-button"  type="warning" icon="el-icon-refresh">Làm mới</el-button>
+          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger"
+            icon="el-icon-close">Đóng</el-button>
+          <el-button @click="resetText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm mới</el-button>
           <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">Đăng</el-button>
         </div>
       </div>
@@ -87,6 +69,9 @@
 import { getAll, saveData } from '@/api/post';
 import { format } from 'date-fns';
 import postItem from './postItem';
+import CKEditor from '@ckeditor/ckeditor5-vue2';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 export default {
   data() {
@@ -101,30 +86,32 @@ export default {
       isQuestionPopupVisible: false,
       postText: "",
       title: "",
-      uploadActionURL: `http://localhost:8001/public/upload`,
-      fileList:[],
-      pathList:[],
+      uploadActionURL: process.env.VUE_APP_BACKEND_URL + `/public/upload`,
+      fileList: [],
+      pathList: [],
       isFileSelected: false,
-      postType:'',
+      postType: '',
       pinnedPosts: [], //Mảng lưu bài được ghim
+      editor: ClassicEditor,
     };
   },
   components: {
     postItem,
+    ckeditor: CKEditor.component,
   },
+
   created() {
     this.loadData();
   },
   updated() {
-  if (this.$route.params.id){
-  console.log('Component updated');
+    if (this.$route.params.id) {
 
-    this.scrollToQuestion();
+      this.scrollToQuestion();
 
-  };
+    };
 
-}
-,
+  }
+  ,
   computed: {
     cleanQuestionText() {
       const tempDiv = document.createElement('div');
@@ -135,13 +122,13 @@ export default {
   methods: {
     scrollToQuestion() {
 
-// Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
-const element = document.getElementById(this.$route.params.id);
-//console.log( element);
-if (element) {
-  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-},
+      // Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
+      const element = document.getElementById(this.$route.params.id);
+      //console.log( element);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
     showInviteDialog() {
       this.isInviteMemberVisible = true;
     },
@@ -151,31 +138,35 @@ if (element) {
     formatDate(date) {
       return String(format(new Date(date), 'dd/MM/yyyy HH:mm'));
     },
-    onReplyInputChange() {},
+    onReplyInputChange() { },
+
     handleFileChange(file, fileList) {
       this.isFileSelected = fileList.length > 0;
       console.log(fileList.length)
     },
 
     submitUpload() {
+
       if (this.isFileSelected && this.checkData()) {
         this.$refs.upload.submit();
-      } else if(this.checkData()) {
-        // Hiển thị một thông báo hoặc thực hiện hành động phù hợp nếu không có tệp nào được chọn.
+
+      } else if (this.checkData()) {
         this.submitNoFile();
+
       }
     },
-    
+
     beforeUpload(file) {
+
       this.fileList.push(file);
       return file;
     },
     handleFileUploadSuccess(response, file, filePath) {
       const attachmentData = response.files.map(file => ({
-        filename: file.filename, 
+        filename: file.filename,
         path: file.path
-      }));
 
+      }));
       this.pathList.push(...attachmentData);
 
       if (this.pathList.length === this.fileList.length) {
@@ -183,11 +174,12 @@ if (element) {
           title: this.title,
           content: this.cleanQuestionText,
           user: this.$store.getters.user._id,
-          attachmentPath: this.pathList, 
+          attachmentPath: this.pathList,
           postType: this.postType,
         };
 
         this.submitData(newPost);
+
       }
     },
     submitNoFile() {
@@ -201,8 +193,8 @@ if (element) {
 
       this.submitData(newPost);
     },
-    checkData(){
-      if (this.title == '' || this.postText == '' || this.postType == ''){
+    checkData() {
+      if (this.title == '' || this.postText == '' || this.postType == '') {
         this.$message.error('Vui lòng nhập đủ thông tin !');
         return false;
       }
@@ -217,6 +209,14 @@ if (element) {
             this.loadData();
             this.resetText();
             this.isQuestionPopupVisible = false;
+
+            // Đảm bảo làm sạch danh sách file trước khi đăng
+            this.$refs.upload.clearFiles();
+            this.fileList = []; // Đặt lại danh sách file trong data
+            this.pathList = []; // Đặt lại danh sách đường dẫn trong data
+            this.isFileSelected = false
+            console.log(this.isFileSelected)
+
 
           } else {
             console.error("Lỗi khi lưu bài đăng: ", responseData);
@@ -282,6 +282,7 @@ if (element) {
   opacity: 1;
   border-radius: 25px;
 }
+
 .logo {
   position: absolute;
   bottom: -60px;
@@ -289,6 +290,7 @@ if (element) {
   transform: translateX(-60%);
   z-index: 100;
 }
+
 .question-list {
   max-height: 100%;
   overflow-y: auto;

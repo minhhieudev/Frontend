@@ -10,6 +10,7 @@ export default {
     this.loadKhoaList()
     this.loadNghanhList()
     this.loadLopList()
+    this.loadCurrentUser()
     if (['Admin', 'Cố vấn'].includes(this.$store.getters.user.role)) {
       this.loadAllUsers()
 

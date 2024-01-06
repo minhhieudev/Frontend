@@ -3,12 +3,7 @@
     <el-card>
       <toolbar-widget :buttons="toolbarButtons"></toolbar-widget>
       <div class="col-md-6 mt-3">
-        <el-form
-          ref="form_data"
-          label-width="150px"
-          label-position="left"
-          :model="form"
-        >
+        <el-form ref="form_data" label-width="150px" label-position="left" :model="form">
           <el-form-item label="Tên" required>
             <el-input v-model="form.fullname" autofocus />
           </el-form-item>
@@ -21,11 +16,9 @@
           <el-form-item v-else label="Renew Password">
             <el-input v-model="form.renew_password" />
           </el-form-item>
-         
+
           <el-form-item label="Quyền">
-            <el-select
-              v-model="form.role"
-              placeholder="Select">
+            <el-select v-model="form.role" placeholder="Select">
               <el-option label="Sinh viên" value="student"></el-option>
               <el-option label="Cố vấn" value="consultant"></el-option>
               <el-option label="Admin" value="Admin"></el-option>
@@ -49,7 +42,7 @@ export default {
   data: function () {
     return {
       form: {
-        fullname:'',
+        fullname: '',
         role: 'student'
       },
       hasChange: false,
@@ -91,23 +84,23 @@ export default {
     this.loadData(this.$route.params.id)
   },
   methods: {
-    loadData (currentId) {
-      if ( currentId) {
+    loadData(currentId) {
+      if (currentId) {
         if (!currentId && this.$route.params.id) {
-        currentId = this.$route.params.id
-      }
-
-      this.$wrLoading(true);
-      getDetail(currentId).then(({data}) => {
-        if (data.success) {
-          this.$set(this, 'form', data.doc)
-          this.hasChange = false;
+          currentId = this.$route.params.id
         }
-      }).catch((err) => {
-        console.log(err)
-      }).finally(() => {
-        this.$wrLoading(false);
-      })
+
+        this.$wrLoading(true);
+        getDetail(currentId).then(({ data }) => {
+          if (data.success) {
+            this.$set(this, 'form', data.doc)
+            this.hasChange = false;
+          }
+        }).catch((err) => {
+          console.log(err)
+        }).finally(() => {
+          this.$wrLoading(false);
+        })
       }
     },
     saveAndContinue() {
@@ -115,7 +108,7 @@ export default {
     },
     async handleSave(isContinue = false) {
       // Gọi setFullName để cập nhật fullname trước khi lưu
-      if ( this.form.fullname == ''){
+      if (this.form.fullname == '') {
         await this.setFullName();
       }
       this.$refs.form_data.validate(async (valid) => {
@@ -124,7 +117,7 @@ export default {
         } else {
           this.$wrLoading(true)
           let currentId
-          await saveData(this.form).then(({data}) => {
+          await saveData(this.form).then(({ data }) => {
             if (data.success == true) {
               this.loadAllUsers()
               if (isContinue === false) {
@@ -160,32 +153,32 @@ export default {
 
         const emailValue = String(this.form.email); // Chuyển đổi thành chuỗi
 
-        if ( this.form.role == 'consultant'){
+        if (this.form.role == 'consultant') {
 
           const response = await getFullNameCV({ email: emailValue });
           if (response && response.data && response.data.success) {
-          this.form.fullname = response.data.fullName;
-        } else {
-          console.error("Không thành công: ", response.data);
-        }
-        return ;
-        } else if ( this.form.role == 'student') {
+            this.form.fullname = response.data.fullName;
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+          return;
+        } else if (this.form.role == 'student') {
 
           const response = await getFullNameSV({ email: emailValue });
           if (response && response.data && response.data.success) {
-          this.form.fullname = response.data.fullName;
-        } else {
-          console.error("Không thành công: ", response.data);
+            this.form.fullname = response.data.fullName;
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+          return;
         }
-        return;
-        }
-     
+
       } catch (error) {
         console.error("Lỗi khi lấy tên: ", error);
       }
     },
- }
-    
+  }
+
 
 
 }

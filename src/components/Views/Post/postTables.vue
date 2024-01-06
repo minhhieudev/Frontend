@@ -1,5 +1,5 @@
 <template>
-  <div class="Questions">
+  <div class="Posts">
     <el-card>
       <div class="action-post justify-content-between mb-4">
         <div class="d-flex justify-content-start">

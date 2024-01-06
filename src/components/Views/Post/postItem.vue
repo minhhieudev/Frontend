@@ -5,8 +5,8 @@
 
         <div style="display: flex;justify-content: center">
           <div style="display: flex;justify-content: center;align-items: center;">
-            <el-avatar :size="avatarSize"
-              src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+            <el-avatar :size="avatarSize" :src="avatarUrl"
+            ></el-avatar>
             <div style="display: flex;flex-direction: column;">
               <span class="author ml-2">{{ user }} ( CVHT )</span>
               <span class="date">{{ createdAt }}</span>
@@ -80,7 +80,7 @@
       <div class="reply-container">
         <div class="avatar">
           <el-avatar :size="avatarSize"
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
+            :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
@@ -92,8 +92,8 @@
       </div>
     </div>
     <detailPostVue ref="childRef" :id="id" :title="title" :content="content"
-      :photoURL="typeof photoURL === 'string' ? photoURL : ''" :user="user" :createdAt="createdAt" :likes="likes"
-      :comments="comments" />
+      :avatarUrl="avatarUrl" :user="user" :createdAt="createdAt" :likes="likes" 
+      :comments="comments" :attachmentPath="attachmentPath"/>
 
 
   </div>
@@ -101,8 +101,7 @@
   
   
 <script>
-import { formatRelative, parseISO } from 'date-fns';
-import detailPostVue from './detailPost'; 
+import detailPostVue from './detailPost';
 import { format } from 'date-fns';
 import { updateLike, updatePinnedStatus } from '../../../api/post';
 import { id } from 'date-fns/locale';
@@ -110,15 +109,15 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import { handleDelete } from '@/api/post';
 
 
-import axios from 'axios'; // Add this line
+import axios from 'axios';
 
 
 export default {
   props: {
     title: String,
     content: {
-      type: [String, Array], // adjust the type based on your requirements
-      default: "", // or default: [] for an array
+      type: [String, Array],
+      default: "",
     },
     pinned: Boolean,
     postType: String,
@@ -130,7 +129,7 @@ export default {
     id: String,
     user: String,
     createdAt: String,
-    photoURL: String,
+    avatarUrl: String,
     likes: Number,
     comments: Number,
   },
@@ -191,7 +190,6 @@ export default {
       })
         .then(response => {
           const url = window.URL.createObjectURL(new Blob([response.data]));
-          console.log('text' + url);
 
           const link = document.createElement('a');
           link.href = url;
@@ -212,6 +210,7 @@ export default {
         return '';
       }
     },
+    onReplyInputChange (){},
     getFileIconClass(filename) {
       const fileExtension = filename.split('.').pop().toLowerCase();
       let icon = {
@@ -309,14 +308,7 @@ export default {
     showMoreOptions() {
       this.dropdownVisible = true;
     },
-    handleDropdownCommand(command) {
-      // Xử lý khi người dùng chọn một lựa chọn từ dropdown
-      if (command === 'pin') {
-        this.togglePinned(); // Gọi hàm để thực hiện ghim bài
-      } else if (command === 'delete') {
-        this.confirmDelete();
-      }
-    },
+
     handleDropdownCommand(command) {
       if (command === 'pin') {
         this.togglePinned(); // Gọi hàm để thực hiện ghim bài
@@ -326,16 +318,24 @@ export default {
         this.confirmDelete();
       }
     },
-    togglePinned() {
-      const newPinnedStatus = !this.pinned; // Đảo ngược trạng thái hiện tại
-      this.updatePinnedStatus(newPinnedStatus);
+    async togglePinned() {
+      const newPinnedStatus = !this.pinned; 
+
+      this.$confirm(`Bạn có chắc chắn muốn ${newPinnedStatus ? 'ghim' : 'huỷ ghim'} bài viết này không?`, {
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        this.updatePinnedStatus(newPinnedStatus);
+      }).catch(() => {
+        console.log('Cancel')
+      });
     },
 
     async updatePinnedStatus(newPinnedStatus) {
       try {
         // Gửi yêu cầu lên máy chủ để cập nhật trạng thái pinned
         await updatePinnedStatus(this.id, newPinnedStatus);
-
         // Cập nhật trạng thái pinned trong component
         this.computedPinned = newPinnedStatus;
         this.$emit('pinnedStatusUpdated');
@@ -348,28 +348,20 @@ export default {
 };
 </script>
   
-  
-  
 <style scoped>
-/* CSS cho phần câu hỏi */
 .post {
   margin: 10px;
-  /* Khoảng cách giữa các phần câu hỏi */
   padding: 15px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  /* Bo tròn các góc của phần câu hỏi */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Đổ bóng cho phần câu hỏi */
   transition: transform 0.2s ease-in-out;
-  /* Hiệu ứng khi hover */
   background-color: white !important;
   z-index: 999;
 }
 
 .post:hover {
   transform: scale(1.01);
-  /* Hiệu ứng phóng to khi hover */
 }
 
 .info {
@@ -377,7 +369,6 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-
 .author {
   margin-left: 5px;
   font-weight: bold;

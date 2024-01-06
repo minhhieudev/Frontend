@@ -1,12 +1,13 @@
 <template>
   <div style="z-index: 9999;">
-    <el-dialog class="custom-dialog " title="Chi tiết" :visible.sync="isInviteMemberVisible">
+    <el-dialog :visible.sync="isInviteMemberVisible">
       <div class="post p-1 ">
-        <div class="info">
-          <el-avatar :size="avatarSize"
-            src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"></el-avatar>
-          <span class="author">{{ user }}</span>
-          <span class="date">{{ createdAt }}</span>
+        <div class="info ">
+          <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
+          <div class="custom-flex">
+            <span class="author">{{ user }}</span>
+            <span class="date">{{ createdAt }}</span>
+          </div>
         </div>
         <div class="title">
           {{ title }}
@@ -22,12 +23,25 @@
             <span class="comments">{{ comments }}</span>
           </div>
         </div>
+        <div class="attachments" v-if="attachmentPath.length > 0">
+          <p><strong>Đính kèm:</strong></p>
+          <ul>
+            <li v-for="(attachment, index) in attachmentPath" :key="index">
+              <a :href="attachment.path" target="_blank" :download="attachment.filename"
+                @click.prevent="downloadAttachment(attachment)">
+                <i :class="getFileIconClass(attachment.filename).class"
+                  :style="{ color: getFileIconClass(attachment.filename).color }"></i>
+                {{ attachment.filename }}
+              </a>
+            </li>
+          </ul>
+        </div>
         <div class="reply-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" :src="photoURL"></el-avatar>
+            <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
           <div class="input-box">
-            <input v-model="replyText" @input="onReplyInputChange" @keyup.enter="sendReply"
+            <input v-model="replyText"  @keyup.enter="sendReply"
               placeholder="Nhập phản hồi của bạn..." class="reply-input" />
           </div>
           <div class="emoji-button " @click="showEmojiPicker">
@@ -41,7 +55,7 @@
       </div>
       <emoji-picker v-if="isEmojiPickerVisible" @emoji-selected="insertEmoji" />
       <div class="answer-list mt-2" style="max-height: 200px; overflow-y: auto;">
-        <answer v-for="ans in answers" :key="ans.id" :content="ans.content" :photoURL="ans.photoURL"
+        <answer v-for="ans in reply" :key="ans.id" :content="ans.content" :avatarUrl="ans.user.avatarUrl"
           :user="ans.user.fullname" :createdAt="formatDate(ans.createdAt)" :likes="ans.likes" />
       </div>
 
@@ -53,10 +67,12 @@
 
 <script>
 import Answer from '../Question/Answer';
-import { saveData, getAnswersByQuestionId } from '@/api/answer'
+import { saveData, getReplyByPostId } from '@/api/reply'
 import { format } from 'date-fns';
 import EmojiPicker from '../Question/EmojiPicker';
 import { updateComments } from '@/api/post';
+import axios from 'axios';
+
 
 
 export default {
@@ -66,8 +82,12 @@ export default {
     id: String,
     user: String,
     createdAt: String,
-    photoURL: String,
+    avatarUrl: String,
     likes: Number,
+    attachmentPath: {
+      type: Array,
+      default: () => [],
+    },
     comments: Number,
 
   },
@@ -90,18 +110,17 @@ export default {
         return 'Ngày tạo không xác định';
       }
     },
-    answersCount() {
-      return this.answers.length;
+    replyCount() {
+      return this.reply.length;
     }
   },
   created() {
-    this.loadAnswers();
 
   },
   data() {
     return {
       replyText: '',
-      answers: [],
+      reply: [],
       isInviteMemberVisible: false,
       isEmojiPickerVisible: false,
     };
@@ -124,12 +143,12 @@ export default {
       this.isEmojiPickerVisible = false;
     },
 
-    loadAnswers() {
-      getAnswersByQuestionId(this.id)
+    loadReply() {
+      getReplyByPostId(this.id)
         .then((response) => {
           if (response && response.data && response.data.success) {
-            this.answers = response.data.answers;
-            updateComments(this.id, this.answers.length);
+            this.reply = response.data.reply;
+            updateComments(this.id, this.reply.length);
           } else {
             console.error("Không thành công: ", response.data);
           }
@@ -140,17 +159,18 @@ export default {
     },
     childFunction() {
       this.isInviteMemberVisible = true;
+    this.loadReply();
+
     },
     showInviteDialog() {
       this.isInviteMemberVisible = true;
     },
-    onReplyInputChange() {
-    },
+
     sendReply(event) {
       if (this.replyText.trim() !== "") {
         const newReply = {
           content: this.replyText,
-          question: this.id,
+          reply: this.id,
           user: this.$store.getters.user._id
         };
         saveData(newReply)
@@ -159,7 +179,7 @@ export default {
               const responseData = response.data;
 
               if (responseData && responseData.success) {
-                this.loadAnswers();
+                this.loadReply();
 
                 this.replyText = "";
               } else {
@@ -185,12 +205,60 @@ export default {
     },
     toggleInviteMemberDialog() {
       this.internalIsInviteMemberVisible = !this.internalIsInviteMemberVisible;
-    }
+    },
+    downloadAttachment(attachment) {
+      axios({
+        url: attachment.path,
+        method: 'GET',
+        responseType: 'blob', // Đảm bảo nhận dữ liệu dạng blob
+        baseURL: process.env.VUE_APP_BACKEND_URL,
+      })
+        .then(response => {
+          const url = window.URL.createObjectURL(new Blob([response.data]));
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', attachment.filename);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        })
+        .catch(error => {
+          console.error('Lỗi khi tải xuống tệp:', error);
+        });
+    },
+    getFileIconClass(filename) {
+      const fileExtension = filename.split('.').pop().toLowerCase();
+      let icon = {
+        class: 'fas fa-file',
+        color: '#333',
+      };
+
+      switch (fileExtension) {
+        case 'pdf':
+          icon.class = 'fas fa-file-pdf';
+          icon.color = '#ff0000';
+          break;
+        case 'doc':
+        case 'docx':
+          icon.class = 'fas fa-file-word';
+          icon.color = '#2b5797';
+          break;
+        case 'xls':
+        case 'xlsx':
+          icon.class = 'fas fa-file-excel';
+          icon.color = '#1f8a70';
+          break;
+        default:
+          break;
+      }
+      return icon;
+    },
   },
 };
 </script>
 
-<style scoped>
+<style >
 .popup {
   top: 0;
   left: 0;
@@ -210,18 +278,10 @@ export default {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   background-color: rgb(245, 246, 247);
-  width: 98%;
+  width: 100%;
 }
 
-.custom-dialog .el-dialog__header {
-  background-color: #333;
-  color: #fff;
-  font-size: 16px;
-}
 
-.post:hover {
-  transform: scale(1.01);
-}
 
 .info {
   margin-bottom: 10px;
@@ -242,7 +302,9 @@ export default {
   color: #a7a7a7;
 }
 
-.content {}
+.content {
+  margin-left: 4px;
+}
 
 .actions {
   display: flex;
@@ -315,5 +377,25 @@ export default {
 .title {
   font-weight: bold;
   margin-bottom: 6px;
+  margin-left: 4px;
+}
+
+.custom-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: first baseline;
+}
+
+.el-dialog__header {
+  /* padding: 20px; */
+  /* padding-bottom: 10px; */
+  padding: 0;
+}
+
+.el-dialog__body {
+  padding: 3px 2px;
+  color: #606266;
+  font-size: 14px;
+  word-break: break-all;
 }
 </style>   

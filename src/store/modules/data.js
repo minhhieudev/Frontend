@@ -9,6 +9,7 @@ export default {
     khoaList:[],
     nghanhList:[],
     lopList:[],
+    currentUer: {},
 
     allUsers: [],
   },

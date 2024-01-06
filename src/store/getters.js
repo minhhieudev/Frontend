@@ -60,6 +60,7 @@ export default {
 
 
   allUsers: (state) => state.data.allUsers,
+  currentUser: (state) => state.data.currentUser,
   khoaList: (state) => state.data.khoaList,
   nghanhList: (state) => state.data.nghanhList,
   lopList: (state) => state.data.lopList,

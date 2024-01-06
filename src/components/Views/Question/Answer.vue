@@ -1,25 +1,28 @@
 <template>
   <div class="answer">
     <div class="info">
-      <el-avatar :size="avatarSize" src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80">
+      <el-avatar :size="avatarSize" :src="avatarUrl">
       </el-avatar>
       <div>
-        <div>
+        <div class="custom-flex">
           <span class="author">{{ user }}</span>
           <span class="date">{{ createdAt }}</span>
+          
         </div>
+        
       </div>
-
-    </div>
-    <div class="content">{{ content }}</div>
-    
-    <!-- Hiển thị biểu tượng lượt thích và biểu tượng phản hồi -->
-    <div class="actions">
+      <div class="actions ml-4">
       <div class="like-container">
         <i class="fa fa-heart-o" aria-hidden="true"></i>
         <span class="likes">{{ likes }}</span>
       </div>
     </div>
+
+    </div>
+    <div class="content">{{ content }}</div>
+    
+    <!-- Hiển thị biểu tượng lượt thích và biểu tượng phản hồi -->
+    
   </div>
     <!-- Biểu mẫu để thêm phản hồi mới -->
     <!-- <el-card>
@@ -44,7 +47,7 @@ export default {
     content: String,
     user: String,
     createdAt: String,
-    photoURL: String,
+    avatarUrl: String,
     likes: Number,
   },
   computed: {
@@ -54,6 +57,8 @@ export default {
     formattedDate() {
       return this.createdAt ? this.formatDate(this.createdAt) : '';
     },
+  },
+  created (){
   },
   methods: {
     formatDate(seconds) {
@@ -91,26 +96,27 @@ export default {
 }
 
 .date {
-  margin-left: 10px;
   font-size: 11px;
   color: #a7a7a7;
 }
 
 .content {
-  margin-left: 30px;
+  background-color: #eef7e6;
+  border-radius: 25px;
+  padding: 8px;
+  margin-bottom: 3px;
+
 }
 
 /* CSS cho biểu tượng lượt thích và phản hồi */
-.actions {
-  display: flex;
-  align-items: center;
-}
+
 
 .like-container,
 .comment-container {
   display: flex;
   align-items: center;
   margin-right: 10px;
+  margin-bottom: 3px;
 }
 
 .fa-heart-o {
@@ -120,8 +126,11 @@ export default {
 
 .likes {
   font-size: 14px;
-  margin-left: 4px;
   color: #555; /* Màu sắc của số liệu lượt thích và phản hồi */
 }
-
+.custom-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: first baseline;
+}
 </style>
