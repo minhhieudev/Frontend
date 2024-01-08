@@ -141,6 +141,9 @@ export default {
    
   },
   methods: {
+    goToAddNewPage() {
+      this.$router.push({ name: 'post_main' })
+    },
     handlePageSizeChange(newSize) {
       this.pagination.page_size = newSize;
       this.pagination.current_page = 1;
@@ -183,10 +186,10 @@ export default {
         // window.open(attachment.path, '_blank');
       }
     },
-
     goToAddNewPage() {
-      this.$router.push({ name: `Question_new` });
+      this.$router.push({ name: 'post_main' });
     },
+    
     gotoDetail(row) {
       this.$router.push({ name: `Post`, params: { id: row._id } });
     },

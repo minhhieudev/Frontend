@@ -3,7 +3,6 @@
     <el-card class="table-info center">
       <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
 
-
       <el-row>
         <el-col :span="6" :offset="6">
           <el-form label-width="80px">
@@ -24,7 +23,6 @@
       </el-row>
 
       <el-form ref="formData" :model="formData" label-width="80px" class="text-center">
-
         <el-row type="flex" class="row-bg" justify="space-between">
           <el-col :span="6">
             <div class="grid-content ">
@@ -54,50 +52,52 @@
         </el-row>
       </el-form>
 
-
-      <el-table :data="flattenedCriteriaList" style="width: 100%" border>
-        <el-table-column label="STT" width="50" style="font-weight: bold;">
+      <el-table :data="flattenedCriteriaList" style="width: 100%">
+        <el-table-column label="STT" width="50" style="font-weight: bold;" align="center">
           <template slot-scope="scope">
             <span :class="{ 'bold-text': scope.row.stt }">{{ scope.row.stt }}</span>
           </template>
         </el-table-column>
         <el-table-column label="Nội dung và tiêu chí đánh giá">
           <template slot-scope="scope">
-            <span :class="{ 'bold-text': scope.row.criteria }">
-              {{ scope.row.level === 1 ? scope.row.criteria : scope.row.text }}
+            <span :class="{
+              'bold-text': scope.row.level === 1,
+              'bold-text2': hasAsterisk(scope.row.text)
+            }">
+              {{ scope.row.level === 1 ? scope.row.text : scope.row.text }}
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="Mức điểm tối đa" width="50">
+        <el-table-column label="Mức điểm tối đa" width="50" align="center">
           <template slot-scope="scope">
-            {{ scope.row.criteria ? '' : scope.row.maxScore }}
+            <span>
+              {{ (scope.row.level == 2) && (!hasAsterisk(scope.row.text)) ? scope.row.maxScore : '' }}
+            </span>
           </template>
         </el-table-column>
 
-        <el-table-column label="Điểm" height="5">
-          <el-table-column label="SV tự chấm" width="70">
+        <el-table-column label="Điểm" height="5" align="center">
+          <el-table-column label="SV tự chấm" width="70" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.selfAssessment" placeholder="Nhập điểm" @input="Update_Total_selfAssessment"
-                v-if="!scope.row.stt && !scope.row.criteria"></el-input>
+                v-if="scope.row.stt && scope.row.level == 1"></el-input>
             </template>
           </el-table-column>
-          <el-table-column label="Lớp chấm" width="70">
+          <el-table-column label="Lớp chấm" width="70" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.groupAssessment" placeholder="Nhập điểm" @input="Update_Total_groupAssessment"
-                v-if="!scope.row.stt && !scope.row.criteria"></el-input>
+                v-if="scope.row.stt && scope.row.level == 1"></el-input>
             </template>
           </el-table-column>
 
-          <el-table-column label="Cố vấn (xét duyệt)" width="70">
+          <el-table-column label="Cố vấn (xét duyệt)" width="70" align="center">
             <template slot-scope="scope">
               <el-input v-model="scope.row.consultantAssessment" placeholder="Nhập điểm"
-                @input="Update_Total_consultantAssessment" v-if="!scope.row.stt && !scope.row.criteria"></el-input>
+                @input="Update_Total_consultantAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
             </template>
           </el-table-column>
         </el-table-column>
-
       </el-table>
-
 
       <el-form label-width="140px" class="d-flex justify-content-around">
         <el-form-item label="Sinh viên tự chấm" class="bold-text">
@@ -170,6 +170,7 @@ export default {
   },
 
   computed: {
+    // Chuyển form đăng ký sang các row trong array để hiển thị table
     flattenedCriteriaList() {
       const flattenedList = [];
       let stt = 0;
@@ -181,27 +182,27 @@ export default {
         flattenedList.push({
           stt: item.criteria ? stt : '',
           level: 1,
-          criteria: item.criteria,
+          text: item.criteria.text,
+          selfAssessment: item.criteria.selfAssessment,
+          groupAssessment: item.criteria.groupAssessment,
+          consultantAssessment: item.criteria.consultantAssessment,
+
         });
         item.content.forEach(contentItem => {
           flattenedList.push({
             level: 2,
             text: contentItem.text,
             maxScore: contentItem.maxScore,
-            selfAssessment: contentItem.selfAssessment,
-            groupAssessment: contentItem.groupAssessment,
-            consultantAssessment: contentItem.consultantAssessment,
           });
         });
       });
       this.resultArray = flattenedList;
-
       return flattenedList;
     },
   },
+
+
   methods: {
-
-
     Update_Total_selfAssessment() {
       this.Total_selfAssessment = this.flattenedCriteriaList.reduce(
         (total, criteria) => total + Number(criteria.selfAssessment || 0),
@@ -298,11 +299,16 @@ export default {
       let currentObject = null;
 
       inputArray.forEach(obj => {
-        if (obj.criteria) {
+        if (obj.level == 1) {
           // Nếu có thuộc tính "criteria", bắt đầu một đối tượng mới
           currentObject = {
             stt: obj.stt,
-            criteria: obj.criteria,
+            criteria: {
+              text: obj.text,
+              selfAssessment: obj.selfAssessment,
+              groupAssessment: obj.groupAssessment,
+              consultantAssessment: obj.consultantAssessment,
+            },
             content: [],
           };
           criteriaList.push(currentObject);
@@ -311,9 +317,7 @@ export default {
           currentObject.content.push({
             text: obj.text,
             maxScore: obj.maxScore,
-            selfAssessment: obj.selfAssessment,
-            groupAssessment: obj.groupAssessment,
-            consultantAssessment: obj.consultantAssessment,
+
           });
         }
       });
@@ -355,21 +359,29 @@ export default {
     handleSaveCopy() {
       // Kiểm tra xem học kỳ và năm học có được nhập không
       if (!this.semester || !this.schoolYear) {
-        this.$message.error('Vui lòng nhập học kỳ và năm học.');
+        this.$alert('Vui lòng nhập thông tin về học kỳ và năm học', 'Thông báo', {
+          confirmButtonText: 'OK'
+        });
         return;
       }
-
-      saveDataCopy(this.combineObjects(this.resultArray))
+      handleDeleteCopy(this.id_nhap)
         .then(response => {
-          if (response && response.data) {
+          if (response) {
+            saveDataCopy(this.combineObjects(this.resultArray))
+              .then(response => {
+                if (response && response.data) {
 
-          } else {
+                } else {
+                }
+              })
+              .catch(error => {
+                console.error('Lỗi khi lưu dữ liệu: ', error);
+                this.$message.error('Lỗi khi lưu dữ liệu');
+              });
           }
         })
-        .catch(error => {
-          console.error('Lỗi khi lưu dữ liệu: ', error);
-          this.$message.error('Lỗi khi lưu dữ liệu');
-        });
+
+
     },
     handleSubmit() {
       if (!this.semester || !this.schoolYear) {
@@ -465,6 +477,9 @@ export default {
         return 'Yếu';
       }
     },
+    hasAsterisk(str) {
+      return str.includes('*');
+    }
   },
 };
 </script>
@@ -474,17 +489,13 @@ export default {
 .custom-input-trainingPoint .el-input__inner {
   border: none;
   border-bottom: 1px solid #e4e7ed;
-  /* Bạn có thể tùy chỉnh màu đường biên */
   border-radius: 0;
-  /* Tùy chọn: Loại bỏ đường cong biên */
 }
 
 .custom-input-trainingPoint input {
   color: #333;
-  /* Màu chữ */
   border: none;
   border-bottom: 1px solid #e4e7ed;
-  /* Bạn có thể tùy chỉnh màu đường biên */
 }
 
 .table-info {
@@ -502,6 +513,12 @@ export default {
   border: none;
 }
 
+.bold-text2 {
+  font-weight: bold;
+  border: none;
+  font-style: italic;
+}
+
 .custom-input-trainingPoint .el-form-item__label {
   font-weight: bold;
 }
@@ -511,4 +528,5 @@ export default {
   border-bottom: #333;
   font-weight: bold;
   color: black;
-}</style>
+}
+</style>

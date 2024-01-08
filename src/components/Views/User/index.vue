@@ -133,7 +133,6 @@ export default {
     },
   },
   methods: {
-    /** some handle methods */
 
     /** default methods */
     goToAddNewPage() {

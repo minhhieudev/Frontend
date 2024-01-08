@@ -2,51 +2,42 @@
   <div class="">
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH PHIẾU ĐIỂM</h4>
-      
+
       <div class="action-trainingPoint mb-4">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
         <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
 
         <div class="filter-options pr-4">
-                <span
-                  v-for="(option, index) in filterOptions"
-                  :key="index"
-                  :class="{ 'selected': selectedFilter === option }"
-                  @click="selectFilter(option)"
-                >
-                  {{ option }}
-                </span>
-              </div>
-        
+          <span v-for="(option, index) in filterOptions" :key="index" :class="{ 'selected': selectedFilter === option }"
+            @click="selectFilter(option)">
+            {{ option }}
+          </span>
+        </div>
+
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
-        
+
         <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
           <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
-        
-        <el-select v-model="selectedLop" filterable placeholder="Lớp">
-  <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
-</el-select>
 
-        <el-input
-          v-model="search"
-          size="medium" 
-          placeholder="Tìm theo tên, email..."
-          class="search-input-trainingPoint"
-        >
+        <el-select v-model="selectedLop" filterable placeholder="Lớp">
+          <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
+        </el-select>
+
+        <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..." class="search-input-trainingPoint">
         </el-input>
         <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
 
-       
+
       </div>
-      <el-table :data="filteredTableData"  align="center" class="custom-table">
+      <el-table :data="filteredTableData" align="center" class="custom-table">
         <el-table-column label="STT" width="50">
-    <template slot-scope="{ $index, row }">
-      <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-    </template>
-  </el-table-column>
+          <template slot-scope="{ $index, row }">
+            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="studentCode" label="MSV" width="100" align="center">
           <template slot-scope="{ row }">
             {{ row.studentDetails.studentCode }}
@@ -61,25 +52,13 @@
           </template>
         </el-table-column>
 
-         <!-- Trạng thái Column -->
-         <el-table-column label="Trạng thái" align="center">
+        <!-- Trạng thái Column -->
+        <el-table-column label="Trạng thái" align="center">
           <template slot-scope="{ row }">
-            <el-button
-              v-if="row.status"
-              type="success"
-              size="mini"
-              round
-              class="answered-button"
-            >
+            <el-button v-if="row.status" type="success" size="mini" round class="answered-button">
               Đã duyệt
             </el-button>
-            <el-button
-              v-else
-              type="danger"
-              size="mini"
-              round
-              class="unanswered-button"
-            >
+            <el-button v-else type="danger" size="mini" round class="unanswered-button">
               Chưa duyệt
             </el-button>
           </template>
@@ -126,32 +105,26 @@
         </el-table-column>
         <el-table-column label="Thao tác" width="150" align="center">
           <template slot-scope="scope">
-            <el-button type="danger"   @click.prevent="confirmDelete(scope.row)"  icon="el-icon-delete" size="small" circle></el-button>
-           
+            <el-button type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small"
+              circle></el-button>
+
           </template>
         </el-table-column>
 
       </el-table>
       <div class="mt-2">
-        <el-pagination
-          background
-          layout="jumper, prev, pager, next, sizes, total"
-          :page-sizes="[10, 25, 50, 100]"
-          :page-size.sync="pagination.page_size"
-          :total="filteredTableData.length"
-          :current-page.sync="pagination.current_page"
-          @current-change="handleCurrentPageChange"
-          @size-change="handlePageSizeChange"
-        />
+        <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
+          :page-size.sync="pagination.page_size" :total="filteredTableData.length"
+          :current-page.sync="pagination.current_page" @current-change="handleCurrentPageChange"
+          @size-change="handlePageSizeChange" />
       </div>
     </el-card>
   </div>
 </template>
 
 <script>
-import { getAll,handleDelete } from '@/api/detailTrainingPoint';
+import { getAll, handleDelete } from '@/api/detailTrainingPoint';
 import { format } from 'date-fns';
-import {  getClassList,getKhoaList,getNghanhList} from '@/api/student';
 import '@fortawesome/fontawesome-free/css/all.css';
 
 
@@ -175,7 +148,7 @@ export default {
       selectedFilter: 'Tất cả', // default filter option
     };
   },
-  created () {
+  created() {
     this.loadDetailTrainingPoint()
     this.loadInfoToFilter()
 
@@ -183,50 +156,50 @@ export default {
   computed: {
 
     filteredTableData() {
-  return this.tableData.filter(data =>
-    (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
-    (!this.selectedKhoa || data.studentDetails.department === this.selectedKhoa) &&
-    (!this.selectedNganh || data.studentDetails.nganh === this.selectedNganh) &&
-    (!this.selectedLop || data.studentDetails.className === this.selectedLop) &&
-    (
-      (this.selectedFilter === 'Tất cả' || data.status === this.selectedFilter) ||
-      (this.selectedFilter === 'Chưa duyệt' && !data.status) ||
-      (this.selectedFilter === 'Đã duyệt' && data.status)
-    )
-  );
-},
+      return this.tableData.filter(data =>
+        (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
+        (!this.selectedKhoa || data.studentDetails.department === this.selectedKhoa) &&
+        (!this.selectedNganh || data.studentDetails.nganh === this.selectedNganh) &&
+        (!this.selectedLop || data.studentDetails.className === this.selectedLop) &&
+        (
+          (this.selectedFilter === 'Tất cả' || data.status === this.selectedFilter) ||
+          (this.selectedFilter === 'Chưa duyệt' && !data.status) ||
+          (this.selectedFilter === 'Đã duyệt' && data.status)
+        )
+      );
+    },
 
 
-    
-    
+
+
     currentPageData() {
       const start = (this.pagination.current_page - 1) * this.pagination.page_size;
       const end = start + this.pagination.page_size;
-      
+
       return this.filteredTableData.slice(start, end);
 
-      
+
     },
   },
   methods: {
-  
+
     gotoDetail(row) {
       this.$router.push({ name: 'detailTrainingPoint_edit', params: { id: row._id } });
     },
     loadDetailTrainingPoint() {
-  getAll()
-    .then((response) => {
-      if (response && response.data && response.data.success) {
-        this.tableData = response.data.detailTrainingPoints;
-      } else {
-        console.error("Không thành công: ", response.data);
-      }
-    })
-    .catch((error) => {
-      console.error("Lỗi khi tải điểm rèn luyện: ", error);
-    });
-},
-confirmDelete(row) {
+      getAll()
+        .then((response) => {
+          if (response && response.data && response.data.success) {
+            this.tableData = response.data.detailTrainingPoints;
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Lỗi khi tải điểm rèn luyện: ", error);
+        });
+    },
+    confirmDelete(row) {
       this.$confirm(`Xác nhận xóa phiếu điểm`, 'Cảnh báo', {
         confirmButtonText: 'Xóa',
         type: 'warning',
@@ -246,7 +219,7 @@ confirmDelete(row) {
         .catch();
     },
 
-handlePageSizeChange(newSize) {
+    handlePageSizeChange(newSize) {
       this.pagination.page_size = newSize;
       this.pagination.current_page = 1;
     },
@@ -254,29 +227,28 @@ handlePageSizeChange(newSize) {
     handleCurrentPageChange(newPage) {
       this.pagination.current_page = newPage;
     },
-     formatDate(date) {
+    formatDate(date) {
       return format(new Date(date), 'dd/MM/yyyy ');
     },
-   
+
     selectFilter(option) {
       this.selectedFilter = option;
     },
-    loadInfoToFilter(){
-      this.khoaList=this.$store.getters.khoaList
-    this.nghanhList=this.$store.getters.nghanhList
-    this.lopList=this.$store.getters.lopList
+    loadInfoToFilter() {
+      this.khoaList = this.$store.getters.khoaList
+      this.nghanhList = this.$store.getters.nghanhList
+      this.lopList = this.$store.getters.lopList
     },
-    resetData(){
-      this.selectedKhoa='';
-      this.selectedNganh='';
-      this.selectedLop='';
-      this.search=''
+    resetData() {
+      this.selectedKhoa = '';
+      this.selectedNganh = '';
+      this.selectedLop = '';
+      this.search = ''
     }
   }
 }
 </script>
 <style >
-
 .action-trainingPoint {
   display: flex;
   justify-content: space-between;
@@ -285,57 +257,69 @@ handlePageSizeChange(newSize) {
 }
 
 .el-pagination.is-background .el-pager li:not(.disabled).active {
-    background-color: #f8be97;
-    color: #fff;
-    border-radius: 50%;
+  background-color: #f8be97;
+  color: #fff;
+  border-radius: 50%;
 }
-.custom-input-trainingPoint  {
-    width: 200px;  
-    font-weight: bold; 
-    background-color: #eaeaea;  
-    border: none;
-  }
-  .custom-input-trainingPoint .el-input__inner {
+
+.custom-input-trainingPoint {
+  width: 200px;
+  font-weight: bold;
+  background-color: #eaeaea;
   border: none;
-  border-right: 1px solid #e4e7ed; 
-  border-radius: 0; 
 }
+
+.custom-input-trainingPoint .el-input__inner {
+  border: none;
+  border-right: 1px solid #e4e7ed;
+  border-radius: 0;
+}
+
 .search-input-trainingPoint {
   width: auto;
   border: none;
-  width: 200px;  
+  width: 200px;
 
 }
-  .custom-input-trainingPoint input {
-    color: #333;  
-    border: none;
-    border-bottom: 1px solid #e4e7ed; 
-  }
-  .custom-input-trainingPoint input {
-    color: #333;  /* Màu chữ */
-  }
+
+.custom-input-trainingPoint input {
+  color: #333;
+  border: none;
+  border-bottom: 1px solid #e4e7ed;
+}
+
+.custom-input-trainingPoint input {
+  color: #333;
+  /* Màu chữ */
+}
 
 
-  /* Add these styles for button width and colors */
+/* Add these styles for button width and colors */
 .answered-button,
 .unanswered-button {
-  width: 95px; /* Adjust the width as needed */
+  width: 95px;
+  /* Adjust the width as needed */
 }
 
 .answered-button {
-  background-color: #67c23a; /* Green color for answered */
-  color: #fff; /* White text for contrast */
+  background-color: #67c23a;
+  /* Green color for answered */
+  color: #fff;
+  /* White text for contrast */
 }
 
 .unanswered-button {
-  background-color: #f56c6c; /* Red color for unanswered */
-  color: #fff; /* White text for contrast */
+  background-color: #f56c6c;
+  /* Red color for unanswered */
+  color: #fff;
+  /* White text for contrast */
 }
 
 .filter-options span.selected {
   background-color: #0c8eca;
   color: #fff;
 }
+
 .filter-options {
   display: flex;
   justify-content: space-between;
@@ -353,7 +337,6 @@ handlePageSizeChange(newSize) {
   border-radius: 35px;
   text-align: center;
 }
-
 </style>
 
 

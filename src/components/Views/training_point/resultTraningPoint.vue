@@ -150,6 +150,7 @@ export default {
       nganhList: [],
       lopList: [],
       loading: false,
+      index: 0,
     };
   },
   created() {
@@ -615,5 +616,8 @@ export default {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 
+}
+.container-statistical{
+  font-weight: bold;
 }
 </style>

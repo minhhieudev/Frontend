@@ -9,12 +9,8 @@
             <div class="d-flex  align-items-center ml-5 border-right">
               <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
               <div class="filter-options pr-4">
-                <span
-                  v-for="(option, index) in filterOptions"
-                  :key="index"
-                  :class="{ 'selected': selectedFilter === option }"
-                  @click="selectFilter(option)"
-                >
+                <span v-for="(option, index) in filterOptions" :key="index"
+                  :class="{ 'selected': selectedFilter === option }" @click="selectFilter(option)">
                   {{ option }}
                 </span>
               </div>
@@ -22,12 +18,7 @@
           </div>
 
           <div class="d-flex  align-items-center p-2">
-            <el-input
-              v-model="search"
-              size="medium" 
-              placeholder="Tìm theo tên câu hỏi..."
-              class="custom-input-question"
-            >
+            <el-input v-model="search" size="medium" placeholder="Tìm theo tên câu hỏi..." class="custom-input-question">
             </el-input>
             <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
           </div>
@@ -39,39 +30,27 @@
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
         <!-- STT Column -->
         <el-table-column label="STT" width="60">
-    <template slot-scope="{ $index, row }">
-      <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-    </template>
-  </el-table-column>
+          <template slot-scope="{ $index, row }">
+            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+          </template>
+        </el-table-column>
 
         <!-- Tên câu hỏi / Bài đăng Column -->
         <el-table-column prop="row.title" label="Tên câu hỏi / Bài đăng">
           <template slot-scope="{ row }">
-            {{ row.title}}
+            {{ row.title }}
           </template>
         </el-table-column>
 
-       
+
 
         <!-- Trạng thái Column -->
         <el-table-column label="Trạng thái" align="center">
           <template slot-scope="{ row }">
-            <el-button
-              v-if="row.status"
-              type="success"
-              size="mini"
-              round
-              class="answered-button"
-            >
+            <el-button v-if="row.status" type="success" size="mini" round class="answered-button">
               Đã trả lời
             </el-button>
-            <el-button
-              v-else
-              type="danger"
-              size="mini"
-              round
-              class="unanswered-button"
-            >
+            <el-button v-else type="danger" size="mini" round class="unanswered-button">
               Chưa trả lời
             </el-button>
           </template>
@@ -94,28 +73,24 @@
         <!-- Thao tác Column -->
         <el-table-column label="Thao tác" width="150">
           <template slot-scope="scope">
-            <router-link :to="{ name: 'Question', params: { id: scope.row._id } }" @click="scrollToQuestion(scope.row._id)">
-  <el-button  type="primary" icon="el-icon-view" size="small" circle></el-button>
-</router-link>
+            <router-link :to="{ name: 'Question', params: { id: scope.row._id } }"
+              @click="scrollToQuestion(scope.row._id)">
+              <el-button type="primary" icon="el-icon-view" size="small" circle></el-button>
+            </router-link>
 
 
 
-            <el-button class="ml-3"  type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
+            <el-button class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete"
+              size="small" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <div class="mt-2">
-        <el-pagination
-          background
-          layout="jumper, prev, pager, next, sizes, total"
-          :page-sizes="[10, 25, 50, 100]"
-          :page-size.sync="pagination.page_size"
-          :total="filteredTableData.length"
-          :current-page.sync="pagination.current_page"
-          @current-change="handleCurrentPageChange"
-          @size-change="handlePageSizeChange"
-        />
+        <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
+          :page-size.sync="pagination.page_size" :total="filteredTableData.length"
+          :current-page.sync="pagination.current_page" @current-change="handleCurrentPageChange"
+          @size-change="handlePageSizeChange" />
       </div>
     </el-card>
   </div>
@@ -162,20 +137,13 @@ export default {
     },
   },
   methods: {
-    
+
     goToAddNewPage() {
-      this.$router.push({ name: `${ModelCode}_new` });
+      this.$router.push({ name: 'question_main' });
     },
     goToDetail(row) {
-  this.$router.push({ name: 'Question', params: { id: row._id } });
-},
-
-
-
-
-
-
-
+      this.$router.push({ name: 'Question', params: { id: row._id } });
+    },
     confirmDelete(row) {
       this.$confirm(`Xác nhận xóa câu hỏi ?`, 'Cảnh báo', {
         confirmButtonText: 'Xóa',
@@ -222,7 +190,7 @@ export default {
       this.selectedFilter = option;
     },
     resetFilters() {
-      this.search='';
+      this.search = '';
     },
   },
 };
@@ -231,7 +199,6 @@ export default {
 
 
 <style >
-
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #f08294;
   color: #fff;
@@ -280,38 +247,45 @@ export default {
 /* Add these styles for button width and colors */
 .answered-button,
 .unanswered-button {
-  width: 95px; /* Adjust the width as needed */
+  width: 95px;
+  /* Adjust the width as needed */
 }
 
 .answered-button {
-  background-color: #67c23a; /* Green color for answered */
-  color: #fff; /* White text for contrast */
+  background-color: #67c23a;
+  /* Green color for answered */
+  color: #fff;
+  /* White text for contrast */
 }
 
 .unanswered-button {
-  background-color: #f56c6c; /* Red color for unanswered */
-  color: #fff; /* White text for contrast */
+  background-color: #f56c6c;
+  /* Red color for unanswered */
+  color: #fff;
+  /* White text for contrast */
 }
 
 
-.custom-input-question  {
+.custom-input-question {
   width: auto;
   font-weight: bold;
   border: none;
-  
-  }
-  
- 
-  .custom-input-question .el-input__inner {
-    border: none;
+
+}
+
+
+.custom-input-question .el-input__inner {
+  border: none;
   background-color: white;
   font-weight: bold;
 }
-  .custom-input-question input {
-    color: #333;
+
+.custom-input-question input {
+  color: #333;
   border: none;
   font-weight: bold;
-  border-right: 1px solid #e4e7ed; /* Bạn có thể tùy chỉnh màu đường biên */
+  border-right: 1px solid #e4e7ed;
+  /* Bạn có thể tùy chỉnh màu đường biên */
 
-  }
+}
 </style>

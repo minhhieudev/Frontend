@@ -120,6 +120,7 @@ export default {
     },
   },
   methods: {
+   
     scrollToQuestion() {
 
       // Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
