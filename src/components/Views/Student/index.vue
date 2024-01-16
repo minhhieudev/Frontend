@@ -61,9 +61,9 @@
             {{ row.department }}
           </template>
         </el-table-column>
-        <el-table-column prop="" label="Nghành" align="center">
+        <el-table-column prop="majors" label="Nghành" align="center">
           <template slot-scope="{ row }">
-            Ngành
+            {{ row.majors }}
           </template>
         </el-table-column>
         <el-table-column label="Thao tác" width="150">

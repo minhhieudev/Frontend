@@ -89,7 +89,7 @@ export default {
       pathList: [],
       isFileSelected: false,
       postType: '',
-      pinnedPosts: [], //Mảng lưu bài được ghim
+      pinnedPosts: [], 
       editor: ClassicEditor,
     };
   },

@@ -21,8 +21,11 @@
           <el-form-item label="Lớp" required>
             <el-input v-model="form.className" />
           </el-form-item>
-          <el-form-item label="Khoa">
+          <el-form-item label="Khoa" required>
             <el-input v-model="form.department" type="text"/>
+          </el-form-item>
+          <el-form-item label="Ngành" required>
+            <el-input v-model="form.majors" type="text"/>
           </el-form-item>
          
       
@@ -45,6 +48,7 @@ export default {
         email: '',
         className:'',
         department: '',
+        majors:''
       }
     }
   },

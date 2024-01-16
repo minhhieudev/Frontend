@@ -13,8 +13,6 @@ export default {
     this.loadCurrentUser()
     if (['Admin', 'Cố vấn'].includes(this.$store.getters.user.role)) {
       this.loadAllUsers()
-
-
     }
   }
 }

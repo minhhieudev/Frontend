@@ -25,8 +25,6 @@
 
         </div>
         <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
-
-
       </div>
 
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
@@ -55,7 +53,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="department" label="Khoa" align="center">
+        <el-table-column prop="department" label="Khoa" align="center" >
           <template slot-scope="{ row }">
             {{ row.department }}
           </template>

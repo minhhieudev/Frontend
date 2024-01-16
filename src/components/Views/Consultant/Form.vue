@@ -18,11 +18,10 @@
           <el-form-item label="Số điện thoại" required>
             <el-input v-model="form.phone" />
           </el-form-item>
-          <el-form-item label="Khoa">
+          <el-form-item label="Khoa" required>
             <el-input v-model="form.department" type="text"/>
           </el-form-item>
          
-      
         </el-form>
       </div>
     </el-card>
