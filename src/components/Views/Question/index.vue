@@ -26,7 +26,7 @@
           <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
             :avatarUrl="mes.user.avatarUrl"
             :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'" :createdAt="formatDate(mes.createdAt)"
-            :likes="mes.likes" :comments="mes.comments" :id="mes._id" />
+            :likes="mes.likes" :comments="mes.comments" :id="mes._id" @pinnedStatusUpdated="loadQuestions"/>
 
         </div>
 

@@ -1,7 +1,7 @@
 <template>
   <el-container style="height: 500px; ">
     <el-aside style="background-color: rgb(238, 241, 246)">
-      <el-menu :default-openeds="['1', '3']" @select="handleMenuSelect">
+      <el-menu :default-openeds="['1', '2']" @select="handleMenuSelect">
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-message"></i>Trang cá nhân</template>
           <el-menu-item-group>
@@ -14,6 +14,9 @@
           <el-menu-item-group>
             <el-menu-item index="2-1">Kết quả rèn luyện</el-menu-item>
             <el-menu-item index="2-2">Kết quả học tập</el-menu-item>
+            <el-menu-item index="2-3">Chương trình đào tạo</el-menu-item>
+            <el-menu-item index="2-4">Quyết định sinh viên</el-menu-item>
+            <el-menu-item index="2-5">Biểu mẫu - giấy xác nhận</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -39,7 +42,7 @@ export default {
   },
   data() {
     return {
-      selectedMenuItem: null,
+      selectedMenuItem: '', // Set a default value here
       // your other data...
     };
   },

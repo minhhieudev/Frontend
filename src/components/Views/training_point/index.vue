@@ -116,7 +116,7 @@
         <el-button type="primary" round @click="handleSave">Nộp</el-button>
         <el-button type="info" round @click="loadDetailTrainingPointCopy">Chấm tiếp</el-button>
         <el-button type="warning" round @click="handleSaveCopy">Lưu nháp</el-button>
-        <el-button type="success" round @click="handleSubmit" class="text-left">Xác nhận</el-button>
+        <el-button v-if="this.$store.getters.user.role != 'student'" type="success" round @click="handleSubmit" class="text-left">Xác nhận</el-button>
       </div>
     </el-card>
   </div>
@@ -136,7 +136,7 @@ export default {
     return {
       criteriaList: [],
       resultArray: [],
-      semester1Data: [],
+      semester1Data: '',
       totalScore: 0,
       Total_selfAssessment: 0,
       Total_groupAssessment: 0,
@@ -383,98 +383,80 @@ export default {
 
 
     },
-    handleSubmit() {
+    async handleSubmit() {
       if (!this.semester || !this.schoolYear) {
         this.$message.error('Vui lòng nhập học kỳ và năm học.');
         return;
       }
 
-      // Khởi tạo object dữ liệu với các giá trị mặc định
       const data = {
         schoolYear: this.schoolYear,
-        semester1: {
-          point: '',
-          classify: '',
-          note: '',
-        },
-        semester2: {
-          point: '',
-          classify: '',
-          note: '',
-        },
-        wholeYear: {
-          point: '',
-          classify: '',
-          note: '',
-        },
+        semester1: { point: '', classify: '', note: '' },
+        semester2: { point: '', classify: '', note: '' },
+        wholeYear: { point: '', classify: '', note: '' },
         user: this.$store.getters.user._id,
       };
 
-      // Dựa vào giá trị của semester, gán giá trị cho kỳ học tương ứng
-      if (this.semester === '1') {
-        data.semester1.point = this.Total_consultantAssessment;
-        data.semester1.classify = this.getClassification(this.Total_consultantAssessment);
-        data.semester1.note = 'Ghi chú';
+      try {
+        if (this.semester === '1') {
+          if (this.Total_consultantAssessment == 0) {
+            this.Total_consultantAssessment = this.Total_selfAssessment
+          }
+          data.semester1.point = this.Total_consultantAssessment;
+          data.semester1.classify = this.getClassification(this.Total_consultantAssessment);
+          data.semester1.note = 'Ghi chú';
 
-        // Lưu dữ liệu
-        savePoint(data)
-          .then(response => {
-            if (response && response.data) {
-              this.$message.success('Lưu dữ liệu thành công ');
-              updateStatus(this.$route.params.id);
+          const response = await savePoint(data);
 
-            } else {
-              this.$message.error('Lưu dữ liệu không thành công');
+          if (response && response.data) {
+            this.$message.success('Lưu dữ liệu thành công ');
+            await updateStatus(this.$route.params.id);
+            this.$router.push({ name: 'training_point_main' })
+          } else {
+            this.$message.error('Lưu dữ liệu không thành công');
+          }
+        } else if (this.semester === '2') {
+          const response = await getSemester1Data(this.$store.getters.user._id, this.schoolYear);
+
+          if (response && response.data && response.data.success) {
+            if (this.Total_consultantAssessment == 0) {
+              this.Total_consultantAssessment = this.Total_selfAssessment
             }
-          })
-          .catch(error => {
-            console.error('Lỗi khi lưu dữ liệu: ', error);
-            this.$message.error('Lỗi khi lưu dữ liệu');
-          });
+            this.semester1Data = response.data.semester1Data.semester1.point;
+            data.semester2.point = this.Total_consultantAssessment;
+            data.semester2.classify = this.getClassification(this.Total_consultantAssessment);
+            data.semester2.note = 'Ghi chú';
 
-        return;
-      } else if (this.semester === '2') {
-        data.semester2.point = this.Total_consultantAssessment;
-        data.semester2.classify = this.getClassification(this.Total_consultantAssessment);
-        data.semester2.note = 'Ghi chú';
+            data.wholeYear.point = ((parseFloat(this.semester1Data) || 0) + (parseFloat(data.semester2.point) || 0)) / 2;
+            data.wholeYear.classify = this.getClassification(data.wholeYear.point);
+            data.wholeYear.note = 'Ghi chú';
 
-        // Tính điểm trung bình cả năm và xếp loại
-        data.wholeYear.point = ((parseFloat(data.semester1.point) || 0) + (parseFloat(data.semester2.point) || 0)) / 2;
-        data.wholeYear.classify = this.getClassification(data.wholeYear.point);
-        data.wholeYear.note = 'Ghi chú';
-
-        // Lấy dữ liệu điểm kỳ 1
-        getSemester1Data(this.$store.getters.user._id, this.schoolYear)
-          .then(response => {
-            if (response && response.data && response.data.success) {
-              this.semester1Data = response.data.semester1Data;
-            } else {
-              console.error("Không thành công: ", response.data);
-            }
-          })
-          .catch(error => {
-            console.error("Lỗi khi tải điểm kỳ 1: ", error);
-          });
-
-        // Cập nhật điểm kỳ 2 và cả năm
-        updateSemester2AndWholeYear(this.$store.getters.user._id, this.schoolYear, data.semester2, data.wholeYear);
-        updateStatus(this.$route.params.id);
-
+            await updateSemester2AndWholeYear(this.$store.getters.user._id, this.schoolYear, data.semester2, data.wholeYear);
+            await updateStatus(this.$route.params.id);
+            this.$router.push({ name: 'training_point_main' })
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+        }
+      } catch (error) {
+        console.error('Có lỗi xảy ra: ', error);
+        this.$message.error('Có lỗi xảy ra');
       }
-
     },
 
     getClassification(score) {
       if (score >= 90) {
         return 'Xuất sắc';
-      } else if (score >= 80) {
-        return 'Giỏi';
-      } else if (score >= 70) {
+      } else if (score >= 80 && score <= 89) {
+        return 'Tốt';
+      } else if (score >= 65 && score <= 79) {
         return 'Khá';
-      } else if (score >= 60) {
+      } else if (score >= 50 && score <= 64) {
         return 'Trung bình';
-      } else {
+      } else if (score >= 35 && score <= 49) {
         return 'Yếu';
+      } else {
+        return 'Kém';
       }
     },
     hasAsterisk(str) {

@@ -77,11 +77,7 @@
               @click="scrollToQuestion(scope.row._id)">
               <el-button type="primary" icon="el-icon-view" size="small" circle></el-button>
             </router-link>
-
-
-
-            <el-button class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete"
-              size="small" circle></el-button>
+            <el-button v-if="!isStudentRole" class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -135,6 +131,7 @@ export default {
       const end = start + this.pagination.page_size;
       return this.filteredTableData.slice(start, end);
     },
+    
   },
   methods: {
 

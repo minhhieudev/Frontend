@@ -24,7 +24,7 @@
             <span class="comments">{{ answersCount }}</span>
           </div>
         </div>
-        <div class="reply-container">
+        <div class="reply-container" :class="{ 'disabled': isPostButtonDisabled  }">
           <div class="avatar">
             <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
@@ -94,7 +94,10 @@ export default {
     },
     answersCount() {
       return this.answers.length;
-    }
+    },
+    isPostButtonDisabled() {
+      return this.$store.getters.user.role === 'student';
+    },
   },
   created() {
 
@@ -332,5 +335,10 @@ export default {
   word-break: break-all;
 }
 
-.content {}
+.disabled {
+  opacity: 0.5;
+  /* Adjust the opacity to make it visually disabled */
+  pointer-events: none;
+  /* Disable click events */
+}
 </style>   

@@ -18,12 +18,6 @@ export function getAll() {
   });
 }
 
-export function handleDelete(id) {
-  return request({
-    url: `/${modelCode}/${id}`,
-    method: "delete",
-  });
-}
 
 export function getDetail(id) {
   return request({
@@ -39,7 +33,12 @@ export function saveData(data) {
     data,
   });
 }
-
+export function handleDelete(id) {
+  return request({
+    url: `/${modelCode}/${id}`,
+    method: "delete",
+  });
+}
 
 export function updateLike(id) {
   return request({

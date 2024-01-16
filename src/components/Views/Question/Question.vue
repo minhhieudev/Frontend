@@ -12,6 +12,18 @@
           </div>
         </div>
 
+        <el-dropdown @command="handleDropdownCommand" @click.stop >
+          <span class="el-dropdown-link">
+            <i class="el-icon-more" @click.stop></i>
+          </span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item  icon="el-icon-edit" command="edit">
+              Sửa
+            </el-dropdown-item>
+            <el-dropdown-item icon="el-icon-delete" command="delete">Xoá bài</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
+
       </div>
 
       <div class="title">
@@ -69,7 +81,7 @@
 <script>
 import detailQuestionVue from './detailQuestion';
 import { format } from 'date-fns';
-import { updateLike } from '../../../api/question';
+import { updateLike,handleDelete } from '../../../api/question';
 import { id } from 'date-fns/locale';
 
 
@@ -171,6 +183,35 @@ export default {
         this.replyText = '';
       }
     },
+
+    handleDropdownCommand(command) {
+      if (command === 'Edit') {
+        this.toggleEdit(); 
+      } else if (command === 'delete') {
+        this.confirmDelete();
+      }
+    },
+    confirmDelete() {
+      this.$confirm(`Xác nhận xóa`, 'Cảnh báo', {
+        confirmButtonText: 'Xóa',
+        type: 'warning',
+      })
+        .then(() => {
+          handleDelete(this.id)
+            .then(({ data }) => {
+              if (data.success) {
+                this.$emit('pinnedStatusUpdated');
+              }
+            })
+            .finally(() => {
+              this.$wrLoading(false);
+            });
+        })
+        .catch();
+    },
+    toggleEdit(){
+
+    }
   },
 };
 </script>
@@ -202,7 +243,7 @@ export default {
 .info {
   margin-bottom: 10px;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
 }
 
 .author {

@@ -26,7 +26,8 @@
         <sidebar-item v-for="(sidebar, index) in sidebars" :sidebar="sidebar" v-if="sidebar.type === '1'" :key="index"
           :index="index" @active_item="handleClickItem"></sidebar-item>
       </ul>
-      <div class="categoryManagement">
+      <div v-if="this.$store.getters.user.role != 'student'">
+        <div class="categoryManagement">
         <p>QUẢN LÝ DANH MỤC </p>
         <el-icon style="color: rgb(24, 61, 228);" class="el-icon-caret-bottom"></el-icon>
       </div>
@@ -34,7 +35,8 @@
         <sidebar-item v-for="(sidebar, index) in sidebars" :sidebar="sidebar" v-if="sidebar.type === '2'" :key="index"
           :index="index" @active_item="handleClickItem"></sidebar-item>
       </ul>
-      <div class="trainingPoint">
+      </div>
+      <div class="trainingPoint" v-if="this.$store.getters.user.role != 'student'">
         <p>ĐIỂM RÈN LUYỆN</p>
         <el-icon style="color: rgb(24, 61, 228);" class="el-icon-caret-bottom"></el-icon>
       </div>

@@ -74,9 +74,9 @@
         <el-table-column label="Thao tác" width="150">
           <template slot-scope="scope">
             <router-link :to="{ name: 'Post', params: { id: scope.row._id } }" @click="scrollToQuestion(scope.row._id)">
-  <el-button type="primary" icon="el-icon-edit" size="small" circle></el-button>
+  <el-button type="primary" icon="el-icon-view" size="small" circle></el-button>
 </router-link>
-            <el-button class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
+            <el-button v-if="!isStudentRole" class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -91,10 +91,6 @@
           @current-change="handleCurrentPageChange"
           @size-change="handlePageSizeChange"
         />
-    
-
-    
-
       </div>
     </el-card>
   </div>
@@ -135,8 +131,9 @@ export default {
       const end = start + this.pagination.page_size;
       
       return this.filteredTableData.slice(start, end);
-
-      
+    },
+    isStudentRole() {
+      return this.$store.getters.user.role === 'student';
     },
    
   },

@@ -10,10 +10,9 @@
         </div>
       </el-header>
       <el-main style="height: calc(100% - 56px); padding: 11px;">
-        <div class="post-button-container">
+        <div :class="{ 'disabled': isPostButtonDisabled  }" class="post-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize"
-              :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
+            <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
           </div>
           <div class="input-box">
             <input @input="onReplyInputChange" placeholder="Nhập thông tin muốn đăng tải ..." class="reply-inputs"
@@ -22,10 +21,9 @@
         </div>
         <el-scrollbar wrap-class="post-list" style="max-height: 700px; overflow-y: auto;">
           <postItem v-for="mes in posts" :key="mes._id" :title="mes.title" :content="mes.content" :pinned="mes.pinned"
-            :attachmentPath="mes.attachmentPath" :postType="mes.postType"
-            :avatarUrl="mes.user.avatarUrl" :user="mes.user.fullname"
-            :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :comments="mes.comments" :id="mes._id"
-            @pinnedStatusUpdated="loadData" />
+            :attachmentPath="mes.attachmentPath" :postType="mes.postType" :avatarUrl="mes.user.avatarUrl"
+            :user="mes.user.fullname" :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :comments="mes.comments"
+            :id="mes._id" @pinnedStatusUpdated="loadData" />
         </el-scrollbar>
       </el-main>
     </el-container>
@@ -118,9 +116,12 @@ export default {
       tempDiv.innerHTML = this.postText;
       return tempDiv.textContent || tempDiv.innerText || '';
     },
+    isPostButtonDisabled() {
+      return this.$store.getters.user.role === 'student';
+    },
   },
   methods: {
-   
+
     scrollToQuestion() {
 
       // Sử dụng document.getElementById hoặc các phương thức cuộn của thư viện Vue để cuộn xuống câu hỏi cụ thể
@@ -380,5 +381,14 @@ export default {
   left: 7%;
   transform: translateX(-60%);
   z-index: 100;
+}
+
+
+
+.disabled {
+  opacity: 0.5;
+  /* Adjust the opacity to make it visually disabled */
+  pointer-events: none;
+  /* Disable click events */
 }
 </style>

@@ -16,7 +16,7 @@
           <div v-if="pinned" class="pinned-indicator">📌 Bài viết đã ghim</div>
         </div>
 
-        <el-dropdown @command="handleDropdownCommand" @click.stop>
+        <el-dropdown @command="handleDropdownCommand" @click.stop  v-if="this.$store.getters.user.role != 'student'">
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>
@@ -200,7 +200,6 @@ export default {
         })
         .catch(error => {
           console.error('Lỗi khi tải xuống tệp:', error);
-          // Xử lý lỗi, ví dụ hiển thị thông báo cho người dùng
         });
     },
     formatDate(date) {
