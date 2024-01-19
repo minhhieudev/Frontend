@@ -47,4 +47,32 @@ export function updateAvatarUser (id,newUrl){
     },
   })
 }
+export function updateNotificationForUser (id,notificationList){
+  return request({
+    url: `/${modelCode}/updateNotificationForUser/${id}`,
+    method: 'post',
+    data: {
+      notifications: notificationList,
+    },
+  })
+}
+export function getNotification (id){
+  return request({
+    url: `/${modelCode}/getNotification/${id}`,
+    method: 'get',
+  })
+}
+
+export function addNotification(id, notification) {
+  return request({
+    url: `/${modelCode}/addNotification/${id}`,
+    method: 'post',
+    data: {
+      notification: notification,
+    },
+  });
+}
+
+
+
 

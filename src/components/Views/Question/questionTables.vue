@@ -131,6 +131,9 @@ export default {
       const end = start + this.pagination.page_size;
       return this.filteredTableData.slice(start, end);
     },
+    isStudentRole() {
+      return this.$store.getters.user.role === 'student';
+    },
     
   },
   methods: {

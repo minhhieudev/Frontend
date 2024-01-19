@@ -3,6 +3,8 @@ import slugify from 'slugify'
 import { uploadImage } from '@/api/media'
 import * as studentAPI from '@/api/student'
 import * as userAPI from '@/api/user'
+import * as notificationAPI from '@/api/notification'
+import { id } from 'date-fns/locale'
 const FILE_URL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH + '/file'
 export default {
   data() {
@@ -58,6 +60,16 @@ export default {
           this.$store.dispatch("setData", {
             key: "allUsers",
             data: data.docs,
+          });
+        }
+      });
+    },
+    loadNotifications() {
+      notificationAPI.getForId(this.$store.getters.user._id).then(({ data }) => {
+        if (data.success) {
+          this.$store.dispatch("setData", {
+            key: "notifications",
+            data: data.notifications,
           });
         }
       });

@@ -32,8 +32,8 @@
 </template>
 
 <script>
-import trainingPoint from './trainingPoint.vue';
-import resultLearning from './resultLearning.vue';
+import trainingPoint from './trainingPoint';
+import resultLearning from './resultLearning';
 
 export default {
   components: {

@@ -23,7 +23,7 @@
         </div>
 
         <div class="question-container" style="max-height: 700px; overflow-y: auto;">
-          <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
+          <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content" :_id="mes.user._id"
             :avatarUrl="mes.user.avatarUrl"
             :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'" :createdAt="formatDate(mes.createdAt)"
             :likes="mes.likes" :comments="mes.comments" :id="mes._id" @pinnedStatusUpdated="loadQuestions"/>

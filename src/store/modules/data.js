@@ -5,12 +5,11 @@ export default {
       docs: [],
       total: 0
     },
-   
+    notifications: [],
     khoaList:[],
     nghanhList:[],
     lopList:[],
     currentUer: {},
-
     allUsers: [],
   },
   mutations: {

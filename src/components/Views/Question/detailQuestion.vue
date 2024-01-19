@@ -59,12 +59,15 @@ import { updateComments } from '@/api/question'
 import { format } from 'date-fns';
 import EmojiPicker from './EmojiPicker';
 import { updateStatus } from '@/api/question';
+import { saveNotification } from '@/api/notification';
+import { addNotification} from '@/api/user';
 
 
 export default {
   props: {
     title: String,
     content: String,
+    _id:String,
     id: String,
     user: String,
     createdAt: String,
@@ -100,7 +103,6 @@ export default {
     },
   },
   created() {
-
   },
   data() {
     return {
@@ -177,6 +179,14 @@ export default {
                 this.loadAnswers();
                 this.replyText = "";
                 updateStatus(this.id);
+                addNotification(this._id,{
+                  user: {
+                    _id: this.$store.getters.currentUser._id,
+                    fullname: this.$store.getters.currentUser.fullname,
+                    avatarUrl: this.$store.getters.currentUser.avatarUrl
+                  },
+                  content: " đã trả lời câu hỏi của bạn: "+ newReply.content,
+                })
               } else {
                 console.error("Lỗi khi lưu phản hồi: ", responseData);
               }

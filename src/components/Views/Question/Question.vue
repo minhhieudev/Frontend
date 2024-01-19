@@ -3,7 +3,7 @@
     <div :id="id" class="question" @click="openDetailQuestion($event)" ref="questionContainer">
       <div class="info">
         <div style="display: flex;justify-content: center;align-items: center;">
-          <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
+          <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
 
 
           <div style="display: flex;flex-direction: column;">
@@ -70,7 +70,7 @@
         </div>
       </div>
     </div>
-    <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content"
+    <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content" :_id="_id"
       :avatarUrl="avatarUrl" :user="user" :createdAt="createdAt" :likes="likes"
       :comments="comments" />
 
@@ -90,6 +90,7 @@ export default {
   props: {
     title: String,
     content: String,
+    _id: String,
     id: String,
     user: String,
     createdAt: String,

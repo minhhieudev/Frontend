@@ -11,6 +11,7 @@ export default {
     this.loadNghanhList()
     this.loadLopList()
     this.loadCurrentUser()
+    //this.loadNotifications()
     if (['Admin', 'Cố vấn'].includes(this.$store.getters.user.role)) {
       this.loadAllUsers()
     }

@@ -10,7 +10,7 @@
         </div>
       </el-header>
       <el-main style="height: calc(100% - 56px); padding: 11px;">
-        <div :class="{ 'disabled': isPostButtonDisabled  }" class="post-button-container">
+        <div :class="{ 'disabled': isPostButtonDisabled }" class="post-button-container">
           <div class="avatar">
             <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
           </div>
@@ -69,6 +69,8 @@ import { format } from 'date-fns';
 import postItem from './postItem';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { saveNotification } from '@/api/notification';
+
 
 
 export default {
@@ -89,7 +91,7 @@ export default {
       pathList: [],
       isFileSelected: false,
       postType: '',
-      pinnedPosts: [], 
+      pinnedPosts: [],
       editor: ClassicEditor,
     };
   },
@@ -217,12 +219,15 @@ export default {
             this.fileList = []; // Đặt lại danh sách file trong data
             this.pathList = []; // Đặt lại danh sách đường dẫn trong data
             this.isFileSelected = false
-            console.log(this.isFileSelected)
 
 
           } else {
             console.error("Lỗi khi lưu bài đăng: ", responseData);
           }
+          await saveNotification({
+            user: this.$store.getters.user._id,
+            content: "vừa đăng một "+ newPost.postType + " mới: "+ newPost.title,
+          });
         }
       } catch (error) {
         console.error("Lỗi khi gửi dữ liệu bài đăng: ", error);
@@ -246,8 +251,6 @@ export default {
             },
             { pinnedPosts: [], unpinnedPosts: [] }
           );
-
-
           // Ghim bài đăng lên đầu danh sách
           this.posts = [...pinnedPosts, ...unpinnedPosts.reverse()];
         } else {

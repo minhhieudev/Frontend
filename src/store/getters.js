@@ -64,4 +64,5 @@ export default {
   khoaList: (state) => state.data.khoaList,
   nghanhList: (state) => state.data.nghanhList,
   lopList: (state) => state.data.lopList,
+  notifications: (state) => state.data.notifications,
 };
