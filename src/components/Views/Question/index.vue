@@ -13,8 +13,7 @@
         <span slot="label"><i class="el-icon-date"></i> Hỏi đáp</span>
         <div class="question-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize"
-              :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
+            <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
           <div class="input-box">
             <input @input="onReplyInputChange" placeholder="Nhập nội dung câu hỏi mà bạn muốn hỏi Cố vấn học tập..."
@@ -22,34 +21,32 @@
           </div>
         </div>
 
-        <div class="question-container" style="max-height: 700px; overflow-y: auto;">
-          <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content" :_id="mes.user._id"
-            :avatarUrl="mes.user.avatarUrl"
-            :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'" :createdAt="formatDate(mes.createdAt)"
-            :likes="mes.likes" :comments="mes.comments" :id="mes._id" @pinnedStatusUpdated="loadQuestions"/>
+        <div class="question-container" style="max-height: 700px;overflow-x: hidden; ">
+          <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
+            :avatarUrl="mes.user.avatarUrl" :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
+            :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :id="mes._id" :comments="mes.comments" :status="mes.status"
+            :_id="mes.user._id" @pinnedStatusUpdated="loadQuestions" @edit="openEditDialog" />
 
         </div>
-
-
 
       </el-main>
     </el-container>
 
-    <el-dialog class="custom-dialog" title="Nhập nội dung câu hỏi" :visible.sync="isQuestionPopupVisible">
+    <el-dialog class="custom-dialog" title="Sửa nội dung câu hỏi" :visible.sync="isQuestionPopupVisible">
       <div class="el-dialog__body">
         <p class="font-weight-bold">Tiêu đề</p>
-
         <input v-model="titleQuestion" placeholder="Nhập tiêu đề câu hỏi ..." class="reply-inputs" />
 
         <p class="font-weight-bold">Nội dung câu hỏi</p>
-
         <ckeditor :editor="editor" v-model="questionText"></ckeditor>
+
         <div class="button-container-tall mt-3">
           <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger"
             icon="el-icon-close">Đóng</el-button>
           <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm
             mới</el-button>
-          <el-button class="bg-green" type="primary" @click="submitQuestion">Đăng</el-button>
+          <el-button class="bg-green" type="primary" @click="onSaveButtonClick">Lưu</el-button>
+
         </div>
       </div>
     </el-dialog>
@@ -59,13 +56,14 @@
 <script>
 import Question from './Question';
 import { saveData } from '@/api/question';
-import { getAll } from '@/api/question';
+import { getAll, updateQuestion } from '@/api/question';
 import { format } from 'date-fns';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { saveNotification } from '@/api/notification';
 
 
-const ModelCode = 'question';
+
 
 export default {
   data() {
@@ -81,6 +79,7 @@ export default {
       titleQuestion: '',
       selectedQuestionId: null,
       editor: ClassicEditor,
+      isEditing: false,
 
     };
   },
@@ -91,17 +90,12 @@ export default {
 
   created() {
     this.loadQuestions();
-
   },
   updated() {
     if (this.$route.params.id) {
-
       this.scrollToQuestion();
-
     };
-
   },
-
   computed: {
     avatarSize() {
       return 'small';
@@ -113,6 +107,45 @@ export default {
     },
   },
   methods: {
+    onSaveButtonClick() {
+      if (this.isEditing) {
+        this.submitEditedQuestion()
+      }
+      else {
+        this.submitQuestion()
+      }
+    },
+    openEditDialog(data) {
+      // Mở el-dialog và truyền dữ liệu câu hỏi cần sửa
+      this.isQuestionPopupVisible = true;
+      this.isEditing = true;
+
+
+      this.idQuestion = data.id
+      this.titleQuestion = data.title;
+      this.questionText = data.content;
+      this.selectedQuestionId = data._id;
+    },
+    async submitEditedQuestion() {
+
+      const newQuestion = {
+        title: this.titleQuestion,
+        content: this.questionText,
+        user: this.selectedQuestionId,
+      }
+      const res = await updateQuestion(this.idQuestion, newQuestion)
+      if (res && res.status === 200) {
+        this.loadQuestions()
+        this.questionText = "";
+        this.titleQuestion = "";
+        this.isEditing = false;
+
+      }
+      // Sau khi lưu thành công, đóng el-dialog
+      this.isQuestionPopupVisible = false;
+      this.questionText = "";
+      this.titleQuestion = "";
+    },
     scrollToQuestion() {
       const element = document.getElementById(this.$route.params.id);
       if (element) {
@@ -129,36 +162,48 @@ export default {
       return String(format(new Date(date), 'dd/MM/yyyy HH:mm'));
     },
     onReplyInputChange() { },
-    submitQuestion() {
+    async submitQuestion() {
+      const trimmedQuestionText = this.questionText.trim();
 
-      if (this.questionText.trim() !== "") {
-        const newQuestion = {
-          title: this.titleQuestion,
-          content: this.cleanQuestionText,
-          user: this.$store.getters.user._id,
-        };
-        saveData(newQuestion)
-          .then((response) => {
-            if (response && response.status === 200) {
-              const responseData = response.data;
-              if (responseData && responseData.success) {
-                this.loadQuestions();
-                this.questionText = "";
-                this.titleQuestion = "";
-                this.isQuestionPopupVisible = false;
-              } else {
-                console.error("Lỗi khi lưu câu hỏi: ", responseData);
-              }
-            } else {
-              console.error("Lỗi khi gửi câu hỏi, phản hồi không hợp lệ: ", response);
-            }
-          })
-          .catch((error) => {
-            console.error("Lỗi khi gửi câu hỏi: ", error);
-          });
-      } else {
+      if (!trimmedQuestionText) {
+        return; // Do nothing if the question is empty
+      }
+
+      const newQuestion = {
+        title: this.titleQuestion,
+        content: this.cleanQuestionText,
+        user: this.$store.getters.user._id,
+      };
+
+      try {
+        const response = await saveData(newQuestion);
+
+        if (response && response.status === 200) {
+          const responseData = response.data;
+
+          if (responseData && responseData.success) {
+            await this.loadQuestions();
+            this.questionText = "";
+            this.titleQuestion = "";
+            this.isQuestionPopupVisible = false;
+
+            await saveNotification({
+              user: this.$store.getters.user._id,
+              content: `vừa tạo một câu hỏi mới: ${newQuestion.title}`,
+            });
+
+            this.$store.getters.socket.emit("newNotification", {});
+          } else {
+            console.error("Lỗi khi lưu câu hỏi: ", responseData);
+          }
+        } else {
+          console.error("Lỗi khi gửi câu hỏi, phản hồi không hợp lệ: ", response);
+        }
+      } catch (error) {
+        console.error("Lỗi khi gửi câu hỏi: ", error);
       }
     },
+
     loadQuestions() {
       getAll()
         .then((response) => {

@@ -73,6 +73,12 @@ export function addNotification(id, notification) {
   });
 }
 
+export function updateNotificationStatus(id) {
+  return request({
+    url: `/${modelCode}/updateNotificationStatus/${id}`,
+    method: 'post',
+  });
+}
 
 
 

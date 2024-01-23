@@ -15,11 +15,11 @@
           <el-form-item label="Email" required>
             <el-input v-model="form.email" />
           </el-form-item>
-          <el-form-item label="Số điện thoại" required>
-            <el-input v-model="form.phone" />
+          <el-form-item label="Chức vụ/ chức danh, đơn vị" required>
+            <el-input v-model="form.position" />
           </el-form-item>
-          <el-form-item label="Khoa" required>
-            <el-input v-model="form.department" type="text"/>
+          <el-form-item label="Nhiệm vụ" required>
+            <el-input v-model="form.mission" type="text"/>
           </el-form-item>
          
         </el-form>
@@ -38,8 +38,8 @@ export default {
        form: {
         fullName: '',
         email: '',
-        phone:'',
-        department: '',
+        position:'',
+        mission: '',
       }
     }
   },

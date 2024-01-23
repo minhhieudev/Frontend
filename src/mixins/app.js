@@ -3,19 +3,21 @@ import slugify from 'slugify'
 import { uploadImage } from '@/api/media'
 import * as studentAPI from '@/api/student'
 import * as userAPI from '@/api/user'
-import * as notificationAPI from '@/api/notification'
 import { id } from 'date-fns/locale'
+
+import io from "socket.io-client";
+
 const FILE_URL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH + '/file'
 export default {
   data() {
     return {
       ckEditorConfig: {
         entities_latin: false,
-        
+
         basicEntities: false,
         entities_greek: false,
         entities_processNumerical: false,
-        forcePasteAsPlainText: false, 
+        forcePasteAsPlainText: false,
         filebrowserImageUploadUrl: FILE_URL,
       },
       editorConfig: {
@@ -49,7 +51,7 @@ export default {
         },
       },
       BACKEND_PATH:
-        (process.env.VUE_APP_BACKEND_URL || "http://localhost:8000") +
+        (process.env.VUE_APP_BACKEND_URL || "http://localhost:8001") +
         (process.env.VUE_APP_API_PATH || "/api/v1/private"),
     };
   },
@@ -64,21 +66,17 @@ export default {
         }
       });
     },
-    loadNotifications() {
-      notificationAPI.getForId(this.$store.getters.user._id).then(({ data }) => {
-        if (data.success) {
-          this.$store.dispatch("setData", {
-            key: "notifications",
-            data: data.notifications,
-          });
-        }
-      });
+    connectSocket() {
+      this.$store.dispatch("setData", {
+        key: "socket",
+        data: io("http://localhost:8001")
+      })
     },
 
-    loadCurrentUser(){
-      userAPI.getDetail(this.$store.getters.user._id).then((response)=>{
-        this.$store.dispatch("setData",{
-          key:"currentUser",
+    loadCurrentUser() {
+      userAPI.getDetail(this.$store.getters.user._id).then((response) => {
+        this.$store.dispatch("setData", {
+          key: "currentUser",
           data: response.data.doc,
         })
       }).catch((err) => {
@@ -87,32 +85,32 @@ export default {
       })
     },
 
-    loadKhoaList(){
-      studentAPI.getKhoaList().then(({data})=>{
-        if (data.success){
-          this.$store.dispatch("setData",{
-            key:"khoaList",
+    loadKhoaList() {
+      studentAPI.getKhoaList().then(({ data }) => {
+        if (data.success) {
+          this.$store.dispatch("setData", {
+            key: "khoaList",
             data: data.khoaLists,
           })
         }
       })
     },
-  
-    loadNghanhList(){
-      studentAPI.getNghanhList().then(({data})=>{
-        if (data.success){
-          this.$store.dispatch("setData",{
-            key:"nganhList",
+
+    loadNghanhList() {
+      studentAPI.getNghanhList().then(({ data }) => {
+        if (data.success) {
+          this.$store.dispatch("setData", {
+            key: "nganhList",
             data: data.nganhLists,
           })
         }
       })
     },
-    loadLopList(){
-      studentAPI.getClassList().then(({data})=>{
-        if (data.success){
-          this.$store.dispatch("setData",{
-            key:"lopList",
+    loadLopList() {
+      studentAPI.getClassList().then(({ data }) => {
+        if (data.success) {
+          this.$store.dispatch("setData", {
+            key: "lopList",
             data: data.classLists,
           })
         }

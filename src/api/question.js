@@ -62,3 +62,14 @@ export function updateComments(id, answersCount) {
     },
   });
 }
+
+
+export function updateQuestion(id,newQuestion) {
+  return request({
+    url: `/${modelCode}/updateQuestion/${id}`, 
+    method: "post",
+    data: {
+      newQuestion: newQuestion, // Thêm answersCount vào dữ liệu gửi đi
+    },
+  });
+}

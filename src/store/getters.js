@@ -65,4 +65,5 @@ export default {
   nghanhList: (state) => state.data.nghanhList,
   lopList: (state) => state.data.lopList,
   notifications: (state) => state.data.notifications,
+  socket: (state) => state.data.socket
 };

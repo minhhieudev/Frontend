@@ -12,14 +12,15 @@
           </div>
         </div>
 
-        <el-dropdown @command="handleDropdownCommand" @click.stop >
+        <el-dropdown @command="handleDropdownCommand" @click.stop>
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item  icon="el-icon-edit" command="edit">
+            <el-dropdown-item icon="el-icon-edit" command="edit" v-if="!status" >
               Sửa
             </el-dropdown-item>
+
             <el-dropdown-item icon="el-icon-delete" command="delete">Xoá bài</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -58,8 +59,7 @@
       <!-- Ô nhập phản hồi -->
       <div class="reply-container">
         <div class="avatar">
-          <el-avatar :size="avatarSize"
-          :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
+          <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
@@ -70,9 +70,8 @@
         </div>
       </div>
     </div>
-    <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content" :_id="_id"
-      :avatarUrl="avatarUrl" :user="user" :createdAt="createdAt" :likes="likes"
-      :comments="comments" />
+    <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content" :_id="_id" :avatarUrl="avatarUrl"
+      :user="user" :createdAt="createdAt" :likes="likes" :comments="comments" />
 
   </div>
 </template>
@@ -81,7 +80,7 @@
 <script>
 import detailQuestionVue from './detailQuestion';
 import { format } from 'date-fns';
-import { updateLike,handleDelete } from '../../../api/question';
+import { updateLike, handleDelete } from '../../../api/question';
 import { id } from 'date-fns/locale';
 
 
@@ -93,6 +92,7 @@ export default {
     _id: String,
     id: String,
     user: String,
+    status: Boolean,
     createdAt: String,
     avatarUrl: String,
     likes: Number,
@@ -147,6 +147,10 @@ export default {
 
 
   methods: {
+    editQuestion() {
+    // Gửi sự kiện "edit" lên component cha
+    this.$emit('edit', { id:this.id ,title: this.title, content: this.content, _id: this._id });
+  },
     formatDate(date) {
       if (date) {
         return format(date, 'dd/MM/yyyy HH:mm'); // Thay đổi định dạng tùy ý ở đây
@@ -186,8 +190,8 @@ export default {
     },
 
     handleDropdownCommand(command) {
-      if (command === 'Edit') {
-        this.toggleEdit(); 
+      if (command === 'edit') {
+        this.editQuestion();
       } else if (command === 'delete') {
         this.confirmDelete();
       }
@@ -210,7 +214,7 @@ export default {
         })
         .catch();
     },
-    toggleEdit(){
+    toggleEdit() {
 
     }
   },
@@ -362,5 +366,6 @@ export default {
   /* Cài đặt cho nút "Xem thêm" trong nội dung cắt bớt */
   display: inline;
   /* Hiển thị nút "Xem thêm" cùng hàng với nội dung */
-}</style>
+}
+</style>
  

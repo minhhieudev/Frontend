@@ -82,6 +82,7 @@ export default {
   @media (min-width: $sm) {
     //background-color: var(--light-gray);
   }
+  
 }
 .content-header {
   background-color: $header-bg;
@@ -93,4 +94,5 @@ export default {
 .content-title {
   color: $header-text;
 }
+
 </style>

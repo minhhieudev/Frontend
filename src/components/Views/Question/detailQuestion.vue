@@ -103,6 +103,7 @@ export default {
     },
   },
   created() {
+
   },
   data() {
     return {
@@ -116,6 +117,7 @@ export default {
     Answer,
     EmojiPicker,
   },
+ 
   methods: {
 
     formatDate(date) {
