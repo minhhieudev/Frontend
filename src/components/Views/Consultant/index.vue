@@ -20,7 +20,6 @@
             <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..." class="search-input">
             </el-input>
             <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
-
           </div>
 
         </div>
@@ -47,15 +46,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="phone" label="Số điện thoại" align="center">
+        <el-table-column prop="position" label="Chức vụ/chức danh, đơn vị" align="center">
           <template slot-scope="{ row }">
-            {{ row.phone }}
+            {{ row.position }}
           </template>
         </el-table-column>
 
-        <el-table-column prop="department" label="Khoa" align="center" >
+        <el-table-column prop="mission" label="Nhiệm vụ" align="center" >
           <template slot-scope="{ row }">
-            {{ row.department }}
+            {{ row.mission }}
           </template>
         </el-table-column>
         <!-- 

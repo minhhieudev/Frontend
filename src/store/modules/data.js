@@ -11,6 +11,7 @@ export default {
     lopList:[],
     currentUer: {},
     allUsers: [],
+    socket: null,
   },
   mutations: {
     SET_DATA: function(state, payload) {

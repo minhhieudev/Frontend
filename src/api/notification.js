@@ -9,9 +9,9 @@ export function handleDelete(id) {
   });
 }
 
-export function getForId(id) {
+export function getAll() {
   return request({
-    url: `/${modelCode}/${id}`,
+    url: `/${modelCode}`,
     method: "get",
   });
 }

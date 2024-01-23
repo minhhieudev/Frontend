@@ -64,3 +64,12 @@ export function updateComments(id, answersCount) {
     },
   });
 }
+
+
+
+export function updatePost(id) {
+  return request({
+    url: `/${modelCode}/${id}`, 
+    method: "post",
+  });
+}

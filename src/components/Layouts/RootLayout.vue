@@ -75,7 +75,9 @@ export default {
         padding-left: $sidebar-size-expand + 1;
       }
     }
+    
   }
+  
 
 
 </style>

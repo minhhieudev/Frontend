@@ -4,22 +4,17 @@
     <!-- <Search /> -->
     <div class="ml-auto mr-1 d-flex" v-if="!$isMobile">
       <account-info></account-info>
-      <el-dropdown trigger="click">
-        <el-badge :value="countUnreadNotifications" :max="99" class="item mr-3">
-          <!-- Biểu tượng chuông -->
+      <el-dropdown trigger="click" @command="updateStatus" @visible-change="handleVisibleChange">
+        <el-badge :value="countUnreadNotifications" :max="99" class="item mr-3" >
           <el-icon class="el-icon-message-solid" name="bell"></el-icon>
         </el-badge>
-        <el-dropdown-menu class="notification-dropdown">
-          <!-- Nội dung thông báo sẽ được đặt ở đây -->
-          <div v-for="notification in notifications" :key="notification.id">
-            <div class="info">
-              <div style="display: flex;justify-content: center;align-items: center;">
-                <el-avatar :src="notification.user.avatarUrl"></el-avatar>
-                <div style="display: flex;flex-direction: column;">
-                  <span class="author">{{ notification.user.fullname }}</span>
-                  <span> {{ notification.content }}</span>
-                </div>
-              </div>
+        <el-dropdown-menu class="notification-dropdown" slot="dropdown">
+          <div v-for="notification in notifications" :key="notification.id" class="notification-item">
+            <el-avatar :src="notification.user.avatarUrl"></el-avatar>
+            <div class="notification-content">
+              <span class="notification-author">{{ notification.user.fullname }}</span>&nbsp;
+              <span class="notification-text">{{ notification.content }}</span>
+
             </div>
           </div>
         </el-dropdown-menu>
@@ -32,8 +27,11 @@
 import AccountInfo from './Header/AccountInfo'
 import HeaderLeft from './Header/HeaderLeft'
 import Search from './Header/Search'
-import { getForId } from '@/api/notification';
-import { updateNotificationForUser, getNotification } from '@/api/user';
+import { getAll } from '@/api/notification';
+import { updateNotificationForUser, getNotification, updateNotificationStatus } from '@/api/user';
+import { initSocketConnection, getSocketInstance } from '@/utils/auth'
+import io from "socket.io-client";
+
 
 export default {
   components: { AccountInfo, HeaderLeft, Search },
@@ -43,19 +41,32 @@ export default {
     }
   },
   created() {
-    this.loadData()
+    this.loadData();
+
+    // Kết nối với server qua Socket.IO
+    // this.socket = io("http://localhost:8001");
+
+    
+
+    this.$store.getters.socket.on("updateNotifications", () => {
+       console.log('Gọi')
+       this.loadData();
+
+     });
+
   },
   computed: {
     countUnreadNotifications() {
       return this.notifications.filter(notification => !notification.viewed).length;
     },
-   
+
   },
   methods: {
+
     async loadData() {
       try {
         // Lấy thông báo chung
-        const response = await getForId(this.$store.getters.user._id);
+        const response = await getAll();
         if (response.data.success) {
           const apiNotifications = response.data.notifications;
 
@@ -63,7 +74,6 @@ export default {
           const dataListResponse = await getNotification(this.$store.getters.user._id);
           if (dataListResponse.data.success) {
             const dataList = dataListResponse.data.notifications;
-            const news = []
 
             // Lọc những thông báo chưa có trong mảng dataList
             const newNotifications = apiNotifications.filter(notification =>
@@ -71,26 +81,20 @@ export default {
             );
 
             // Thêm những thông báo mới vào mảng dataList
-            news.push(...newNotifications);
+            dataList.push(...newNotifications);
 
-            if (news.length != 0) {
-              // Gọi API để cập nhật thông báo trên server
-              await updateNotificationForUser(this.$store.getters.user._id, news)
-                .then((response) => {
-                  if (response.data.success) {
-                    this.notifications = response.data.latestNotification;
-                  } else {
-                    console.error("Không thành công: ", response.data);
-                  }
-                })
-                .catch((error) => {
-                  console.error("Lỗi khi lấy thông báo: ", error);
-                });
-            }
-            else {
-              this.notifications = apiNotifications
-            }
-
+            // Gọi API để cập nhật thông báo trên server
+            await updateNotificationForUser(this.$store.getters.user._id, dataList)
+              .then((response) => {
+                if (response.data.success) {
+                  this.notifications = dataList.reverse();
+                } else {
+                  console.error("Không thành công: ", response.data);
+                }
+              })
+              .catch((error) => {
+                console.error("Lỗi khi lấy thông báo: ", error);
+              });
           } else {
             console.error("Không thành công khi lấy dataList: ", dataListResponse.data);
           }
@@ -101,6 +105,21 @@ export default {
         console.error("Lỗi khi tải thông báo: ", error);
       }
     },
+
+    updateStatus() {
+      console.log('123');
+      // await updateNotificationStatus(this.$store.getters.user._id);
+      // this.loadData();
+    },
+    async handleVisibleChange(visible) {
+
+      if (visible && this.countUnreadNotifications > 0) {
+        console.log('Dropdown visible state changed to:', visible);
+        await updateNotificationStatus(this.$store.getters.user._id);
+        this.loadData();
+      }
+
+    },
   },
 
 
@@ -109,13 +128,15 @@ export default {
 
 <style lang="scss" scoped>
 .notification-dropdown {
-  width: 300px; // Điều chỉnh kích thước của dropdown theo mong muốn
+
+  width: 330px; // Điều chỉnh kích thước của dropdown theo mong muốn
   padding: 10px;
   max-height: 300px; // Điều chỉnh chiều cao tối đa của dropdown theo mong muốn
   overflow-y: auto; // Cho phép cuộn nếu nội dung quá nhiều
   background-color: #ffffff; // Màu nền của dropdown
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.04);
   border-radius: 8px; // Điều chỉnh độ cong của các góc
+  overflow-x: hidden;
 }
 
 .app-navbar {
@@ -129,6 +150,44 @@ export default {
 .title {
   margin-top: -5px;
 }
+
+.notification-item {
+  display: flex;
+  cursor: pointer;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  /* Thêm đường viền giữa các thông báo */
+}
+
+.notification-item:hover {
+  background-color: #f5f5f5;
+  /* Màu nền khi di chuột qua */
+}
+
+.notification-item img {
+  width: 40px;
+  /* Điều chỉnh kích thước avatar */
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-author {
+  font-weight: bold;
+  color: #08ad3f;
+}
+
+.notification-text {
+  font-weight: bold;
+}
+
 
 header {
   &.v2-theme {

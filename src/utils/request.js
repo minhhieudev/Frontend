@@ -13,7 +13,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     config.headers['x-access-token'] = getToken()
-    config.baseURL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH || 'http://localhost:8000/api/v1/private'
+    config.baseURL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH || 'http://localhost:8001/api/v1/private'
     return config
   },
   error => {

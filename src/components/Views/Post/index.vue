@@ -71,7 +71,7 @@ import CKEditor from '@ckeditor/ckeditor5-vue2';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { saveNotification } from '@/api/notification';
 
-
+import io from "socket.io-client";
 
 export default {
   data() {
@@ -93,6 +93,7 @@ export default {
       postType: '',
       pinnedPosts: [],
       editor: ClassicEditor,
+      notifications: [], // Khởi tạo mảng trống
     };
   },
   components: {
@@ -102,6 +103,14 @@ export default {
 
   created() {
     this.loadData();
+    // Kết nối với server qua Socket.IO
+    //this.socket = io("http://localhost:8001");
+
+    // Lắng nghe sự kiện khi có thông báo mới
+    // this.socket.on("updateNotifications", (data) => {
+    //   // Cập nhật danh sách thông báo khi có thông báo mới
+    //   console.log('Gọi')
+    // });
   },
   updated() {
     if (this.$route.params.id) {
@@ -204,6 +213,8 @@ export default {
       }
       return true;
     },
+
+    // Trong phương thức submitData
     async submitData(newPost) {
       try {
         const saveResponse = await saveData(newPost);
@@ -218,16 +229,22 @@ export default {
             this.$refs.upload.clearFiles();
             this.fileList = []; // Đặt lại danh sách file trong data
             this.pathList = []; // Đặt lại danh sách đường dẫn trong data
-            this.isFileSelected = false
+            this.isFileSelected = false;
+
+            // Gửi thông báo mới đến server
+
+            const responseSave = await saveNotification({
+              user: this.$store.getters.user._id,
+              content: "vừa đăng một " + newPost.postType + " mới: " + newPost.title,
+            });
+            if (responseSave.status === 200) {
+              this.$store.getters.socket.emit("newNotification", {});
+            }
 
 
           } else {
             console.error("Lỗi khi lưu bài đăng: ", responseData);
           }
-          await saveNotification({
-            user: this.$store.getters.user._id,
-            content: "vừa đăng một "+ newPost.postType + " mới: "+ newPost.title,
-          });
         }
       } catch (error) {
         console.error("Lỗi khi gửi dữ liệu bài đăng: ", error);
