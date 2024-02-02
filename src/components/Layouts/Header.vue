@@ -129,11 +129,11 @@ export default {
 <style lang="scss" scoped>
 .notification-dropdown {
 
-  width: 330px; // Điều chỉnh kích thước của dropdown theo mong muốn
+  width: 330px;
   padding: 10px;
-  max-height: 300px; // Điều chỉnh chiều cao tối đa của dropdown theo mong muốn
-  overflow-y: auto; // Cho phép cuộn nếu nội dung quá nhiều
-  background-color: #ffffff; // Màu nền của dropdown
+  max-height: 300px; 
+  overflow-y: auto; 
+  background-color: #f2f7f6; 
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.04);
   border-radius: 8px; // Điều chỉnh độ cong của các góc
   overflow-x: hidden;

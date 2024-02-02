@@ -27,10 +27,13 @@ export function handleDelete(id) {
     method: "delete",
   });
 }
-export function updateStatus(id) {
+export function updateStatus(id,result) {
   return request({
     url: `/detailTrainingPoint/status/${id}`, // Địa chỉ API để cập nhật lượt thích
     method: "post",
+    data: {
+      result: result, // Thêm answersCount vào dữ liệu gửi đi
+    },
   });
 }
 
@@ -39,5 +42,16 @@ export function saveDatas(data) {
     url: `/detailTrainingPoint`,
     method: "post",
     data,
+  });
+}
+
+
+export function updateQuestion(id,newQuestion) {
+  return request({
+    url: `/${modelCode}/updateQuestion/${id}`, 
+    method: "post",
+    data: {
+      newQuestion: newQuestion, // Thêm answersCount vào dữ liệu gửi đi
+    },
   });
 }

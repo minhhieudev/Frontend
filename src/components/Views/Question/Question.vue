@@ -12,7 +12,7 @@
           </div>
         </div>
 
-        <el-dropdown @command="handleDropdownCommand" @click.stop>
+        <el-dropdown v-if="_id === this.$store.getters.user._id" @command="handleDropdownCommand" @click.stop>
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>

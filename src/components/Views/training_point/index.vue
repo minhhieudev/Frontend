@@ -336,11 +336,9 @@ export default {
     },
 
     handleSave() {
-      // Kiểm tra xem học kỳ và năm học có được nhập không
-      if (!this.semester || !this.schoolYear) {
-        this.$message.error('Vui lòng nhập học kỳ và năm học.');
-        return;
-      }
+      if (!this.validateInputData()) {
+      return;
+    }
 
       saveData(this.combineObjects(this.resultArray))
         .then(response => {
@@ -399,7 +397,7 @@ export default {
 
       try {
         if (this.semester === '1') {
-          if (this.Total_consultantAssessment == 0) {
+          if (this.Total_consultantAssessment === 0) {
             this.Total_consultantAssessment = this.Total_selfAssessment
           }
           data.semester1.point = this.Total_consultantAssessment;
@@ -410,7 +408,7 @@ export default {
 
           if (response && response.data) {
             this.$message.success('Lưu dữ liệu thành công ');
-            await updateStatus(this.$route.params.id);
+            await updateStatus(this.$route.params.id, this.Total_selfAssessment);
             this.$router.push({ name: 'training_point_main' })
           } else {
             this.$message.error('Lưu dữ liệu không thành công');
@@ -419,7 +417,7 @@ export default {
           const response = await getSemester1Data(this.$store.getters.user._id, this.schoolYear);
 
           if (response && response.data && response.data.success) {
-            if (this.Total_consultantAssessment == 0) {
+            if (this.Total_consultantAssessment === 0) {
               this.Total_consultantAssessment = this.Total_selfAssessment
             }
             this.semester1Data = response.data.semester1Data.semester1.point;
@@ -461,7 +459,38 @@ export default {
     },
     hasAsterisk(str) {
       return str.includes('*');
+    },
+
+    validateInputData() {
+    // Kiểm tra các điều kiện của dữ liệu đầu vào ở đây
+    if (!this.semester || !this.schoolYear) {
+      this.$message.error('Vui lòng nhập học kỳ và năm học.');
+      return false;
     }
+
+    // Kiểm tra các ô nhập điểm
+    for (const criteria of this.flattenedCriteriaList) {
+      if (criteria.level === 1) {
+        if (!criteria.selfAssessment || criteria.selfAssessment < 0 || criteria.selfAssessment > criteria.maxScore) {
+          this.$message.error('Vui lòng nhập điểm hợp lệ cho SV tự chấm.');
+          return false;
+        }
+
+        if (!criteria.groupAssessment || criteria.groupAssessment < 0 || criteria.groupAssessment > criteria.maxScore) {
+          this.$message.error('Vui lòng nhập điểm hợp lệ cho lớp chấm.');
+          return false;
+        }
+
+        if (!criteria.consultantAssessment || criteria.consultantAssessment < 0 || criteria.consultantAssessment > criteria.maxScore) {
+          this.$message.error('Vui lòng nhập điểm hợp lệ cho cố vấn chấm.');
+          return false;
+        }
+      }
+    }
+
+    return true;
+  },
+
   },
 };
 </script>

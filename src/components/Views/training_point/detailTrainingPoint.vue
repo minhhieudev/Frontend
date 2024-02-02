@@ -169,9 +169,6 @@ export default {
       );
     },
 
-
-
-
     currentPageData() {
       const start = (this.pagination.current_page - 1) * this.pagination.page_size;
       const end = start + this.pagination.page_size;
