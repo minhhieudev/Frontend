@@ -49,7 +49,6 @@ export default {
     
 
     this.$store.getters.socket.on("updateNotifications", () => {
-       console.log('Gọi')
        this.loadData();
 
      });

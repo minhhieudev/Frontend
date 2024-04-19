@@ -1,5 +1,5 @@
 <template>
-  <div class="Result">
+  <div class="Result custom-scroll-result">
     <el-card>
       <div class="search-bar">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
@@ -41,8 +41,8 @@
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
 
-      <el-table :data="filteredTableData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT" width="50">
+      <el-table :data="currentPageData" style="width: 100%" class="custom-table">
+        <el-table-column label="STT" width="50"  align="center">
           <template slot-scope="{ $index, row }">
             <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
           </template>
@@ -137,7 +137,7 @@ export default {
       tableData: [],
       pagination: {
         current_page: 1,
-        page_size: 25
+        page_size: 10
       },
       totalData: 0,
       search: '',
@@ -168,6 +168,7 @@ export default {
         (!this.selectedLop || data.studentDetails.className === this.selectedLop)
       );
     },
+   
 
     semester1Statistics() {
       return this.calculateStatistics(this.filteredTableData, 'semester1');
@@ -619,5 +620,9 @@ export default {
 }
 .container-statistical{
   font-weight: bold;
+}
+.custom-scroll-result{
+  max-height: 87vh ;
+  overflow-y: auto;
 }
 </style>

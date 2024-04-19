@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :id="id" class="question" @click="openDetailQuestion($event)" ref="questionContainer">
+    <div :id="id" class="question my-2 p-3" @click="openDetailQuestion($event)" ref="questionContainer">
       <div class="info">
         <div style="display: flex;justify-content: center;align-items: center;">
           <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
@@ -12,12 +12,12 @@
           </div>
         </div>
 
-        <el-dropdown v-if="_id === this.$store.getters.user._id" @command="handleDropdownCommand" @click.stop>
+        <el-dropdown v-if="_id === this.$store.getters.user._id" @command="handleDropdownCommand" @click.stop> 
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="el-icon-edit" command="edit" v-if="!status" >
+            <el-dropdown-item icon="el-icon-edit" command="edit" v-if="!status">
               Sửa
             </el-dropdown-item>
 
@@ -148,9 +148,9 @@ export default {
 
   methods: {
     editQuestion() {
-    // Gửi sự kiện "edit" lên component cha
-    this.$emit('edit', { id:this.id ,title: this.title, content: this.content, _id: this._id });
-  },
+      // Gửi sự kiện "edit" lên component cha
+      this.$emit('edit', { id: this.id, title: this.title, content: this.content, _id: this._id });
+    },
     formatDate(date) {
       if (date) {
         return format(date, 'dd/MM/yyyy HH:mm'); // Thay đổi định dạng tùy ý ở đây
@@ -224,11 +224,8 @@ export default {
 
 
 <style scoped>
-/* CSS cho phần câu hỏi */
 .question {
-  margin: 10px;
   /* Khoảng cách giữa các phần câu hỏi */
-  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 10px;
   /* Bo tròn các góc của phần câu hỏi */
@@ -240,10 +237,7 @@ export default {
   z-index: 999;
 }
 
-.question:hover {
-  transform: scale(1.01);
-  /* Hiệu ứng phóng to khi hover */
-}
+
 
 .info {
   margin-bottom: 10px;
@@ -368,4 +362,3 @@ export default {
   /* Hiển thị nút "Xem thêm" cùng hàng với nội dung */
 }
 </style>
- 

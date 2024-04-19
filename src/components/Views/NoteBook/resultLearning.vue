@@ -1,60 +1,86 @@
 <template>
-    <div>
-        <el-row>
-  <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
-    <el-card :body-style="{ padding: '0px' }">
-      <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-      <div style="padding: 14px;">
-        <span>Yummy hamburger</span>
-        <div class="bottom clearfix">
-          <time class="time">{{ currentDate }}</time>
-          <el-button type="text" class="button">Operating</el-button>
-        </div>
-      </div>
-    </el-card>
-  </el-col>
-</el-row>
+  <div style="overflow-x: hidden;">
+    <div class="main-content">
+      
+      <!-- Lặp qua mảng dataList để tạo các card -->
+      <el-row :gutter="10">
+        <el-col :span="12" v-for="(item, index) in dataList" :key="index">
+          <el-card shadow="always" class="card-item">
+            <div slot="header" style="display: flex;align-items: center;justify-content: space-between;">
+              <p class="card-title">{{ item.kyandnam }}</p>
+              <el-button type="success" round><a
+                  href="http://dangkymonhoc.pyu.edu.vn/Default.aspx?page=xemdiemthi&id=211ctt009">Chi tiết</a></el-button>
+            </div>
+            <el-row v-for="(data, dataIndex) in item.data" :key="dataIndex">
+              <el-col :span="12">
+                <p>{{ data.label }}</p>
+              </el-col>
+              <el-col :span="12" style="text-align: center;color: rgb(12, 128, 236);">
+                <p>{{ data.score }}</p>
+              </el-col>
+            </el-row>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
+  </div>
 </template>
 
-<style>
-  .time {
-    font-size: 13px;
-    color: #999;
-  }
-  
-  .bottom {
-    margin-top: 13px;
-    line-height: 12px;
-  }
-
-  .button {
-    padding: 0;
-    float: right;
-  }
-
-  .image {
-    width: 100%;
-    display: block;
-  }
-
-  .clearfix:before,
-  .clearfix:after {
-      display: table;
-      content: "";
-  }
-  
-  .clearfix:after {
-      clear: both
-  }
-</style>
-
 <script>
+import { getData } from '@/api/search'
+
+
 export default {
   data() {
     return {
-      currentDate: new Date()
+      dataList: []
     };
-  }
+  },
+  created() {
+    this.fetchDataFromApi();
+  },
+  mounted() {
+
+  },
+  methods: {
+    fetchDataFromApi() {
+      console.log('Gọi api')
+      const codeStudent = "20574802010015"
+      //const codeStudent = this.$store.getter.user._id
+      if (codeStudent != "") {
+        getData(codeStudent)
+          .then(response => {
+            this.dataList = response.data;
+          })
+          .catch(error => {
+            console.error('Error fetching data:', error);
+          });
+      }
+    }
+  },
 }
 </script>
+
+<style>
+.main-title {
+  font-weight: bold;
+  color: blue;
+  text-align: center;
+  padding: 4px;
+}
+
+.main-content {}
+
+.card-item {
+  border-radius: 25px;
+  margin-top: 7px;
+  font-weight: bold;
+  font-family: Arial, Helvetica, sans-serif;
+
+}
+
+.card-title {
+  text-transform: uppercase;
+  color: rgb(248, 76, 24);
+}
+</style>

@@ -1,12 +1,11 @@
 <template>
   <div>
-    <div :id="id" class="post" @click="openDetailQuestion($event)" ref="postContainer" :class="{ 'pinned': pinned }">
+    <div :id="id" class="post my-2 p-3" @click="openDetailQuestion($event)" ref="postContainer" :class="{ 'pinned': pinned }">
       <div class="info">
 
         <div style="display: flex;justify-content: center">
           <div style="display: flex;justify-content: center;align-items: center;">
-            <el-avatar :size="avatarSize" :src="avatarUrl"
-            ></el-avatar>
+            <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
             <div style="display: flex;flex-direction: column;">
               <span class="author ml-2">{{ user }} ( CVHT )</span>
               <span class="date">{{ createdAt }}</span>
@@ -16,7 +15,7 @@
           <div v-if="pinned" class="pinned-indicator">📌 Bài viết đã ghim</div>
         </div>
 
-        <el-dropdown @command="handleDropdownCommand" @click.stop  v-if="this.$store.getters.user.role != 'student'">
+        <el-dropdown @command="handleDropdownCommand" @click.stop v-if="this.$store.getters.user.role != 'student'">
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>
@@ -26,6 +25,9 @@
             </el-dropdown-item>
             <el-dropdown-item v-if="pinned" icon="fa-solid fa-thumbtack" command="unpin">
               Huỷ ghim
+            </el-dropdown-item>
+            <el-dropdown-item icon="el-icon-edit" command="edit">
+              Sửa
             </el-dropdown-item>
             <el-dropdown-item icon="el-icon-delete" command="delete">Xoá bài</el-dropdown-item>
           </el-dropdown-menu>
@@ -79,8 +81,7 @@
       <!-- Ô nhập phản hồi -->
       <div class="reply-container">
         <div class="avatar">
-          <el-avatar :size="avatarSize"
-            :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
+          <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
@@ -91,15 +92,14 @@
         </div>
       </div>
     </div>
-    <detailPostVue ref="childRef" :id="id" :title="title" :content="content"
-      :avatarUrl="avatarUrl" :user="user" :createdAt="createdAt" :likes="likes" 
-      :comments="comments" :attachmentPath="attachmentPath"/>
+    <detailPostVue ref="childRef" :id="id" :title="title" :content="content" :avatarUrl="avatarUrl" :user="user"
+      :createdAt="createdAt" :likes="likes" :comments="comments" :attachmentPath="attachmentPath" />
 
 
   </div>
 </template>
-  
-  
+
+
 <script>
 import detailPostVue from './detailPost';
 import { format } from 'date-fns';
@@ -209,7 +209,11 @@ export default {
         return '';
       }
     },
-    onReplyInputChange (){},
+    editPost() {
+      // Gửi sự kiện "edit" lên component cha
+      this.$emit('edit', { id: this.id, title: this.title, content: this.content,typeof: this.postType,attachmentPath: this.attachmentPath, _id: this._id });
+    },
+    onReplyInputChange() { },
     getFileIconClass(filename) {
       const fileExtension = filename.split('.').pop().toLowerCase();
       let icon = {
@@ -313,12 +317,16 @@ export default {
         this.togglePinned(); // Gọi hàm để thực hiện ghim bài
       } else if (command === 'unpin') {
         this.togglePinned();
+      } else if (command === 'edit') {
+        this.editPost();
+      } else if (command === 'unpin') {
+        this.togglePinned();
       } else if (command === 'delete') {
         this.confirmDelete();
       }
     },
     async togglePinned() {
-      const newPinnedStatus = !this.pinned; 
+      const newPinnedStatus = !this.pinned;
 
       this.$confirm(`Bạn có chắc chắn muốn ${newPinnedStatus ? 'ghim' : 'huỷ ghim'} bài viết này không?`, {
         confirmButtonText: 'OK',
@@ -346,11 +354,9 @@ export default {
   },
 };
 </script>
-  
+
 <style scoped>
 .post {
-  margin: 10px;
-  padding: 15px;
   border: 1px solid #ccc;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -359,15 +365,13 @@ export default {
   z-index: 999;
 }
 
-.post:hover {
-  transform: scale(1.01);
-}
 
 .info {
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
 }
+
 .author {
   margin-left: 5px;
   font-weight: bold;
@@ -494,7 +498,6 @@ export default {
   margin-right: 5px;
   /* Khoảng cách giữa icon và tên file */
   color: #007bff;
-  /* Đặt màu sắc cho icon, bạn có thể thay đổi thành màu mong muốn */
 }
 
 .attachments ul {
@@ -537,4 +540,3 @@ export default {
   color: rgb(153, 67, 9);
 }
 </style>
-   

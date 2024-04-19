@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="custom-scroll">
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH PHIẾU ĐIỂM</h4>
 
@@ -32,7 +32,7 @@
 
 
       </div>
-      <el-table :data="filteredTableData" align="center" class="custom-table">
+      <el-table :data="currentPageData" align="center" class="custom-table">
         <el-table-column label="STT" width="50">
           <template slot-scope="{ $index, row }">
             <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
@@ -118,6 +118,7 @@
           :current-page.sync="pagination.current_page" @current-change="handleCurrentPageChange"
           @size-change="handlePageSizeChange" />
       </div>
+      
     </el-card>
   </div>
 </template>
@@ -134,7 +135,7 @@ export default {
       tableData: [],
       pagination: {
         current_page: 1,
-        page_size: 25
+        page_size: 10
       },
       totalData: 0,
       search: '',
@@ -174,9 +175,8 @@ export default {
       const end = start + this.pagination.page_size;
 
       return this.filteredTableData.slice(start, end);
-
-
     },
+   
   },
   methods: {
 
@@ -215,7 +215,6 @@ export default {
         })
         .catch();
     },
-
     handlePageSizeChange(newSize) {
       this.pagination.page_size = newSize;
       this.pagination.current_page = 1;
@@ -333,6 +332,10 @@ export default {
   margin-left: 4px;
   border-radius: 35px;
   text-align: center;
+}
+.custom-scroll{
+  max-height: 87vh ;
+  overflow-y: auto;
 }
 </style>
 

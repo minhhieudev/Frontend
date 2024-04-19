@@ -1,57 +1,53 @@
 <template>
-  <div class="chatroom" ref="questionTableContainer">
-    <el-container>
-      <el-header style="height: 120px; padding: 0; position: relative;">
-        <!-- Ảnh nền -->
+  <div class="question-container">
+    <div class="container">
+      <!-- Phần Header -->
+      <div class="header">
         <div class="background-image"></div>
-        <!-- Avatar -->
         <div class="logo">
           <el-avatar :size="150" :src="logo"></el-avatar>
         </div>
-      </el-header>
-      <el-main style="height: calc(100% - 56px); padding: 11px;">
-        <span slot="label"><i class="el-icon-date"></i> Hỏi đáp</span>
+      </div>
+
+      <!-- Phần Main -->
+      <div class="main">
         <div class="question-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
+            <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
           </div>
           <div class="input-box">
-            <input @input="onReplyInputChange" placeholder="Nhập nội dung câu hỏi mà bạn muốn hỏi Cố vấn học tập..."
-              class="reply-inputs" @click="showQuestionPopup" />
+            <input @input="onReplyInputChange" placeholder="Nhập nội dung câu hỏi..." class="reply-inputs" @click="showQuestionPopup" />
           </div>
         </div>
 
-        <div class="question-container" style="max-height: 700px;overflow-x: hidden; ">
+        <el-scrollbar wrap-class="question-list" style="max-height: 700px; overflow-y: auto;">
           <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
             :avatarUrl="mes.user.avatarUrl" :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
-            :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :id="mes._id" :comments="mes.comments" :status="mes.status"
-            :_id="mes.user._id" @pinnedStatusUpdated="loadQuestions" @edit="openEditDialog" />
+            :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :id="mes._id" :comments="mes.comments"
+            :status="mes.status" :_id="mes.user._id" @pinnedStatusUpdated="loadQuestions" @edit="openEditDialog" />
+        </el-scrollbar>
+      </div>
+    </div>
 
-        </div>
-
-      </el-main>
-    </el-container>
-
-    <el-dialog class="custom-dialog" title="Sửa nội dung câu hỏi" :visible.sync="isQuestionPopupVisible">
-      <div class="el-dialog__body">
+    <!-- Hộp thoại câu hỏi -->
+    <el-dialog class="custom-dialog-question" :visible.sync="isQuestionPopupVisible">
+      <p class="title-dialog-question">{{ dialogTitle }}</p>
+      <div class="el-dialog__body p-3">
         <p class="font-weight-bold">Tiêu đề</p>
         <input v-model="titleQuestion" placeholder="Nhập tiêu đề câu hỏi ..." class="reply-inputs" />
-
         <p class="font-weight-bold">Nội dung câu hỏi</p>
         <ckeditor :editor="editor" v-model="questionText"></ckeditor>
 
-        <div class="button-container-tall mt-3">
-          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger"
-            icon="el-icon-close">Đóng</el-button>
-          <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm
-            mới</el-button>
-          <el-button class="bg-green" type="primary" @click="onSaveButtonClick">Lưu</el-button>
-
+        <div class="button-container-tall">
+          <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
+          <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm mới</el-button>
+          <el-button type="success" @click="onSaveButtonClick">Lưu</el-button>
         </div>
       </div>
     </el-dialog>
   </div>
 </template>
+
 
 <script>
 import Question from './Question';
@@ -96,6 +92,7 @@ export default {
       this.scrollToQuestion();
     };
   },
+
   computed: {
     avatarSize() {
       return 'small';
@@ -105,6 +102,15 @@ export default {
       tempDiv.innerHTML = this.questionText;
       return tempDiv.textContent || tempDiv.innerText || '';
     },
+    dialogTitle() {
+      if (this.isEditing) {
+        // Nếu đang sửa câu hỏi, hiển thị "SỬA CÂU HỎI"
+        return "SỬA CÂU HỎI";
+      } else {
+        // Nếu không, hiển thị "TẠO CÂU HỎI"
+        return "TẠO CÂU HỎI";
+      }
+    }
   },
   methods: {
     onSaveButtonClick() {
@@ -157,7 +163,11 @@ export default {
     },
     showQuestionPopup() {
       this.isQuestionPopupVisible = true;
+      this.isEditing = false; // Đặt lại trạng thái sửa về mặc định
+      this.titleQuestion = ''; // Đặt lại tiêu đề câu hỏi về giá trị trống
+      this.questionText = ''; // Đặt lại nội dung câu hỏi về giá trị trống
     },
+
     formatDate(date) {
       return String(format(new Date(date), 'dd/MM/yyyy HH:mm'));
     },
@@ -222,13 +232,14 @@ export default {
       console.log('123');
     },
     resetQuestionText() {
-      console.log('123423');
+      this.titleQuestion = '';
+      this.questionText = '';
     },
   },
 };
 </script>
 
-<style >
+<style>
 .question-list {
   max-height: 100%;
   overflow-y: auto;
@@ -268,13 +279,13 @@ export default {
 }
 
 .question-button-container {
+  margin-top: 6%;
   display: flex;
-  margin-top: 2 px;
   border: 1px solid white;
   border-radius: 10px;
-  padding: 4px;
+  padding: 2px;
   background-color: white;
-  width: 90%;
+  width: 85%;
   margin-left: auto;
 }
 
@@ -298,22 +309,54 @@ export default {
 }
 
 .background-image {
-  position: absolute;
   width: 100%;
-  height: 100%;
+  height: 160%;
   background-image: url('../../../assets/8.jpg');
   background-size: cover;
   background-position: center;
-  z-index: 99;
   opacity: 1;
   border-radius: 25px;
 }
 
 .logo {
-  position: absolute;
-  bottom: -60px;
-  left: 7%;
-  transform: translateX(-60%);
-  z-index: 100;
+    position: absolute;
+    top: 97%;
+    left: 8%;
+    transform: translateX(-50%);
+    z-index: 1;
 }
+
+.title-dialog-question {
+  text-align: center;
+  font-weight: bold;
+  color: rgb(204, 52, 6);
+  font-size: larger;
+}
+
+/* Post Container Styling */
+.question .container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Header */
+.header {
+    grid-row: 1;
+    position: relative;
+    height: 14vh;
+}
+
+/* Main Section */
+.main {
+    grid-row: 2;
+    padding-top: 20px;
+
+}
+.question-container{
+  
+}
+
 </style>

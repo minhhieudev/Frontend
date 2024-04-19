@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="custom-scroll-user">
     <el-card>
       <div class="action-user">
         <!-- Lọc theo lớp -->
@@ -86,7 +86,7 @@ export default {
     return {
       pagination: {
         current_page: 1,
-        page_size: 25
+        page_size: 10
       },
       filterOptions: [
        {
@@ -281,5 +281,9 @@ export default {
   background-color: #74eba9;
   color: #fff;
   border-radius: 50%;
+}
+.custom-scroll-user{
+  max-height: 87vh ;
+  overflow-y: auto; 
 }
 </style>

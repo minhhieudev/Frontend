@@ -353,4 +353,7 @@ export default {
   pointer-events: none;
   /* Disable click events */
 }
+.custom-dialog .el-dialog{
+  border-radius: 20px;
+}
 </style>   

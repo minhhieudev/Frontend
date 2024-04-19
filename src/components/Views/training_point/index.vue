@@ -1,124 +1,130 @@
 <template>
-  <div style="font-weight: 500;">
-    <el-card class="table-info center">
-      <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
+  <div style="font-weight: 500">
+    <div class="content-container">
+      <el-card class="table-info center" >
+        <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
 
-      <el-row>
-        <el-col :span="6" :offset="6">
-          <el-form label-width="80px">
-            <el-form-item label="Học kỳ" class="bold-text">
-              <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoint "
-                size="mini"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="6">
-          <el-form label-width="80px">
-            <el-form-item label="Năm học" class="bold-text">
-              <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoint"
-                size="mini"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-      </el-row>
-
-      <el-form ref="formData" :model="formData" label-width="80px" class="text-center">
-        <el-row type="flex" class="row-bg" justify="space-between">
-          <el-col :span="6">
-            <div class="grid-content ">
-              <el-form-item label="Họ và tên" class="bold-text">
-                <el-input v-model="formData.fullName" placeholder="Họ và tên"
-                  class="custom-input-trainingPoint"></el-input>
+        <el-row>
+          <el-col :span="6" :offset="6">
+            <el-form label-width="80px">
+              <el-form-item label="Học kỳ" class="bold-text">
+                <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoint "
+                  size="mini"></el-input>
               </el-form-item>
-              <el-form-item label="Lớp" class="bold-text">
-                <el-input v-model="formData.className" placeholder="Lớp" class="custom-input-trainingPoint"></el-input>
-              </el-form-item>
-            </div>
+            </el-form>
           </el-col>
           <el-col :span="6">
-            <div class="grid-content bg-white"></div>
-          </el-col>
-          <el-col :span="6">
-            <div class="grid-content ">
-              <el-form-item label="Mã SV" class="bold-text">
-                <el-input v-model="formData.studentCode" placeholder="Mã sinh viên"
-                  class="custom-input-trainingPoint"></el-input>
+            <el-form label-width="80px">
+              <el-form-item label="Năm học" class="bold-text">
+                <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoint"
+                  size="mini"></el-input>
               </el-form-item>
-              <el-form-item label="Khoa" class="bold-text">
-                <el-input v-model="formData.department" placeholder="Khoa" class="custom-input-trainingPoint"></el-input>
-              </el-form-item>
-            </div>
+            </el-form>
           </el-col>
         </el-row>
-      </el-form>
 
-      <el-table :data="flattenedCriteriaList" style="width: 100%">
-        <el-table-column label="STT" width="50" style="font-weight: bold;" align="center">
-          <template slot-scope="scope">
-            <span :class="{ 'bold-text': scope.row.stt }">{{ scope.row.stt }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Nội dung và tiêu chí đánh giá">
-          <template slot-scope="scope">
-            <span :class="{
-              'bold-text': scope.row.level === 1,
-              'bold-text2': hasAsterisk(scope.row.text)
-            }">
-              {{ scope.row.level === 1 ? scope.row.text : scope.row.text }}
-            </span>
-          </template>
-        </el-table-column>
-        <el-table-column label="Mức điểm tối đa" width="50" align="center">
-          <template slot-scope="scope">
-            <span>
-              {{ (scope.row.level == 2) && (!hasAsterisk(scope.row.text)) ? scope.row.maxScore : '' }}
-            </span>
-          </template>
-        </el-table-column>
+        <el-form ref="formData" :model="formData" label-width="80px" class="text-center">
+          <el-row type="flex" class="row-bg" justify="space-between">
+            <el-col :span="6">
+              <div class="grid-content ">
+                <el-form-item label="Họ và tên" class="bold-text">
+                  <el-input v-model="formData.fullName" placeholder="Họ và tên"
+                    class="custom-input-trainingPoint"></el-input>
+                </el-form-item>
+                <el-form-item label="Lớp" class="bold-text">
+                  <el-input v-model="formData.className" placeholder="Lớp"
+                    class="custom-input-trainingPoint"></el-input>
+                </el-form-item>
+              </div>
+            </el-col>
+            <el-col :span="6">
+              <div class="grid-content bg-white"></div>
+            </el-col>
+            <el-col :span="6">
+              <div class="grid-content ">
+                <el-form-item label="Mã SV" class="bold-text">
+                  <el-input v-model="formData.studentCode" placeholder="Mã sinh viên"
+                    class="custom-input-trainingPoint"></el-input>
+                </el-form-item>
+                <el-form-item label="Khoa" class="bold-text">
+                  <el-input v-model="formData.department" placeholder="Khoa"
+                    class="custom-input-trainingPoint"></el-input>
+                </el-form-item>
+              </div>
+            </el-col>
+          </el-row>
+        </el-form>
 
-        <el-table-column label="Điểm" height="5" align="center">
-          <el-table-column label="SV tự chấm" width="70" align="center">
+        <el-table :data="flattenedCriteriaList" style="width: 100%">
+          <el-table-column label="STT" width="50" style="font-weight: bold;" align="center">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.selfAssessment" placeholder="Nhập điểm" @input="Update_Total_selfAssessment"
-                v-if="scope.row.stt && scope.row.level == 1"></el-input>
+              <span :class="{ 'bold-text': scope.row.stt }">{{ scope.row.stt }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="Lớp chấm" width="70" align="center">
+          <el-table-column label="Nội dung và tiêu chí đánh giá">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.groupAssessment" placeholder="Nhập điểm" @input="Update_Total_groupAssessment"
-                v-if="scope.row.stt && scope.row.level == 1"></el-input>
+              <span :class="{
+            'bold-text': scope.row.level === 1,
+            'bold-text2': hasAsterisk(scope.row.text)
+          }">
+                {{ scope.row.level === 1 ? scope.row.text : scope.row.text }}
+              </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="Mức điểm tối đa" width="50" align="center">
+            <template slot-scope="scope">
+              <span>
+                {{ (scope.row.level == 2) && (!hasAsterisk(scope.row.text)) ? scope.row.maxScore : '' }}
+              </span>
             </template>
           </el-table-column>
 
-          <el-table-column label="Cố vấn (xét duyệt)" width="70" align="center">
-            <template slot-scope="scope">
-              <el-input v-model="scope.row.consultantAssessment" placeholder="Nhập điểm"
-                @input="Update_Total_consultantAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
-            </template>
+          <el-table-column label="Điểm" height="5" align="center">
+            <el-table-column label="SV tự chấm" width="70" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.selfAssessment" placeholder="Nhập điểm"
+                  @input="Update_Total_selfAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+              </template>
+            </el-table-column>
+            <el-table-column label="Lớp chấm" width="70" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.groupAssessment" placeholder="Nhập điểm"
+                  @input="Update_Total_groupAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+              </template>
+            </el-table-column>
+
+            <el-table-column label="Cố vấn (xét duyệt)" width="70" align="center">
+              <template slot-scope="scope">
+                <el-input v-model="scope.row.consultantAssessment" placeholder="Nhập điểm"
+                  @input="Update_Total_consultantAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+              </template>
+            </el-table-column>
           </el-table-column>
-        </el-table-column>
-      </el-table>
+        </el-table>
 
-      <el-form label-width="140px" class="d-flex justify-content-around">
-        <el-form-item label="Sinh viên tự chấm" class="bold-text">
-          <el-input class="input-trainingPoint" placeholder="" v-model="Total_selfAssessment"></el-input>
-        </el-form-item>
-        <el-form-item label="Lớp chấm" class="bold-text">
-          <el-input class="input-trainingPoint" placeholder="" v-model="Total_groupAssessment"></el-input>
-        </el-form-item>
+        <el-form label-width="140px" class="d-flex justify-content-around">
+          <el-form-item label="Sinh viên tự chấm" class="bold-text">
+            <el-input class="input-trainingPoint" placeholder="" v-model="Total_selfAssessment"></el-input>
+          </el-form-item>
+          <el-form-item label="Lớp chấm" class="bold-text">
+            <el-input class="input-trainingPoint" placeholder="" v-model="Total_groupAssessment"></el-input>
+          </el-form-item>
 
-        <el-form-item label="Cố vấn chấm" class="bold-text">
-          <el-input class="input-trainingPoint" placeholder="" v-model="Total_consultantAssessment"></el-input>
-        </el-form-item>
+          <el-form-item label="Cố vấn chấm" class="bold-text">
+            <el-input class="input-trainingPoint" placeholder="" v-model="Total_consultantAssessment"></el-input>
+          </el-form-item>
 
-      </el-form>
-      <div class="d-flex justify-content-between">
-        <el-button type="primary" round @click="handleSave">Nộp</el-button>
-        <el-button type="info" round @click="loadDetailTrainingPointCopy">Chấm tiếp</el-button>
-        <el-button type="warning" round @click="handleSaveCopy">Lưu nháp</el-button>
-        <el-button v-if="this.$store.getters.user.role != 'student'" type="success" round @click="handleSubmit" class="text-left">Xác nhận</el-button>
-      </div>
-    </el-card>
+        </el-form>
+        <div class="d-flex justify-content-between">
+          <el-button type="primary" round @click="handleSave">Nộp</el-button>
+          <el-button type="info" round @click="loadDetailTrainingPointCopy">Chấm tiếp</el-button>
+          <el-button type="warning" round @click="handleSaveCopy">Lưu nháp</el-button>
+          <el-button v-if="this.$store.getters.user.role != 'student'" type="success" round @click="handleSubmit"
+            class="text-left">Xác nhận</el-button>
+        </div>
+      </el-card>
+    </div>
+
   </div>
 </template>
 
@@ -337,8 +343,8 @@ export default {
 
     handleSave() {
       if (!this.validateInputData()) {
-      return;
-    }
+        return;
+      }
 
       saveData(this.combineObjects(this.resultArray))
         .then(response => {
@@ -462,41 +468,41 @@ export default {
     },
 
     validateInputData() {
-    // Kiểm tra các điều kiện của dữ liệu đầu vào ở đây
-    if (!this.semester || !this.schoolYear) {
-      this.$message.error('Vui lòng nhập học kỳ và năm học.');
-      return false;
-    }
+      // Kiểm tra các điều kiện của dữ liệu đầu vào ở đây
+      if (!this.semester || !this.schoolYear) {
+        this.$message.error('Vui lòng nhập học kỳ và năm học.');
+        return false;
+      }
 
-    // Kiểm tra các ô nhập điểm
-    for (const criteria of this.flattenedCriteriaList) {
-      if (criteria.level === 1) {
-        if (!criteria.selfAssessment || criteria.selfAssessment < 0 || criteria.selfAssessment > criteria.maxScore) {
-          this.$message.error('Vui lòng nhập điểm hợp lệ cho SV tự chấm.');
-          return false;
-        }
+      // Kiểm tra các ô nhập điểm
+      for (const criteria of this.flattenedCriteriaList) {
+        if (criteria.level === 1) {
+          if (!criteria.selfAssessment || criteria.selfAssessment < 0 || criteria.selfAssessment > criteria.maxScore) {
+            this.$message.error('Vui lòng nhập điểm hợp lệ cho SV tự chấm.');
+            return false;
+          }
 
-        if (!criteria.groupAssessment || criteria.groupAssessment < 0 || criteria.groupAssessment > criteria.maxScore) {
-          this.$message.error('Vui lòng nhập điểm hợp lệ cho lớp chấm.');
-          return false;
-        }
+          if (!criteria.groupAssessment || criteria.groupAssessment < 0 || criteria.groupAssessment > criteria.maxScore) {
+            this.$message.error('Vui lòng nhập điểm hợp lệ cho lớp chấm.');
+            return false;
+          }
 
-        if (!criteria.consultantAssessment || criteria.consultantAssessment < 0 || criteria.consultantAssessment > criteria.maxScore) {
-          this.$message.error('Vui lòng nhập điểm hợp lệ cho cố vấn chấm.');
-          return false;
+          if (!criteria.consultantAssessment || criteria.consultantAssessment < 0 || criteria.consultantAssessment > criteria.maxScore) {
+            this.$message.error('Vui lòng nhập điểm hợp lệ cho cố vấn chấm.');
+            return false;
+          }
         }
       }
-    }
 
-    return true;
-  },
+      return true;
+    },
 
   },
 };
 </script>
 
 
-<style >
+<style scoped>
 .custom-input-trainingPoint .el-input__inner {
   border: none;
   border-bottom: 1px solid #e4e7ed;
@@ -539,5 +545,16 @@ export default {
   border-bottom: #333;
   font-weight: bold;
   color: black;
+}
+
+.container {
+  max-height: 500px;
+  /* Chiều cao cố định của phần tử chứa nội dung */
+  overflow-y: scroll;
+  /* Tạo thanh cuộn dọc */
+}
+.content-container {
+  max-height: 87vh ;
+  overflow-y: auto; 
 }
 </style>

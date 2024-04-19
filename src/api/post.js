@@ -65,11 +65,12 @@ export function updateComments(id, answersCount) {
   });
 }
 
-
-
-export function updatePost(id) {
+export function updatePost(id,newPost) {
   return request({
-    url: `/${modelCode}/${id}`, 
+    url: `/${modelCode}/updatePost/${id}`, 
     method: "post",
+    data: {
+      newPost: newPost, 
+    },
   });
 }

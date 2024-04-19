@@ -1,5 +1,5 @@
 <template>
-  <div class="user">
+  <div class="user custom-scroll-sv">
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH SINH VIÊN</h4>
       <div class="action-student mb-4">
@@ -98,7 +98,7 @@ export default {
       tableData: [],
       pagination: {
         current_page: 1,
-        page_size: 25,
+        page_size: 10,
       },
       totalData: 0,
       search: '',
@@ -190,8 +190,6 @@ export default {
       const end = start + this.pagination.page_size;
 
       return this.filteredTableData.slice(start, end);
-
-
     },
   },
 };
@@ -245,5 +243,9 @@ export default {
   background-color: #cdf3aa;
   color: #fff;
   border-radius: 50%;
+}
+.custom-scroll-sv{
+  max-height: 87vh ;
+  overflow-y: auto; 
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div style="z-index: 9999;">
+  <div style="z-index: 9999;" class="custom-dialog">
     <el-dialog :visible.sync="isInviteMemberVisible">
       <div class="post p-1 ">
         <div class="info ">
@@ -397,5 +397,8 @@ export default {
   color: #606266;
   font-size: 14px;
   word-break: break-all;
+}
+.custom-dialog .el-dialog{
+  border-radius: 20px;
 }
 </style>   

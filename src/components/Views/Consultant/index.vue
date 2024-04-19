@@ -1,5 +1,5 @@
 <template>
-  <div class="Consultant">
+  <div class="Consultant custom-scroll-cv">     
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH CỐ VẤN</h4>
       <div class="action-cv justify-content-between mb-4">
@@ -103,7 +103,7 @@ export default {
       tableData: [],
       pagination: {
         current_page: 1,
-        page_size: 25,
+        page_size: 10,
       },
       totalData: 0,
       search: '',
@@ -266,5 +266,9 @@ export default {
 .custom-input-cv:focus {
   border-color: #409eff;
   box-shadow: 0 0 6px rgba(64, 158, 255, 0.5);
+}
+.custom-scroll-cv{
+  max-height: 87vh ;
+  overflow-y: auto; 
 }
 </style>

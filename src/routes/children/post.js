@@ -13,7 +13,7 @@ export default [
   {
     path: `${path_code}/edit/:id`,
     component: () => import('@/components/Views/Post'),
-    name: `Post`,
+    name: `PostEdit`,
     meta: {
       title: ` ${name}`
     }

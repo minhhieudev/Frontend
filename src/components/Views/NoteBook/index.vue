@@ -1,5 +1,5 @@
 <template>
-  <el-container style="height: 500px; ">
+  <el-container style="height: 100vh; ">
     <el-aside style="background-color: rgb(238, 241, 246)">
       <el-menu :default-openeds="['1', '2']" @select="handleMenuSelect">
         <el-submenu index="1">
