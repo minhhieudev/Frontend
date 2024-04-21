@@ -1,35 +1,38 @@
 <template>
-  <div id="dashboard" v-loading="loading" >
+  <div id="dashboard" v-loading="loading">
     <div class="container  ">
-      <div class="intro text-center ">
-        <h1 class="text-2xl font-bold title pt-4">CHÀO MỪNG BẠN ĐẾN VỚI PHẦN MỀM CỐ VẤN HỌC TẬP</h1>
-        <p class="text-gray-600 leading-relaxed mb-4">
-          Hãy dẫn đầu trong cuộc hành trình học tập của bạn với phần mềm quản lý học tập đột phá của chúng tôi. Với sứ
-          mệnh làm cho việc học trở nên dễ dàng và đầy sáng tạo, nền tảng của chúng tôi đã được thiết kế với một mục
-          tiêu duy nhất: giúp bạn tổ chức tài liệu học tập của mình một cách có hệ thống,
-          theo dõi tiến trình một cách trực quan và đạt được mục tiêu học tập của mình một cách hiệu quả và đáng nhớ.
+      <div class="intro text-center content-page">
+        <h1 class=" font-bold title p-5">CHÀO MỪNG BẠN ĐẾN VỚI PHẦN MỀM CỐ VẤN HỌC TẬP</h1>
+        <p class="text-gray-600 leading-relaxed  mt-8">
+            Phần mềm được xây dựng dựa trên công nghệ hiện đại, mang lại hiệu suất cao và khả năng mở rộng, đáp ứng
+          nhu cầu quản lý và hỗ trợ học tập.
+            Thiết kế giao diện người dùng thân thiện, dễ sử dụng, giúp cố vấn và sinh viên nhanh chóng nắm bắt thông
+          tin.
+
         </p>
-        <p class="text-gray-600 mb-4">Các tính năng chính:</p>
-        <ul class="text-gray-600 mb-4">
-          <li><span class="text-blue-500">•</span> Tổ chức tài liệu học tập vào các khóa học và chủ đề</li>
-          <li><span class="text-blue-500">•</span> Theo dõi tiến trình với biểu đồ và đồ thị tương tác</li>
-          <li><span class="text-blue-500">•</span> Đặt mục tiêu và nhận được các đề xuất cá nhân hóa</li>
-          <li><span class="text-blue-500">•</span> Hợp tác với bạn bè thông qua diễn đàn thảo luận và nhóm học tập</li>
-        </ul>
+        <p class="text-gray-600 leading-relaxed  mt-8">
+            Nó giúp tối ưu hóa
+          quy trình tư vấn học tập, giúp các cố vấn có thể dễ dàng theo dõi và hỗ trợ sinh viên một cách kịp thời và
+          chính xác hơn. Phần mềm được xây dựng với các chức năng chính: quản lý thông tin sinh viên và cố vấn, hỗ trợ
+          giải đáp cho sinh viên, quản lý các tài liệu và bài đăng, đánh giá và quản lý điểm rèn luyện, hỗ trợ tra cứu
+          thông tin cho sinh viên.
+        </p>
       </div>
 
       <div class="author-contact text-center">
         <div class="author-info">
-          <h2 class="text-2xl font-bold text-gray-800 mb-4">By: minhhieudev</h2>
-          <p class="text-gray-600 leading-relaxed mb-4">Xin chào, tôi là [Tên của Bạn], nhà phát triển đằng sau phần mềm
-            quản lý học tập này. Tôi đam mê tạo ra các công cụ giúp việc học tập trở nên dễ dàng và thú vị hơn cho mọi
-            người.</p>
-          <p class="text-gray-600 mb-4">Kết nối với tôi:</p>
-          <ul class="text-blue-500 mb-4">
-            <li class="inline"><a href="mailto:your.email@example.com" class="underline">minhhieudev31@gmail.com</a></li>
-            <li class="inline"><a href="https://linkedin.com/in/yourprofile" class="underline">0788676320</a></li>
-            <!-- Thêm các tùy chọn liên hệ khác nếu cần -->
-          </ul>
+          <p class="text-2xl font-bold text-gray-800 mb-4 contact-auth">BY: minhhieudev</p>
+          <div class="contact">
+            <div class="d-flex">
+              <p>Email:</p>
+              <p class="text-contact">minhhieudev31@gmail.com</p>
+            </div>
+            <div class="d-flex">
+              <p>Phone:</p>
+              <p class="text-contact">0788676320</p>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -58,15 +61,47 @@ export default {
 
 <style scoped>
 /* Thêm các tùy chỉnh CSS cụ thể cho các phần cần thiết nếu cần */
-.title{
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  color: white;
+.title {
+  font-size: xx-large;
+  font-family: 'Lobster', cursive;
+  color: rgb(255, 255, 255);
   text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
 }
-#dashboard{
-background: url(../../assets/22.jpg) no-repeat ; 
-background-size: 100% 100%;
-height: 85vh;
 
+#dashboard {
+  background: url(../../assets/22.jpg) no-repeat;
+  background-size: 100% 100%;
+  height: 87vh;
+
+}
+
+.contact {
+  font-weight: bold;
+  display: flex;
+  justify-content: space-around;
+  font-family: 'Patrick Hand', cursive;
+}
+
+.text-contact {
+  color: rgb(30, 194, 8);
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+}
+
+.contact-auth {
+
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: rgb(236, 30, 99);
+  font-size: xx-large;
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+
+}
+
+.content-page {
+  height: 60vh;
+  font-family: 'Roboto Mono', monospace;
+  font-size: larger;
+  font-weight: bold;
+  padding-top: 1rem
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :id="id" class="question my-2 p-3" @click="openDetailQuestion($event)" ref="questionContainer">
+    <div :id="id" class="question my-2 p-3 mx-0" @click="openDetailQuestion($event)" ref="questionContainer">
       <div class="info">
         <div style="display: flex;justify-content: center;align-items: center;">
           <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>

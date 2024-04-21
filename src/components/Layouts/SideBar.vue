@@ -1,14 +1,17 @@
 <template>
   <aside class="sidebar" :class="{ 'w-180': true, 'w-100 position-static bg-none': isHeader }"
     :style="{ height: sidebarHeight + 'px' }">
-    <div v-if="!isHeader" class="p-3 d-flex flex-wrap"
+    <div v-if="!isHeader" class=" d-flex flex-wrap"
       :class="isSidebarExpand ? 'align-items-center justify-content-between' : 'justify-content-center'">
       <div class="text-center">
       </div>
       <div class="application" :class="isSidebarExpand ? 'ml-2' : 'mt-2'">
 
-        <p> PHẦN MỀM CỐ VẪN HỌC TẬP</p>
-        <img src="" alt="">
+        <div class="title-apps">
+          <p class="title-app"> PHẦN MỀM </p>
+          <p class="title-app"> CỐ VẤN HỌC TẬP</p>
+        </div>
+        <!-- <img src="" alt=""> -->
         <!-- <el-button circle plain type="primary" :icon="isSidebarExpand ? 'el-icon-arrow-left' : 'el-icon-arrow-right'" @click="handleSidebarExpand" /> -->
       </div>
     </div>
@@ -274,8 +277,24 @@ export default {
 
 .application {
   color: red;
-  font-weight:bold;
+  font-weight: bold;
   font-size: 0.99rem;
   text-shadow: 1px 1px 2px rgb(241, 209, 209);
+}
+
+.title-app {
+  font-family: 'Roboto Mono', monospace;
+  text-shadow: 1px 1px 2px black, 0 0 25px rgb(102, 102, 253), 0 0 5px darkblue;
+  font-size: larger;
+  font-weight: bold;
+  padding: 1px;
+  margin-bottom: 6px;
+}
+
+.title-apps {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center
 }
 </style>

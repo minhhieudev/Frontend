@@ -69,6 +69,8 @@ export default {
         if (response.data.success) {
           const apiNotifications = response.data.notifications;
 
+          
+
           // Lấy thông báo của user
           const dataListResponse = await getNotification(this.$store.getters.user._id);
           if (dataListResponse.data.success) {
