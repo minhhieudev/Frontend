@@ -18,7 +18,8 @@
           </div>
 
           <div class="d-flex  align-items-center p-2">
-            <el-input v-model="search" size="medium" placeholder="Tìm theo tên câu hỏi..." class="custom-input-question">
+            <el-input v-model="search" size="medium" placeholder="Tìm theo tên câu hỏi..."
+              class="custom-input-question">
             </el-input>
             <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
           </div>
@@ -42,8 +43,6 @@
           </template>
         </el-table-column>
 
-
-
         <!-- Trạng thái Column -->
         <el-table-column label="Trạng thái" align="center">
           <template slot-scope="{ row }">
@@ -66,7 +65,10 @@
         <!-- Người đăng Column -->
         <el-table-column prop="user.fullname" label="Người đăng">
           <template slot-scope="{ row }">
-            {{ row.user.fullname }}
+            <div class="d-flex align-items-center">
+              <el-avatar :src="row.user.avatarUrl"></el-avatar>
+              <p class="p-1 mt-1">{{ row.user.fullname }}</p>
+            </div>
           </template>
         </el-table-column>
 
@@ -77,7 +79,8 @@
               @click="scrollToQuestion(scope.row._id)">
               <el-button type="primary" icon="el-icon-view" size="small" circle></el-button>
             </router-link>
-            <el-button v-if="!isStudentRole" class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small" circle></el-button>
+            <el-button v-if="!isStudentRole" class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)"
+              icon="el-icon-delete" size="small" circle></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -134,7 +137,7 @@ export default {
     isStudentRole() {
       return this.$store.getters.user.role === 'student';
     },
-    
+
   },
   methods: {
 
@@ -198,7 +201,7 @@ export default {
 
 
 
-<style >
+<style>
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #f08294;
   color: #fff;

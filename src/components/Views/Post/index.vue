@@ -2,8 +2,32 @@
   <div class="">
     <div class="container">
       <!-- Phần Header -->
+
       <div class="header">
-        <div class="background-image"></div>
+        <el-carousel indicator-position="outside" autoplay style="height: 190%;overflow: hidden;">
+          <el-carousel-item>
+            <img src="../../../assets/slide1.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide2.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide3.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide5.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide6.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide7.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide8.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+
+        </el-carousel>
         <div class="logo">
           <el-avatar :size="150" :src="logo"></el-avatar>
         </div>
@@ -16,15 +40,17 @@
             <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
           </div>
           <div class="input-box">
-            <input @input="onReplyInputChange" placeholder="Nhập thông tin muốn đăng tải ..." class="reply-inputs" @click="showPostPopup" />
+            <input @input="onReplyInputChange" placeholder="Nhập thông tin muốn đăng tải ..." class="reply-inputs"
+              @click="showPostPopup" />
           </div>
         </div>
 
-        <el-scrollbar wrap-class="post-list" style="max-height: 700px; overflow-y: auto;">
-          <postItem style="widows: 100%;" v-for="mes in posts" :key="mes._id" :title="mes.title" :content="mes.content" :pinned="mes.pinned"
-            :attachmentPath="mes.attachmentPath" :postType="mes.postType" :avatarUrl="mes.user.avatarUrl"
-            :user="mes.user.fullname" :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :comments="mes.comments"
-            :id="mes._id" @pinnedStatusUpdated="loadData" @edit="openEditPost" />
+        <el-scrollbar wrap-class="post-list" style="height:60vh; overflow-y: auto;">
+          <postItem style="widows: 100%;" v-for="mes in posts" :key="mes._id" :title="mes.title" :content="mes.content"
+            :pinned="mes.pinned" :attachmentPath="mes.attachmentPath" :postType="mes.postType"
+            :avatarUrl="mes.user.avatarUrl" :user="mes.user.fullname" :createdAt="formatDate(mes.createdAt)"
+            :likes="mes.likes" :comments="mes.comments" :id="mes._id" @pinnedStatusUpdated="loadData"
+            @edit="openEditPost" />
         </el-scrollbar>
       </div>
     </div>
@@ -49,7 +75,8 @@
         <ckeditor :editor="editor" v-model="postText"></ckeditor>
         <p v-if="isEditing" style="color: red" class="mt-2">Chọn lại tệp đính kèm</p>
         <p class="font-weight-bold mt-1">Đính kèm</p>
-        <el-upload class="upload-demo" ref="upload" :action="uploadActionURL" :auto-upload="false" :before-upload="beforeUpload" :on-success="handleFileUploadSuccess" :on-change="handleFileChange" multiple>
+        <el-upload class="upload-demo" ref="upload" :action="uploadActionURL" :auto-upload="false"
+          :before-upload="beforeUpload" :on-success="handleFileUploadSuccess" :on-change="handleFileChange" multiple>
           <el-button slot="trigger" round size="small" type="primary" plain class="">Chọn tệp</el-button>
           <div class="el-upload__tip" slot="tip">Tải tệp đính kèm</div>
         </el-upload>
@@ -66,7 +93,7 @@
 </template>
 
 <script>
-import { getAll, saveData,updatePost } from '@/api/post';
+import { getAll, saveData, updatePost } from '@/api/post';
 import { format } from 'date-fns';
 import postItem from './postItem';
 import CKEditor from '@ckeditor/ckeditor5-vue2';
@@ -98,6 +125,7 @@ export default {
       notifications: [],
       isEditing: false,
 
+
     };
   },
   components: {
@@ -107,14 +135,6 @@ export default {
 
   created() {
     this.loadData();
-    // Kết nối với server qua Socket.IO
-    //this.socket = io("http://localhost:8001");
-
-    // Lắng nghe sự kiện khi có thông báo mới
-    // this.socket.on("updateNotifications", (data) => {
-    //   // Cập nhật danh sách thông báo khi có thông báo mới
-    //   console.log('Gọi')
-    // });
   },
   updated() {
     if (this.$route.params.id) {
@@ -139,6 +159,9 @@ export default {
       } else {
         return "TẠO BÀI ĐĂNG";
       }
+    },
+    slides() {
+      return this.carouselItems
     }
   },
   methods: {
@@ -271,7 +294,7 @@ export default {
 
     async submitEditedPost(newPost) {
       try {
-        const saveResponse = await updatePost(this.idPost,newPost);
+        const saveResponse = await updatePost(this.idPost, newPost);
         if (saveResponse && saveResponse.status === 200) {
           const responseData = saveResponse.data;
           if (responseData && responseData.success) {
@@ -284,7 +307,7 @@ export default {
             this.fileList = []; // Đặt lại danh sách file trong data
             this.pathList = []; // Đặt lại danh sách đường dẫn trong data
             this.isFileSelected = false;
-            
+
           } else {
             console.error("Lỗi khi lưu bài đăng: ", responseData);
           }
@@ -373,149 +396,150 @@ export default {
 <style scoped>
 /* Post List Styling */
 .post-list {
-    max-height: 100%;
-    overflow-y: auto;
+  max-height: 100%;
+  overflow-y: auto;
 }
 
 /* Post Form Styling */
 .post-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2px 0;
-    border: 1px solid rgb(230, 230, 230);
-    border-radius: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2px 0;
+  border: 1px solid rgb(230, 230, 230);
+  border-radius: 2px;
 }
 
 .post-textarea {
-    width: 100%;
-    height: 150px;
-    border: none;
-    padding: 10px;
-    resize: vertical;
+  width: 100%;
+  height: 150px;
+  border: none;
+  padding: 10px;
+  resize: vertical;
 }
 
 /* Button Container Tall */
 .button-container-tall {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 
 /* Button Styling */
 .close-button,
 .refresh-button,
 .timestamp-button {
-    cursor: pointer;
-    margin-right: 10px;
+  cursor: pointer;
+  margin-right: 10px;
 }
 
 /* Dialog Styling */
 .el-dialog__wrapper {
-    background-color: rgba(0, 0, 0, 0.5);
-    border-radius: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
 }
 
 /* Custom Dialog Post Styling */
 .custom-dialog-post .dialog-title {
-    text-align: center;
-    font-weight: bold;
-    color: rgb(3, 42, 151);
-    font-size: larger;
+  text-align: center;
+  font-weight: bold;
+  color: rgb(3, 42, 151);
+  font-size: larger;
 }
 
 /* Post Button Container */
 .post-button-container {
-    margin-top: 6%;
-    display: flex;
-    border: 1px solid white;
-    border-radius: 10px;
-    padding: 4px;
-    background-color: white;
-    width: 85%;
-    margin-left: auto;
+  margin-top: 7.5%;
+  display: flex;
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 1px;
+  background-color: white;
+  width: 85%;
+  margin-left: auto;
 }
 
 /* Input Box */
 .input-box {
-    flex-grow: 1;
-    background-color: rgb(129, 117, 117);
+  flex-grow: 1;
+  background-color: rgb(129, 117, 117);
 }
 
 /* Reply Inputs */
 .reply-inputs {
-    width: 100%;
-    padding: 10px;
-    outline: none;
-    border: none;
-    background-color: rgb(247, 243, 243);
-    margin-bottom: 5px;
-    color: rgb(12, 11, 11);
+  width: 100%;
+  padding: 10px;
+  outline: none;
+  border: none;
+  background-color: rgb(247, 243, 243);
+  margin-bottom: 5px;
+  color: rgb(12, 11, 11);
 }
 
 /* Avatar */
 .avatar {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
-/* Background Image */
-.background-image {
-    width: 100%;
-    height: 160%;
-    background-image: url('../../../assets/8.jpg');
-    background-size: cover;
-    background-position: center;
-    opacity: 1;
-    border-radius: 25px;
-}
+
 
 /* Logo Styling */
 .logo {
-    position: absolute;
-    top: 97%;
-    left: 8%;
-    transform: translateX(-50%);
-    z-index: 1;
+  position: absolute;
+  top: 97%;
+  left: 8%;
+  transform: translateX(-50%);
+  z-index: 9;
 }
 
 /* Disabled Class Styling */
 .disabled {
-    opacity: 0.5;
-    pointer-events: none;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* Title Dialog Post */
 .title-dialog-post {
-    text-align: center;
-    font-weight: bold;
-    color: rgb(4, 27, 235);
-    font-size: larger;
+  text-align: center;
+  font-weight: bold;
+  color: rgb(4, 27, 235);
+  font-size: larger;
 }
 
 /* Post Container Styling */
 .post .container {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 20px;
-    height: 100%;
-    overflow: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Header */
 .header {
-    grid-row: 1;
-    position: relative;
-    height: 14vh;
+  grid-row: 1;
+  position: relative;
+  height: 14vh;
 }
 
 /* Main Section */
 .main {
-    grid-row: 2;
-    padding-top: 20px;
+  grid-row: 2;
+  padding-top: 20px;
 
 }
 
 /* Post Section */
 .post {
-    height: 100vh;
+  height: 100vh;
+}
+
+/* Phong cách cho các slide trong carousel */
+.carousel-slide {
+  width: 100%;
+  height: 77%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 25px;
+  z-index: -1;
 }
 </style>

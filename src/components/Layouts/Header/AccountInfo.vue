@@ -14,7 +14,7 @@
           <span class="text-black" style="cursor: pointer">
             <b>{{ this.$store.getters.user.fullname }}</b>
             <el-badge :value="this.$store.getters.user.is_admin ? 'Admin' : ''" class="item">
-              <img :src="path" alt="avatar"
+              <img :src="paths" alt="avatar"
                 :width="30" class="avatar rounded-pill mb-1 mr-2 ml-2" />
             </el-badge>
 
@@ -56,7 +56,7 @@ export default {
       },
       theme: false,
       dataUser: {},
-      path: ""
+      paths: ""
     }
   },
   components: {
@@ -70,7 +70,7 @@ export default {
 
   methods: {
     getUser() {
-        this.path = this.$store.getters.currentUser.avatarUrl
+        this.paths = this.$store.getters.currentUser.avatarUrl
       },
 
     changeTheme() {
@@ -106,7 +106,7 @@ export default {
     },
     // Handle change avatar event
     handleChangeAvatar(newAvatarUrl) {
-      this.path = newAvatarUrl;
+      this.paths = newAvatarUrl;
 
     },
 

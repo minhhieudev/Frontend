@@ -5,7 +5,7 @@
     <div class="ml-auto mr-1 d-flex" v-if="!$isMobile">
       <account-info></account-info>
       <el-dropdown trigger="click" @command="updateStatus" @visible-change="handleVisibleChange">
-        <el-badge :value="countUnreadNotifications" :max="99" class="item mr-3" >
+        <el-badge :value="countUnreadNotifications" :max="99" class="item mr-3">
           <el-icon class="el-icon-message-solid" name="bell"></el-icon>
         </el-badge>
         <el-dropdown-menu class="notification-dropdown" slot="dropdown">
@@ -46,12 +46,12 @@ export default {
     // Kết nối với server qua Socket.IO
     // this.socket = io("http://localhost:8001");
 
-    
+
 
     this.$store.getters.socket.on("updateNotifications", () => {
-       this.loadData();
+      this.loadData();
 
-     });
+    });
 
   },
   computed: {
@@ -67,9 +67,13 @@ export default {
         // Lấy thông báo chung
         const response = await getAll();
         if (response.data.success) {
-          const apiNotifications = response.data.notifications;
+          const listNotifications = response.data.notifications;
 
-          
+          // Lấy thông báo không phải của mình
+          const apiNotifications = listNotifications.filter(notification =>
+            notification.user._id !== this.$store.getters.user._id
+          );
+
 
           // Lấy thông báo của user
           const dataListResponse = await getNotification(this.$store.getters.user._id);
@@ -132,9 +136,9 @@ export default {
 
   width: 330px;
   padding: 10px;
-  max-height: 300px; 
-  overflow-y: auto; 
-  background-color: #f2f7f6; 
+  max-height: 300px;
+  overflow-y: auto;
+  background-color: #f2f7f6;
   box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.04);
   border-radius: 8px; // Điều chỉnh độ cong của các góc
   overflow-x: hidden;

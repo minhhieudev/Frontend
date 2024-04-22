@@ -3,7 +3,30 @@
     <div class="container">
       <!-- Phần Header -->
       <div class="header">
-        <div class="background-image"></div>
+        <el-carousel indicator-position="outside" autoplay style="height: 180%;overflow: hidden;">
+          <el-carousel-item>
+            <img src="../../../assets/slide1.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide2.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide3.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide5.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide6.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide7.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+          <el-carousel-item>
+            <img src="../../../assets/slide8.jpg" alt="" class="carousel-slide" />
+          </el-carousel-item>
+
+        </el-carousel>
         <div class="logo">
           <el-avatar :size="150" :src="logo"></el-avatar>
         </div>
@@ -20,7 +43,7 @@
           </div>
         </div>
 
-        <el-scrollbar wrap-class="question-list" style="max-height: 700px; overflow-y: auto;">
+        <el-scrollbar wrap-class="question-list" style="height:60vh; overflow-y: auto;">
           <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
             :avatarUrl="mes.user.avatarUrl" :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
             :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :id="mes._id" :comments="mes.comments"
@@ -41,7 +64,7 @@
         <div class="button-container-tall">
           <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
           <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm mới</el-button>
-          <el-button type="success" @click="onSaveButtonClick">Lưu</el-button>
+          <el-button type="success" @click="onSaveButtonClick">Đăng</el-button>
         </div>
       </div>
     </el-dialog>
@@ -279,7 +302,7 @@ export default {
 }
 
 .question-button-container {
-  margin-top: 6%;
+  margin-top: 7%;
   display: flex;
   border: 1px solid white;
   border-radius: 10px;
@@ -287,6 +310,7 @@ export default {
   background-color: white;
   width: 85%;
   margin-left: auto;
+  z-index: 88;
 }
 
 .input-box {
@@ -323,7 +347,7 @@ export default {
     top: 97%;
     left: 8%;
     transform: translateX(-50%);
-    z-index: 1;
+    z-index: 9;
 }
 
 .title-dialog-question {
@@ -355,8 +379,13 @@ export default {
     padding-top: 20px;
 
 }
-.question-container{
-  
+.carousel-slide {
+  width: 100%;
+  height: 77%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 25px;
+  z-index: -1;
 }
 
 </style>

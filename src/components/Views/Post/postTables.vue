@@ -67,7 +67,12 @@
         </el-table-column>
 
         <el-table-column prop="user.fullname" label="Người đăng">
-          <template slot-scope="{ row }">{{ row.user.fullname }}</template>
+          <template slot-scope="{ row }">
+           <div class="d-flex align-items-center">
+            <el-avatar  :src="row.user.avatarUrl"></el-avatar>
+            <p class="p-1 mt-1">{{ row.user.fullname }}</p>
+           </div>
+          </template>
         </el-table-column>
         <el-table-column label="Thao tác" width="150">
           <template slot-scope="scope">
@@ -282,7 +287,7 @@ export default {
 </script>
 
 
-<style >
+<style>
 .el-pagination.is-background .el-pager li:not(.disabled).active {
   background-color: #f08294;
   color: #fff;

@@ -5,7 +5,7 @@ export default [
   {
     path: path_code,
     component: () => import(`@/components/Views/${routeName}/detailTrainingPoint`),
-    name: `${path_code}_main`,
+    name: 'detailTrainingPoint_main',
     meta: {
       title: name,
     },

@@ -14,19 +14,30 @@
           </span>
         </div>
 
+        <el-select v-model="selectedNam" placeholder="Năm học" filterable>
+          <el-option v-for="item in namList" :key="item" :label="item" :value="item"></el-option>
+        </el-select>
+
+        <el-select v-model="selectedSemester" placeholder="Kỳ" filterable>
+          <el-option label="Kỳ 1" :value="1"></el-option>
+          <el-option label="Kỳ 2" :value="2"></el-option>
+        </el-select>
+
+
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
 
-        <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
+        <!-- <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
           <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
-        </el-select>
+        </el-select> -->
 
         <el-select v-model="selectedLop" filterable placeholder="Lớp">
           <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
         </el-select>
 
-        <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..." class="search-input-trainingPoint">
+        <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..."
+          class="search-input-trainingPoint">
         </el-input>
         <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
 
@@ -118,7 +129,7 @@
           :current-page.sync="pagination.current_page" @current-change="handleCurrentPageChange"
           @size-change="handlePageSizeChange" />
       </div>
-      
+
     </el-card>
   </div>
 </template>
@@ -133,6 +144,7 @@ export default {
   data() {
     return {
       tableData: [],
+      namList:[],
       pagination: {
         current_page: 1,
         page_size: 10
@@ -147,6 +159,8 @@ export default {
       lopList: [],
       filterOptions: ['Tất cả', 'Chưa duyệt', 'Đã duyệt'],
       selectedFilter: 'Tất cả', // default filter option
+      selectedSemester: '',
+      selectedNam:''
     };
   },
   created() {
@@ -158,12 +172,27 @@ export default {
 
     filteredTableData() {
       return this.tableData.filter(data =>
+        // Lọc theo tên hoặc email (tìm kiếm)
         (!this.search || data.studentDetails.fullName.toLowerCase().includes(this.search.toLowerCase())) &&
+
+        // Lọc theo khoa đã chọn
         (!this.selectedKhoa || data.studentDetails.department === this.selectedKhoa) &&
+
+        // Lọc theo ngành đã chọn
         (!this.selectedNganh || data.studentDetails.nganh === this.selectedNganh) &&
+
+        // Lọc theo lớp đã chọn
         (!this.selectedLop || data.studentDetails.className === this.selectedLop) &&
+
+        // Lọc theo năm đã chọn
+        (!this.selectedNam || data.schoolYear == this.selectedNam) &&
+
+        // Lọc theo kỳ đã chọn
+        (!this.selectedSemester || data.semester == this.selectedSemester) &&
+
+        // Lọc theo trạng thái đã chọn (Tất cả, Chưa duyệt, Đã duyệt)
         (
-          (this.selectedFilter === 'Tất cả' || data.status === this.selectedFilter) ||
+          (this.selectedFilter === 'Tất cả') ||
           (this.selectedFilter === 'Chưa duyệt' && !data.status) ||
           (this.selectedFilter === 'Đã duyệt' && data.status)
         )
@@ -176,7 +205,11 @@ export default {
 
       return this.filteredTableData.slice(start, end);
     },
-   
+    uniqueSchoolYears() {
+      const uniqueYears = [...new Set(this.tableData.map(item => item.schoolYear))];
+      return uniqueYears;
+    },
+
   },
   methods: {
 
@@ -239,12 +272,22 @@ export default {
       this.selectedKhoa = '';
       this.selectedNganh = '';
       this.selectedLop = '';
-      this.search = ''
+      this.search = '';
+      this.selectedSemester='';
+      this.selectedNam = '';
     }
-  }
+  },
+  watch: {
+    uniqueSchoolYears: {
+      handler(newValues) {
+        this.namList = newValues;
+      },
+      immediate: true,
+    },
+  },
 }
 </script>
-<style >
+<style>
 .action-trainingPoint {
   display: flex;
   justify-content: space-between;
@@ -333,10 +376,9 @@ export default {
   border-radius: 35px;
   text-align: center;
 }
-.custom-scroll{
-  max-height: 87vh ;
+
+.custom-scroll {
+  max-height: 87vh;
   overflow-y: auto;
 }
 </style>
-
-

@@ -1,14 +1,14 @@
 <template>
   <div style="font-weight: 500">
     <div class="content-container">
-      <el-card class="table-info center" >
+      <el-card class="table-info center">
         <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
 
         <el-row>
           <el-col :span="6" :offset="6">
             <el-form label-width="80px">
               <el-form-item label="Học kỳ" class="bold-text">
-                <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoint "
+                <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoints "
                   size="mini"></el-input>
               </el-form-item>
             </el-form>
@@ -16,7 +16,7 @@
           <el-col :span="6">
             <el-form label-width="80px">
               <el-form-item label="Năm học" class="bold-text">
-                <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoint"
+                <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoints"
                   size="mini"></el-input>
               </el-form-item>
             </el-form>
@@ -29,11 +29,11 @@
               <div class="grid-content ">
                 <el-form-item label="Họ và tên" class="bold-text">
                   <el-input v-model="formData.fullName" placeholder="Họ và tên"
-                    class="custom-input-trainingPoint"></el-input>
+                    class="custom-input-trainingPoints"></el-input>
                 </el-form-item>
                 <el-form-item label="Lớp" class="bold-text">
                   <el-input v-model="formData.className" placeholder="Lớp"
-                    class="custom-input-trainingPoint"></el-input>
+                    class="custom-input-trainingPoints"></el-input>
                 </el-form-item>
               </div>
             </el-col>
@@ -44,11 +44,11 @@
               <div class="grid-content ">
                 <el-form-item label="Mã SV" class="bold-text">
                   <el-input v-model="formData.studentCode" placeholder="Mã sinh viên"
-                    class="custom-input-trainingPoint"></el-input>
+                    class="custom-input-trainingPoints"></el-input>
                 </el-form-item>
                 <el-form-item label="Khoa" class="bold-text">
                   <el-input v-model="formData.department" placeholder="Khoa"
-                    class="custom-input-trainingPoint"></el-input>
+                    class="custom-input-trainingPoints"></el-input>
                 </el-form-item>
               </div>
             </el-col>
@@ -157,7 +157,10 @@ export default {
         department: '',
       },
       isEditMode: false,
-      id_nhap: ''
+      id_nhap: '',
+      listMaxCores: [],
+
+      idUserForSubmit: ''
     };
   },
   created() {
@@ -176,6 +179,14 @@ export default {
   },
 
   computed: {
+
+    getListMaxCore() {
+      this.criteriaList.forEach(item => {
+        const listMaxCore = [];
+        item.content.forEach(item => { listMaxCore.push(item.maxScore) });
+        this.listMaxCores.push(listMaxCore)
+      })
+    },
     // Chuyển form đăng ký sang các row trong array để hiển thị table
     flattenedCriteriaList() {
       const flattenedList = [];
@@ -234,6 +245,8 @@ export default {
             const firstTranningPoint = response.data.tranningPoints[0];
             if (firstTranningPoint && Array.isArray(firstTranningPoint.criteriaList)) {
               this.criteriaList = firstTranningPoint.criteriaList;
+              this.getListMaxCore
+
             } else {
               console.error("criteriaList không tồn tại hoặc không phải là mảng.");
             }
@@ -252,7 +265,6 @@ export default {
         .then(response => {
           if (response && response.data && response.data.success) {
             const detailTrainingPoint = response.data.detailTrainingPoint;
-            console.log(detailTrainingPoint);
             this.criteriaList = detailTrainingPoint.criteriaList;
             this.semester = detailTrainingPoint.semester;
             this.schoolYear = detailTrainingPoint.schoolYear;
@@ -263,6 +275,8 @@ export default {
             this.formData.department = detailTrainingPoint.studentDetails.department;
             this.formData.fullName = detailTrainingPoint.studentDetails.fullName;
             this.formData.studentCode = detailTrainingPoint.studentDetails.studentCode;
+
+            this.idUserForSubmit = detailTrainingPoint.userDetails._id;
 
           } else {
             console.error("Không thành công hoặc dữ liệu không đúng định dạng: ", response.data);
@@ -345,11 +359,14 @@ export default {
       if (!this.validateInputData()) {
         return;
       }
+      if (this.Total_groupAssessment == 0) {
+        this.Total_groupAssessment = this.Total_selfAssessment
+      }
 
       saveData(this.combineObjects(this.resultArray))
         .then(response => {
           if (response && response.data && response.data.success) {
-            handleDeleteCopy(this.id_nhap)
+            //handleDeleteCopy(this.id_nhap)
             this.loadData()
           } else {
 
@@ -398,7 +415,7 @@ export default {
         semester1: { point: '', classify: '', note: '' },
         semester2: { point: '', classify: '', note: '' },
         wholeYear: { point: '', classify: '', note: '' },
-        user: this.$store.getters.user._id,
+        user: this.idUserForSubmit,
       };
 
       try {
@@ -415,12 +432,12 @@ export default {
           if (response && response.data) {
             this.$message.success('Lưu dữ liệu thành công ');
             await updateStatus(this.$route.params.id, this.Total_selfAssessment);
-            this.$router.push({ name: 'training_point_main' })
+            this.$router.push({ name: 'detailTrainingPoint_main' })
           } else {
             this.$message.error('Lưu dữ liệu không thành công');
           }
         } else if (this.semester === '2') {
-          const response = await getSemester1Data(this.$store.getters.user._id, this.schoolYear);
+          const response = await getSemester1Data(this.idUserForSubmit, this.schoolYear);
 
           if (response && response.data && response.data.success) {
             if (this.Total_consultantAssessment === 0) {
@@ -435,9 +452,9 @@ export default {
             data.wholeYear.classify = this.getClassification(data.wholeYear.point);
             data.wholeYear.note = 'Ghi chú';
 
-            await updateSemester2AndWholeYear(this.$store.getters.user._id, this.schoolYear, data.semester2, data.wholeYear);
+            await updateSemester2AndWholeYear(this.idUserForSubmit, this.schoolYear, data.semester2, data.wholeYear);
             await updateStatus(this.$route.params.id);
-            this.$router.push({ name: 'training_point_main' })
+            this.$router.push({ name: 'detailTrainingPoint_main' })
           } else {
             console.error("Không thành công: ", response.data);
           }
@@ -468,48 +485,61 @@ export default {
     },
 
     validateInputData() {
-      // Kiểm tra các điều kiện của dữ liệu đầu vào ở đây
+      // Kiểm tra các điều kiện của dữ liệu đầu vào
       if (!this.semester || !this.schoolYear) {
         this.$message.error('Vui lòng nhập học kỳ và năm học.');
         return false;
       }
 
-      // Kiểm tra các ô nhập điểm
-      for (const criteria of this.flattenedCriteriaList) {
-        if (criteria.level === 1) {
-          if (!criteria.selfAssessment || criteria.selfAssessment < 0 || criteria.selfAssessment > criteria.maxScore) {
-            this.$message.error('Vui lòng nhập điểm hợp lệ cho SV tự chấm.');
-            return false;
-          }
+      // Kiểm tra định dạng của schoolYear và loại bỏ khoảng trắng
+      const schoolYearRegex = /^\d{4}\s*-\s*\d{4}$/;
+      // Loại bỏ khoảng trắng trong chuỗi schoolYear
+      this.schoolYear = this.schoolYear.replace(/\s+/g, '');
 
-          if (!criteria.groupAssessment || criteria.groupAssessment < 0 || criteria.groupAssessment > criteria.maxScore) {
-            this.$message.error('Vui lòng nhập điểm hợp lệ cho lớp chấm.');
-            return false;
-          }
-
-          if (!criteria.consultantAssessment || criteria.consultantAssessment < 0 || criteria.consultantAssessment > criteria.maxScore) {
-            this.$message.error('Vui lòng nhập điểm hợp lệ cho cố vấn chấm.');
-            return false;
-          }
-        }
+      if (!schoolYearRegex.test(this.schoolYear)) {
+        this.$message.error('Năm học không hợp lệ. Vui lòng nhập theo định dạng YYYY-YYYY.');
+        return false;
       }
 
-      return true;
-    },
+      // Kiểm tra giá trị của semester
+      if (this.semester != 1 && this.semester != 2) {
+        this.$message.error('Học kỳ không hợp lệ. Vui lòng nhập giá trị 1 hoặc 2.');
+        return false;
+      }
 
-  },
-};
+      // Kiểm tra các ô nhập điểm
+      let i = 0
+      for (const criteria of this.flattenedCriteriaList) {
+        if (criteria.level === 1) {
+          const numbersOnly = this.listMaxCores[i].filter(item => typeof item === 'number');
+
+          let isNotInArray = false
+          for (let j = 0; j < numbersOnly.length; j++) {
+            if (criteria.selfAssessment == numbersOnly[j]) { isNotInArray = true };
+          }
+
+          if (!isNotInArray) { this.$message.error('Điểm nhập không hợp lệ.'); return false }
+          i++
+        }
+      }
+      return true;
+
+    }
+  }
+}
 </script>
 
 
 <style scoped>
-.custom-input-trainingPoint .el-input__inner {
+.custom-input-trainingPoints .el-input__inner {
   border: none;
   border-bottom: 1px solid #e4e7ed;
   border-radius: 0;
+  width: 10%;
+
 }
 
-.custom-input-trainingPoint input {
+.custom-input-trainingPoints input {
   color: #333;
   border: none;
   border-bottom: 1px solid #e4e7ed;
@@ -536,7 +566,7 @@ export default {
   font-style: italic;
 }
 
-.custom-input-trainingPoint .el-form-item__label {
+.custom-input-trainingPoints .el-form-item__label {
   font-weight: bold;
 }
 
@@ -553,8 +583,9 @@ export default {
   overflow-y: scroll;
   /* Tạo thanh cuộn dọc */
 }
+
 .content-container {
-  max-height: 87vh ;
-  overflow-y: auto; 
+  max-height: 87vh;
+  overflow-y: auto;
 }
 </style>

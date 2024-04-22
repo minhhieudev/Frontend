@@ -42,7 +42,7 @@
       </div>
 
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT" width="50"  align="center">
+        <el-table-column label="STT" width="50" align="center">
           <template slot-scope="{ $index, row }">
             <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
           </template>
@@ -117,6 +117,9 @@
         </el-card>
       </div>
 
+      <div class="chart-container mt-2">
+        <canvas id="trainingChart"></canvas>
+      </div>
 
     </el-card>
   </div>
@@ -130,6 +133,9 @@ import 'jspdf-autotable';
 import html2pdf from 'html2pdf.js';
 import htmlDocx from 'html-docx-js/dist/html-docx';
 import '@fortawesome/fontawesome-free/css/all.css';
+import { Chart } from 'chart.js';
+
+
 
 export default {
   data() {
@@ -153,10 +159,13 @@ export default {
       index: 0,
     };
   },
-  created() {
-    this.loadData();
-    this.loadInfoToFilter()
+  mounted() {
+    this.createChart();
+  },
 
+  created() {
+    this.loadData()
+    this.loadInfoToFilter()
   },
   computed: {
     filteredTableData() {
@@ -168,8 +177,6 @@ export default {
         (!this.selectedLop || data.studentDetails.className === this.selectedLop)
       );
     },
-   
-
     semester1Statistics() {
       return this.calculateStatistics(this.filteredTableData, 'semester1');
     },
@@ -192,6 +199,35 @@ export default {
       const uniqueYears = [...new Set(this.tableData.map(item => item.schoolYear))];
       return uniqueYears;
     },
+    dataChart() {
+      const data = {
+        labels: ['Xuất sắc', 'Giỏi', 'Khá', 'Trung bình', 'Yếu', 'Kém'],
+        datasets: [
+          {
+            label: 'Học kỳ 1',
+            data: [this.semester1Statistics.excellent, this.semester1Statistics.good, this.semester1Statistics.fair, this.semester1Statistics.average, this.semester1Statistics.weak],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Học kỳ 2',
+            data: [this.semester2Statistics.excellent, this.semester2Statistics.good, this.semester2Statistics.fair, this.semester2Statistics.average, this.semester2Statistics.weak],
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+          },
+          {
+            label: 'Cả năm',
+            data: [this.wholeYearStatistics.excellent, this.wholeYearStatistics.good, this.wholeYearStatistics.fair, this.wholeYearStatistics.average, this.wholeYearStatistics.weak],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }
+        ]
+      };
+      return data;
+    }
   },
   watch: {
     uniqueSchoolYears: {
@@ -200,8 +236,32 @@ export default {
       },
       immediate: true,
     },
+    dataChart:{
+      handler(){
+        this.createChart()
+
+      }
+    }
   },
   methods: {
+    createChart() {
+
+      const ctx = document.getElementById('trainingChart').getContext('2d');
+
+      const data = this.dataChart
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    },
 
     gotoDetail(row) {
       this.$router.push({ name: `${ModelCode}_edit`, params: { id: row._id } });
@@ -247,6 +307,8 @@ export default {
         .catch((error) => {
           console.error("Lỗi khi tải điểm rèn luyện: ", error);
         });
+
+
     },
     handlePageSizeChange(newSize) {
       this.pagination.page_size = newSize;
@@ -524,10 +586,12 @@ export default {
     },
 
   },
-};
+
+}
+
 </script>
 
-<style >
+<style>
 .search-bar {
   display: flex;
   justify-content: space-between;
@@ -618,11 +682,16 @@ export default {
   gap: 20px;
 
 }
-.container-statistical{
+
+.container-statistical {
   font-weight: bold;
 }
-.custom-scroll-result{
-  max-height: 87vh ;
+
+.custom-scroll-result {
+  max-height: 87vh;
   overflow-y: auto;
+}
+.el-select{
+  width: 10%;
 }
 </style>

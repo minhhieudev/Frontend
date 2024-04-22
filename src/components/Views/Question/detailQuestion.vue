@@ -24,11 +24,11 @@
             <span class="comments">{{ answersCount }}</span>
           </div>
         </div>
-        <div class="reply-container" :class="{ 'disabled': isPostButtonDisabled  }">
+        <div class="reply-container" >
           <div class="avatar">
             <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
-          <div class="input-box">
+          <div class="input-box" :class="{ 'disabled': isPostButtonDisabled  }">
             <input v-model="replyText" @input="onReplyInputChange" @keyup.enter="sendReply"
               placeholder="Nhập phản hồi của bạn..." class="reply-input" />
           </div>
@@ -99,7 +99,8 @@ export default {
       return this.answers.length;
     },
     isPostButtonDisabled() {
-      return this.$store.getters.user.role === 'student';
+      
+      //return (this.$store.getters.user._id !== this._id) && (this.$store.getters.user.role === student) ;
     },
   },
   created() {
