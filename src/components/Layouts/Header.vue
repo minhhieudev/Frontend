@@ -43,11 +43,6 @@ export default {
   created() {
     this.loadData();
 
-    // Kết nối với server qua Socket.IO
-    // this.socket = io("http://localhost:8001");
-
-
-
     this.$store.getters.socket.on("updateNotifications", () => {
       this.loadData();
 

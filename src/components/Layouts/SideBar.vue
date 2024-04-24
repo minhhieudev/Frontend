@@ -124,7 +124,7 @@ export default {
   left: 0;
   height: calc(100% - 40px);
   background-image: url(../../../src/assets/4.jpg);
-  background-color: rgb(247, 239, 220);
+  //background-color: rgb(247, 239, 220);
 
   z-index: 1010;
 
@@ -140,7 +140,7 @@ export default {
       }
 
       .active {
-        background: #d8ede9;
+        background: #51e5f0;
       }
 
       .sidebar-item {

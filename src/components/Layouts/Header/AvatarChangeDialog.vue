@@ -36,8 +36,10 @@ export default {
         path:''
       },
       previewUrl: '',
-      uploadActionURL: process.env.VUE_APP_BACKEND_URL + `/public/upload`,
+      uploadActionURL: `${process.env.VUE_APP_BACKEND_URL}/public/upload`,
     };
+  },
+  created(){
   },
   methods: {
     resetDialog() {
@@ -71,7 +73,8 @@ export default {
     handleAvatarUploadSuccess(response, file, filePath) {
       const uploadedFile = response.files[0];
       this.avatarForm.name= uploadedFile.filename
-      this.avatarForm.path=process.env.VUE_APP_BACKEND_URL+ uploadedFile.path
+      this.avatarForm.path=`${process.env.VUE_APP_BACKEND_URL}${uploadedFile.path}`
+      console.log('H:'+ this.avatarForm.path)
       
 
     },
@@ -79,6 +82,7 @@ export default {
     async confirmAvatar() {
 
       if (this.avatarForm.file && this.avatarForm.file.raw) {
+        console.log('22333:'+this.avatarForm.path)
         try {
           // Update avatar through API
           const response = await updateAvatarUser(this.$store.getters.user._id, { newUrl: this.avatarForm.path });

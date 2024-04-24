@@ -69,7 +69,7 @@ export default {
     connectSocket() {
       this.$store.dispatch("setData", {
         key: "socket",
-        data: io("http://localhost:8001")
+        data: io(process.env.VUE_APP_BACKEND_URL )
       })
     },
 

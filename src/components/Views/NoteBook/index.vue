@@ -1,6 +1,6 @@
 <template>
   <el-container style="height: 100vh; ">
-    <el-aside style="background-color: rgb(238, 241, 246)">
+    <el-aside style="">
       <el-menu :default-openeds="['1', '2']" @select="handleMenuSelect">
         <el-submenu index="1">
           <template slot="title"><i class="el-icon-message"></i>Trang cá nhân</template>
@@ -14,9 +14,6 @@
           <el-menu-item-group>
             <el-menu-item index="2-1">Kết quả rèn luyện</el-menu-item>
             <el-menu-item index="2-2">Kết quả học tập</el-menu-item>
-            <el-menu-item index="2-3">Chương trình đào tạo</el-menu-item>
-            <el-menu-item index="2-4">Quyết định sinh viên</el-menu-item>
-            <el-menu-item index="2-5">Biểu mẫu - giấy xác nhận</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
       </el-menu>
@@ -24,6 +21,8 @@
 
     <el-container>
       <el-main class="p-0 mt-0 ml-2">
+        <inforUser v-if="selectedMenuItem === '1-1'" />
+        <notify v-if="selectedMenuItem === '1-2'" />
         <trainingPoint v-if="selectedMenuItem === '2-1'" />
         <resultLearning v-if="selectedMenuItem === '2-2'" />
       </el-main>
@@ -34,15 +33,21 @@
 <script>
 import trainingPoint from './trainingPoint';
 import resultLearning from './resultLearning';
+import inforUser from './inforUser';
+import notify from './notify';
+import decision from './decision';
 
 export default {
   components: {
     trainingPoint,
-    resultLearning
+    resultLearning,
+    inforUser,
+    notify,
+    decision
   },
   data() {
     return {
-      selectedMenuItem: '', // Set a default value here
+      selectedMenuItem: '', 
       // your other data...
     };
   },
@@ -61,5 +66,8 @@ export default {
 
 .el-aside {
   color: #333;
+  border-radius: 15px;
+  margin-left: 1%;
+
 }
 </style>

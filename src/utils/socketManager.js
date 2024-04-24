@@ -5,7 +5,7 @@ let socket = null;
 
 export function initSocketConnection() {
   if (!socket) {
-    socket = io("http://localhost:8001");
+    socket = io(process.env.VUE_APP_BACKEND_URL);
   }
 }
 

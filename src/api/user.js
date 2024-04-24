@@ -80,5 +80,11 @@ export function updateNotificationStatus(id) {
   });
 }
 
+export function getInfoUser(id){
+  return request({
+    url: `/${modelCode}/getInfoUser/${id}`,
+    method: 'get',
+  })
+}
 
 
