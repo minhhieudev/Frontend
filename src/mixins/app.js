@@ -51,7 +51,7 @@ export default {
         },
       },
       BACKEND_PATH:
-        (process.env.VUE_APP_BACKEND_URL || "http://localhost:8001") +
+        (process.env.VUE_APP_BACKEND_URL || "https://backend-3lvb.onrender.com") +
         (process.env.VUE_APP_API_PATH || "/api/v1/private"),
     };
   },

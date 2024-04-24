@@ -13,7 +13,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     config.headers['x-access-token'] = getToken()
-    config.baseURL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH || 'http://localhost:8001/api/v1/private'
+    config.baseURL = process.env.VUE_APP_BACKEND_URL + process.env.VUE_APP_API_PATH || 'https://backend-3lvb.onrender.com/api/v1/private'
     return config
   },
   error => {
