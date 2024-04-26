@@ -63,7 +63,7 @@
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
-            class="reply-input" />
+            class="reply-input" disabled/>
         </div>
         <div class="send-button mr-3">
           <i class="fa fa-paper-plane" style="color:rgb(22, 77, 228)" @click="sendReply" aria-hidden="true"></i>

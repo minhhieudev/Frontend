@@ -7,10 +7,12 @@ module.exports = {
       }
     }
   },
-  publicPath: './',
   productionSourceMap: false,
   outputDir: '../html',
   devServer: {
     port: 8081
   },
+  publicPath: process.env.NODE_ENV === 'production'
+  ? '/Frontend/' // Thay tên repository của các bạn vào đây nhé
+  : '/'
 }
