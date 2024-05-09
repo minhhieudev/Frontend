@@ -37,9 +37,9 @@
         </el-table-column>
 
         <!-- Tên câu hỏi / Bài đăng Column -->
-        <el-table-column prop="row.title" label="Tên câu hỏi / Bài đăng">
-          <template slot-scope="{ row }">
-            {{ row.title }}
+        <el-table-column prop="row.title" label="Tiêu đề câu hỏi" >
+          <template slot-scope="{ row }" >
+            <span style="font-weight: bold; color: #09af09;">{{ row.title }}</span>
           </template>
         </el-table-column>
 
@@ -270,7 +270,7 @@ export default {
 
 
 .custom-input-question {
-  width: auto;
+  width: 60%;
   font-weight: bold;
   border: none;
 

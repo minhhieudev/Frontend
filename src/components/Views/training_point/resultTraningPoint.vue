@@ -27,11 +27,7 @@
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
-
-        <el-select v-model="selectedNganh" placeholder="Ngành" filterable>
-          <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
-        </el-select>
-
+        
         <el-select v-model="selectedLop" filterable placeholder="Lớp">
           <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
         </el-select>
@@ -67,19 +63,17 @@
         <el-table-column label="Kỳ 1" align="center" width="100">
           <el-table-column prop="semester1.point" label="Điểm" align="center"></el-table-column>
           <el-table-column prop="semester1.classify" label="Xếp loại" align="center"></el-table-column>
-          <el-table-column prop="semester1.note" label="Ghi chú" align="center"></el-table-column>
         </el-table-column>
 
         <el-table-column label="Kỳ 2" align="center">
           <el-table-column prop="semester2.point" label="Điểm" align="center"></el-table-column>
           <el-table-column prop="semester2.classify" label="Xếp loại" align="center"></el-table-column>
-          <el-table-column prop="semester2.note" label="Ghi chú" align="center"></el-table-column>
         </el-table-column>
 
         <el-table-column label="Cả năm" align="center">
           <el-table-column prop="wholeYear.point" label="Điểm" align="center"></el-table-column>
           <el-table-column prop="wholeYear.classify" label="Xếp loại" align="center"></el-table-column>
-          <el-table-column prop="wholeYear.note" label="Ghi chú" align="center"></el-table-column>
+          <!-- <el-table-column prop="wholeYear.note" label="Ghi chú" align="center"></el-table-column> -->
         </el-table-column>
       </el-table>
 
@@ -117,7 +111,8 @@
         </el-card>
       </div>
 
-      <div class="chart-container mt-2">
+      <div class="chart-container py-3 text-center">
+        <h3 style="color: red;"lass="mt-2">BIỂU ĐỒ THỐNG KÊ</h3>
         <canvas id="trainingChart"></canvas>
       </div>
 
@@ -610,7 +605,7 @@ export default {
 }
 
 .custom-input-result {
-  width: 200px;
+  width: 10%;
   /* Điều chỉnh chiều rộng theo nhu cầu */
   font-weight: bold;
   /* Đậm hơn */

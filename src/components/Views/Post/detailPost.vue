@@ -115,7 +115,7 @@ export default {
     }
   },
   created() {
-
+this.loadReply()
   },
   data() {
     return {
@@ -144,6 +144,7 @@ export default {
     },
 
     loadReply() {
+      console.log('load')
       getReplyByPostId(this.id)
         .then((response) => {
           if (response && response.data && response.data.success) {
@@ -170,7 +171,7 @@ export default {
       if (this.replyText.trim() !== "") {
         const newReply = {
           content: this.replyText,
-          reply: this.id,
+          post: this.id,
           user: this.$store.getters.user._id
         };
         saveData(newReply)

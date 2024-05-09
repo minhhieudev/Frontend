@@ -1,20 +1,18 @@
 <template>
   <div class="custom-scroll">
     <el-card>
-      <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH PHIẾU ĐIỂM</h4>
+      <h4 class="font-weight-bold text-success text-center mb-3">DANH SÁCH PHIẾU ĐIỂM</h4>
 
       <div class="action-trainingPoint mb-4">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
-        <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
-
-        <div class="filter-options pr-4">
+        <div class="filter-options ">
           <span v-for="(option, index) in filterOptions" :key="index" :class="{ 'selected': selectedFilter === option }"
             @click="selectFilter(option)">
             {{ option }}
           </span>
         </div>
 
-        <el-select v-model="selectedNam" placeholder="Năm học" filterable>
+        <el-select v-model="selectedNam" placeholder="Năm học" filterable class="w-5">
           <el-option v-for="item in namList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
 
@@ -91,7 +89,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="schoolYear" label="Năm học" width="130" align="center">
+        <el-table-column prop="schoolYear" label="Năm học" width="120" align="center">
           <template slot-scope="{ row }">
             {{ row.schoolYear }}
           </template>
@@ -108,13 +106,13 @@
               {{ row.Total_groupAssessment }}
             </template>
           </el-table-column>
-          <el-table-column prop="Total_consultantAssessment" label="Cố vấn (xét duyệt)" align="center">
+          <el-table-column prop="Total_consultantAssessment" label="Cố vấn" align="center">
             <template slot-scope="{ row }">
               {{ row.Total_consultantAssessment }}
             </template>
           </el-table-column>
         </el-table-column>
-        <el-table-column label="Thao tác" width="150" align="center">
+        <el-table-column label="Thao tác" width="80" align="center">
           <template slot-scope="scope">
             <el-button type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small"
               circle></el-button>
@@ -302,7 +300,7 @@ export default {
 }
 
 .custom-input-trainingPoint {
-  width: 200px;
+  width: 100px;
   font-weight: bold;
   background-color: #eaeaea;
   border: none;
@@ -317,7 +315,7 @@ export default {
 .search-input-trainingPoint {
   width: auto;
   border: none;
-  width: 200px;
+  width: 140px;
 
 }
 
@@ -325,6 +323,7 @@ export default {
   color: #333;
   border: none;
   border-bottom: 1px solid #e4e7ed;
+  width: 20%
 }
 
 .custom-input-trainingPoint input {

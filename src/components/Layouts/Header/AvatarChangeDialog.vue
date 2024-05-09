@@ -36,7 +36,7 @@ export default {
         path:''
       },
       previewUrl: '',
-      uploadActionURL: `${process.env.VUE_APP_BACKEND_URL}/public/upload`,
+      uploadActionURL: process.env.VUE_APP_BACKEND_URL+`/public/upload`,
     };
   },
   created(){

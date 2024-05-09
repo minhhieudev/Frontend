@@ -21,3 +21,10 @@ export function saveData(data) {
     data,
   });
 }
+
+export function updateStatus() {
+  return request({
+    url: `/${modelCode}/updateIsShow`, 
+    method: "post",
+  });
+}

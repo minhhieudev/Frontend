@@ -8,7 +8,6 @@
             <div class="d-flex  align-items-center ml-5 border-right">
               <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
 
-              <!-- Khoa Dropdown -->
               <el-select v-model="selectedType" placeholder="Loại" class="custom-input-post">
                 <el-option v-for="item in typeList" :key="item" :label="item" :value="item"></el-option>
               </el-select>
@@ -27,20 +26,20 @@
       </div>
 
       <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT" width="80">
+        <el-table-column label="STT" width="70">
           <template slot-scope="{ $index, row }">
             <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="title" label="Tên Tài liệu / Bài đăng" width="500">
+        <el-table-column prop="title" label="Tên Tài liệu / Bài đăng" >
           <template slot-scope="{ row }">
             <span style="font-weight: bold; color: #09af09;">{{ row.title }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="type" label="Loại" width="160">
+        <el-table-column prop="type" label="Loại" width="130">
           <template slot-scope="{ row }">{{ row.postType }}</template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="Ngày, tháng đăng">
+        <el-table-column prop="createdAt" label="Ngày đăng" width="150">
           <template slot-scope="{ row }">{{ formatDate(row.createdAt) }}</template>
         </el-table-column>
 
@@ -303,9 +302,10 @@ export default {
 }
 
 .custom-input-post {
-  width: 250px;
+  width: 70%;
   font-weight: bold;
   border: none;
+  height: auto
 }
 
 

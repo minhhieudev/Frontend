@@ -1,73 +1,125 @@
 <template>
-  <el-container style="height: 100vh; ">
-    <el-aside style="">
-      <el-menu :default-openeds="['1', '2']" @select="handleMenuSelect">
-        <el-submenu index="1">
-          <template slot="title"><i class="el-icon-message"></i>Trang cá nhân</template>
-          <el-menu-item-group>
-            <el-menu-item index="1-1">Thông tin</el-menu-item>
-            <el-menu-item index="1-2">Thông báo</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-        <el-submenu index="2">
-          <template slot="title"><i class="el-icon-menu"></i>Học tập</template>
-          <el-menu-item-group>
-            <el-menu-item index="2-1">Kết quả rèn luyện</el-menu-item>
-            <el-menu-item index="2-2">Kết quả học tập</el-menu-item>
-          </el-menu-item-group>
-        </el-submenu>
-      </el-menu>
-    </el-aside>
-
-    <el-container>
-      <el-main class="p-0 mt-0 ml-2">
-        <inforUser v-if="selectedMenuItem === '1-1'" />
-        <notify v-if="selectedMenuItem === '1-2'" />
-        <trainingPoint v-if="selectedMenuItem === '2-1'" />
-        <resultLearning v-if="selectedMenuItem === '2-2'" />
-      </el-main>
-    </el-container>
-  </el-container>
+  <div class="a2 p-4">
+    <inforUser></inforUser>
+    <div class="card-container mt-3">
+      <el-card v-for="(item, index) in data" :key="index" :style="getCardColor(index)" class="box-card">
+        <div slot="header" class="clearfix">
+          <span>NĂM HỌC: {{ item.schoolYear }}</span>
+          <el-button style="float: right; padding: 3px 0" type="text">NĂM {{ index + 1 }}</el-button>
+        </div>
+        <el-row>
+          <el-col v-for="(semester, key) in ['semester1', 'semester2', 'wholeYear']" :key="key" :span="8">
+            <div class="items">
+              <p :style="getColorStyle(key)">{{ getSemesterLabel(key) }}</p>
+              <p>ĐIỂM: {{ item[semester].point }}</p>
+              <p>XL: {{ item[semester].classify }}</p>
+            </div>
+          </el-col>
+        </el-row>
+      </el-card>
+    </div>
+  </div>
 </template>
 
 <script>
-import trainingPoint from './trainingPoint';
-import resultLearning from './resultLearning';
+import { getDetailForUser } from '@/api/resultTrainingPoint'
 import inforUser from './inforUser';
-import notify from './notify';
-import decision from './decision';
+
 
 export default {
   components: {
-    trainingPoint,
-    resultLearning,
     inforUser,
-    notify,
-    decision
+
   },
   data() {
     return {
-      selectedMenuItem: '', 
-      // your other data...
-    };
+      data: [],
+    }
+  },
+  created() {
+    this.getData();
   },
   methods: {
-    handleMenuSelect(index) {
-      this.selectedMenuItem = index;
-    }
-  }
+
+    getData() {
+      getDetailForUser(this.$store.getters.user._id)
+        .then((response) => {
+          if (response && response.data && response.data.success) {
+            this.data = response.data.trainingPointStudent;
+          } else {
+            console.error("Không thành công: ", response.data);
+          }
+        })
+        .catch((error) => {
+          console.error("Lỗi khi lấy điểm rèn luyện: ", error);
+        });
+    },
+    getCardColor(index) {
+      const colors = [
+        "rgb(168, 245, 219)",
+        "rgb(171, 223, 243)",
+        "rgb(248, 215, 241)",
+        "rgb(243, 226, 150)",
+      ];
+      const color = colors[index % colors.length];
+      return { backgroundColor: color };
+    },
+    getColorStyle(key) {
+      const colorStyles = [
+        "rgba(6, 109, 14, 0.856)",
+        "rgb(45, 7, 184)",
+        "rgb(199, 7, 65)",
+      ];
+      const color = colorStyles[key];
+      return { color };
+    },
+    getSemesterLabel(key) {
+      const labels = [
+        "HỌC KỲ 1",
+        "HỌC KỲ 2",
+        "CẢ NĂM",
+      ];
+      return labels[key];
+    },
+  },
 };
 </script>
 
 <style>
-.el-submenu__title {
-  background-color: rgb(115, 226, 228);
+.clearfix {
+  margin-bottom: 2px;
+  border-bottom: 2px solid black;
+  padding-bottom: 8px;
+  text-shadow: 1px 1px 0 #d40f0f;
+  font-weight: bold;
+  color: red;
 }
 
-.el-aside {
-  color: #333;
-  border-radius: 15px;
-  margin-left: 1%;
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
 
+.items {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  color: #2c2c2c;
+  font-weight: bold;
+  font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+  text-transform: uppercase;
+}
+
+.box-card {
+  width: 100%;
+  border-radius: 25px;
+}
+.a2{
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: inset;
+  height: 88vh;
 }
 </style>

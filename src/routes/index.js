@@ -20,6 +20,7 @@ import studentRoute from "./children/student";
 import consultantRoute from "./children/consultant";
 import postRoute from "./children/post";
 import postTablesRoute from "./children/postTables";
+import introduceRoute from "./children/introduce";
 
 Vue.use(Router)
 
@@ -65,6 +66,7 @@ let adminRoutes = {
     ...consultantRoute,
     ...postRoute,
     ...postTablesRoute,
+    ...introduceRoute
   ],
 };
 

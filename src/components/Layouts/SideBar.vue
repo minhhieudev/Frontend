@@ -19,13 +19,13 @@
     <div class="wrapper-sidebar-menu">
       <div class="custom-container">
         <p>{{ getName() }}</p>
-        <el-icon style="color: rgb(248, 39, 67);" class="el-icon-loading"></el-icon>
+        <el-icon style="color: rgb(248, 39, 67);" class="el-icon-eleme"></el-icon>
       </div>
       <ul class="sidebar-menu">
         <sidebar-item v-for="(sidebar, index) in sidebars" :sidebar="sidebar" v-if="sidebar.type === '1'" :key="index"
           :index="index" @active_item="handleClickItem"></sidebar-item>
       </ul>
-      <div v-if="this.$store.getters.user.role != 'student'">
+      <div v-if="this.$store.getters.user.role == 'Admin'">
         <div class="categoryManagement">
           <p>QUẢN LÝ DANH MỤC </p>
           <el-icon style="color: rgb(24, 61, 228);" class="el-icon-caret-bottom"></el-icon>
@@ -43,7 +43,10 @@
         <sidebar-item v-for="(sidebar, index) in sidebars" :sidebar="sidebar" v-if="sidebar.type === '3'" :key="index"
           :index="index" @active_item="handleClickItem"></sidebar-item>
       </ul>
-
+      <ul class="sidebar-menu mt-2">
+        <sidebar-item v-for="(sidebar, index) in sidebars" :sidebar="sidebar" v-if="sidebar.type === '4'" :key="index"
+          :index="index" @active_item="handleClickItem"></sidebar-item>
+      </ul>
 
     </div>
   </aside>
@@ -112,7 +115,7 @@ export default {
 }
 
 .sidebar {
-  margin: 20px;
+  margin: 15px;
   border-radius: 20px;
 
   height: 500px; // Set a fixed height
@@ -135,8 +138,8 @@ export default {
       button {
         //background: #468a5f;
         color: #333;
-        padding-top: 5px;
-        padding-bottom: 5px;
+        padding-top: 4px;
+        padding-bottom: 4px;
       }
 
       .active {

@@ -3,10 +3,9 @@
     <el-main class="m-3" :class="$isMobile?'':'h-100'">
       <div class="row" :class="$isMobile?'':'h-100'">
         <div class="col-md-6 d-flex justify-content-center align-items-center">
-          <img src="@/assets/Picture1.png" alt="logo" style="width: 100%; max-width: 500px;"/>
         </div>
         <div class="col-md-6 d-flex align-items-center text-center">
-          <div class="" style="width: inherit; max-width: 500px">
+          <div class="" style="width: inherit; max-width: 500px ;z-index: 999;">
             <LoginFormSection />
           </div>
         </div>
@@ -246,19 +245,26 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper-login {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgb(2, 0, 36);
-  background: linear-gradient(
-    207deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 9, 121, 1) 24%,
-    rgba(73, 7, 146, 1) 51%,
-    rgba(0, 212, 255, 1) 100%
-  );
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../assets/slide1.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+}
+.wrapper-login::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Màu đen với độ mờ 0.5 */
+    z-index: 2;
 }
 .box-login {
   background: #fff;

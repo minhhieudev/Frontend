@@ -3,7 +3,9 @@
     <div class="d-flex align-items-center">
       <h4 class="ml-2 font-weight-bold d-flex align-items-center justify-content-between justify-content-md-between mb-0">
         <i v-if="$isMobile" class="fa fa-bars mr-3" @click="drawer = true"></i>
-        <b>{{ activeItem.name }}</b>
+        <img src="../../../assets/9.jpg" alt="" width="65px" height="50px" >
+        
+        <b class="ml-3">{{ activeItem.name }}</b>
         <!-- <i class="el-icon-setting ml-2 mt-1"></i> -->
       </h4>
       <!-- <template v-if="!$isMobile">

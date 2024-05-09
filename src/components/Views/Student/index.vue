@@ -12,11 +12,6 @@
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
 
-        <!-- Ngành Dropdown -->
-        <el-select v-model="selectedNganh" placeholder="Ngành" filterable class="input-student">
-          <el-option v-for="item in nganhList" :key="item" :label="item" :value="item"></el-option>
-        </el-select>
-
         <!-- Lớp Dropdown -->
         <el-select v-model="selectedLop" filterable placeholder="Lớp" class="input-student">
           <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
@@ -61,11 +56,11 @@
             {{ row.department }}
           </template>
         </el-table-column>
-        <el-table-column prop="majors" label="Nghành" align="center">
+        <!-- <el-table-column prop="isComplete" label="Chấm" align="center">
           <template slot-scope="{ row }">
-            {{ row.majors }}
+            {{ row.isComplete }}
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column label="Thao tác" width="150">
           <template slot-scope="{ row }">
             <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
@@ -87,7 +82,7 @@
 
 <script>
 const ModelCode = 'student';
-import { getAll, handleDelete } from '@/api/student';
+import { getAll, handleDelete, getClasses } from '@/api/student';
 
 import { format } from 'date-fns';
 import '@fortawesome/fontawesome-free/css/all.css';
@@ -113,10 +108,14 @@ export default {
   created() {
     this.loadData();
     this.loadInfoToFilter();
+    this.api()
 
   },
 
   methods: {
+    api() {
+      getClasses()
+    },
     goToAddNewPage() {
       this.$router.push({ name: `${ModelCode}_new` })
     },
@@ -169,6 +168,8 @@ export default {
       this.selectedLop = '';
       this.search = ''
     },
+  
+
     loadInfoToFilter() {
       this.khoaList = this.$store.getters.khoaList
       this.nghanhList = this.$store.getters.nghanhList
@@ -193,9 +194,9 @@ export default {
     },
   },
 };
-</script >
+</script>
 
-<style >
+<style>
 .action-student {
   display: flex;
   justify-content: space-between;
@@ -216,7 +217,7 @@ export default {
   border: none !important;
   background-color: white;
   font-weight: bold;
-  
+
 }
 
 
@@ -244,8 +245,9 @@ export default {
   color: #fff;
   border-radius: 50%;
 }
-.custom-scroll-sv{
-  max-height: 87vh ;
-  overflow-y: auto; 
+
+.custom-scroll-sv {
+  max-height: 87vh;
+  overflow-y: auto;
 }
 </style>

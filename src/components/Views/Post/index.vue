@@ -1,41 +1,31 @@
 <template>
-  <div class="">
+  <div class="posts">
     <div class="container">
-      <!-- Phần Header -->
-
-      <div class="header">
-        <el-carousel indicator-position="outside" autoplay style="height: 190%;overflow: hidden;">
-          <el-carousel-item>
-            <img src="../../../assets/slide1.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide2.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide3.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide5.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide6.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide7.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide8.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-
-        </el-carousel>
-        <div class="logo">
-          <el-avatar :size="150" :src="logo"></el-avatar>
-        </div>
-      </div>
-
       <!-- Phần Main -->
       <div class="main">
-        <div :class="{ 'disabled': isPostButtonDisabled }" class="post-button-container">
+        <div>
+          <p class="title-post">BÀI ĐĂNG</p>
+          <div class="d-flex justify-content-between">
+            <div class="d-flex align-items-center p-2" style="color: rgb(1, 6, 12);">
+              <!-- <i class="fa-solid fa-rotate-right" @click="resetFilters"></i> -->
+              <div class="d-flex  align-items-center ml-5 border-right">
+                <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
+
+                <el-select v-model="selectedType" placeholder="Loại" class=" input-select">
+                  <el-option label="Tất cả" value="Tất cả"></el-option>
+                  <el-option v-for="item in typeList.slice(1)" :key="item" :label="item" :value="item"></el-option>
+                </el-select>
+
+              </div>
+            </div>
+            <div class="d-flex  align-items-center p-2">
+              <el-input v-model="search" size="medium" placeholder="Tìm theo tiêu đề..." class="custom-input-question">
+              </el-input>
+              <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
+            </div>
+          </div>
+        </div>
+        <div v-if="isPostButtonDisabled" class="post-button-container">
           <div class="avatar">
             <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
           </div>
@@ -45,12 +35,12 @@
           </div>
         </div>
 
-        <el-scrollbar wrap-class="post-list" style="height:60vh; overflow-y: auto;">
-          <postItem style="widows: 100%;" v-for="mes in posts" :key="mes._id" :title="mes.title" :content="mes.content"
-            :pinned="mes.pinned" :attachmentPath="mes.attachmentPath" :postType="mes.postType"
+        <el-scrollbar wrap-class="post-list" style="height:80vh; overflow-y: auto;">
+          <postItem style="widows: 100%;" v-for="mes in filteredPosts" :key="mes._id" :title="mes.title"
+            :content="mes.content" :pinned="mes.pinned" :attachmentPath="mes.attachmentPath" :postType="mes.postType"
             :avatarUrl="mes.user.avatarUrl" :user="mes.user.fullname" :createdAt="formatDate(mes.createdAt)"
-            :likes="mes.likes" :comments="mes.comments" :id="mes._id" @pinnedStatusUpdated="loadData"
-            @edit="openEditPost" />
+            :likes="mes.likes" :comments="mes.comments" :id="mes._id" :_id="mes.user._id"
+            @pinnedStatusUpdated="loadData" @edit="openEditPost" />
         </el-scrollbar>
       </div>
     </div>
@@ -100,7 +90,6 @@ import CKEditor from '@ckeditor/ckeditor5-vue2';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { saveNotification } from '@/api/notification';
 
-import io from "socket.io-client";
 
 export default {
   data() {
@@ -124,6 +113,9 @@ export default {
       editor: ClassicEditor,
       notifications: [],
       isEditing: false,
+      search: '',
+      typeList: ['Tất cả', 'Thông báo', 'Tài liệu', 'Bài đăng'],
+      selectedType: 'Tất cả',
 
 
     };
@@ -151,7 +143,7 @@ export default {
       return tempDiv.textContent || tempDiv.innerText || '';
     },
     isPostButtonDisabled() {
-      return this.$store.getters.user.role === 'student';
+      return this.$store.getters.user.role !== 'student';
     },
     dialogTitle() {
       if (this.isEditing) {
@@ -160,9 +152,20 @@ export default {
         return "TẠO BÀI ĐĂNG";
       }
     },
-    slides() {
-      return this.carouselItems
-    }
+
+    filteredPosts() {
+      return this.posts.filter(data =>
+        (!this.search || data.title.toLowerCase().includes(this.search.toLowerCase())) &&
+        (this.selectedType === 'Tất cả' || data.postType === this.selectedType)
+      );
+    },
+
+    filteredTableData() {
+      return this.posts.filter(data =>
+        (!this.search || data.title.toLowerCase().includes(this.search.toLowerCase())) &&
+        (this.selectedType === 'Tất cả' || data.postType === this.selectedType)
+      );
+    },
   },
   methods: {
 
@@ -253,6 +256,17 @@ export default {
 
       this.submitData(newPost);
     },
+    submitEditNoFile() {
+      const newPost = {
+        title: this.title,
+        content: this.cleanPostText,
+        pinned: this.pinned,
+        user: this.$store.getters.user._id,
+        postType: this.postType,
+      };
+
+      this.submitEditedPost(newPost)
+    },
     checkData() {
       if (this.title == '' || this.postText == '' || this.postType == '') {
         this.$message.error('Vui lòng nhập đủ thông tin !');
@@ -266,30 +280,10 @@ export default {
         this.$refs.upload.submit();
 
       } else if (this.checkData()) {
-        this.submitNoFile();
+        if (!this.isEditing) this.submitNoFile();
+        else this.submitEditNoFile();
 
       }
-    },
-
-    async submitEditedPost() {
-
-      const newPost = {
-        title: this.titlePost,
-        content: this.postText,
-        user: this.selectedPostId,
-      }
-      const res = await updatePost(this.idPost, newPost)
-      if (res && res.status === 200) {
-        this.loadPosts()
-        this.postText = "";
-        this.titlePost = "";
-        this.isEditing = false;
-
-      }
-      // Sau khi lưu thành công, đóng el-dialog
-      this.isPostPopupVisible = false;
-      this.postText = "";
-      this.titlePost = "";
     },
 
     async submitEditedPost(newPost) {
@@ -394,12 +388,6 @@ export default {
 </script>
 
 <style scoped>
-/* Post List Styling */
-.post-list {
-  max-height: 100%;
-  overflow-y: auto;
-}
-
 /* Post Form Styling */
 .post-form {
   display: flex;
@@ -448,7 +436,6 @@ export default {
 
 /* Post Button Container */
 .post-button-container {
-  margin-top: 7.5%;
   display: flex;
   border: 1px solid white;
   border-radius: 10px;
@@ -462,13 +449,16 @@ export default {
 .input-box {
   flex-grow: 1;
   background-color: rgb(129, 117, 117);
+  z-index: 89;
+
 }
 
 /* Reply Inputs */
 .reply-inputs {
   width: 100%;
-  padding: 10px;
+  padding: 4px;
   outline: none;
+
   border: none;
   background-color: rgb(247, 243, 243);
   margin-bottom: 5px;
@@ -482,14 +472,7 @@ export default {
 
 
 
-/* Logo Styling */
-.logo {
-  position: absolute;
-  top: 97%;
-  left: 8%;
-  transform: translateX(-50%);
-  z-index: 9;
-}
+
 
 /* Disabled Class Styling */
 .disabled {
@@ -506,40 +489,37 @@ export default {
 }
 
 /* Post Container Styling */
-.post .container {
+.posts .container {
   display: grid;
   grid-template-rows: auto 1fr;
-  gap: 20px;
   height: 100%;
   overflow: hidden;
+  background-color: rgb(202, 235, 245);
+  border-radius: 20px
 }
 
-/* Header */
-.header {
-  grid-row: 1;
-  position: relative;
-  height: 14vh;
-}
+.input-post-index {}
 
 /* Main Section */
 .main {
   grid-row: 2;
-  padding-top: 20px;
 
 }
 
-/* Post Section */
-.post {
-  height: 100vh;
+.ck-editor__main .ck-content {
+  height: 180px;
 }
 
-/* Phong cách cho các slide trong carousel */
-.carousel-slide {
-  width: 100%;
-  height: 77%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 25px;
-  z-index: -1;
+.title-post {
+  font-size: xx-large;
+  font-family: 'Lobster', cursive;
+  color: rgb(255, 255, 255);
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  text-align: center;
+}
+
+.input-select5 {
+  width: 130px;
+
 }
 </style>

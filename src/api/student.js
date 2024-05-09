@@ -25,6 +25,12 @@ export function getClassList() {
     method: 'get'
   })
 }
+export function getClasses() {
+  return request({
+    url: `/${modelCode}/getStudentForClass`,
+    method: 'get'
+  })
+}
 
 
 export function getKhoaList () {
@@ -69,4 +75,30 @@ export function getFullNameSV({ email }) {
   });
 }
 
+export function setIsComplete (id) {
+  return request({
+    url: `/${modelCode}/updateIsCompleteId/${id}`,
+    method: 'post',
+    params:{
+      id:id
+    }
+  })
+}
+export function updateStatus(id, result) {
+  return request({
+    url: `/detailTrainingPoint/status/${id}`, // Địa chỉ API để cập nhật lượt thích
+    method: "post",
+    data: {
+      result: result, // Thêm answersCount vào dữ liệu gửi đi
+    },
+  });
+}
+
+
+export function updateIsComplete() {
+  return request({
+    url: `/${modelCode}/updateComplete`, 
+    method: "post",
+  });
+}
 

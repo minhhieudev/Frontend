@@ -1,6 +1,6 @@
 <template>
   <div style="font-weight: 500">
-    <div class="content-container">
+    <div class="content-container" v-if="isShow || this.$store.getters.user.role != 'student'">
       <el-card class="table-info center">
         <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
 
@@ -64,9 +64,9 @@
           <el-table-column label="Nội dung và tiêu chí đánh giá">
             <template slot-scope="scope">
               <span :class="{
-            'bold-text': scope.row.level === 1,
-            'bold-text2': hasAsterisk(scope.row.text)
-          }">
+      'bold-text': scope.row.level === 1,
+      'bold-text2': hasAsterisk(scope.row.text)
+    }">
                 {{ scope.row.level === 1 ? scope.row.text : scope.row.text }}
               </span>
             </template>
@@ -102,7 +102,7 @@
           </el-table-column>
         </el-table>
 
-        <el-form label-width="140px" class="d-flex justify-content-around">
+        <el-form label-width="140px" class="d-flex justify-content-around mt-2">
           <el-form-item label="Sinh viên tự chấm" class="bold-text">
             <el-input class="input-trainingPoint" placeholder="" v-model="Total_selfAssessment"></el-input>
           </el-form-item>
@@ -116,14 +116,20 @@
 
         </el-form>
         <div class="d-flex justify-content-between">
-          <el-button type="primary" round @click="handleSave">Nộp</el-button>
+          <el-button type="primary" round @click="confirmSubmit">Nộp</el-button>
           <el-button type="info" round @click="loadDetailTrainingPointCopy">Chấm tiếp</el-button>
           <el-button type="warning" round @click="handleSaveCopy">Lưu nháp</el-button>
           <el-button v-if="this.$store.getters.user.role != 'student'" type="success" round @click="handleSubmit"
             class="text-left">Xác nhận</el-button>
         </div>
+        <div class="d-flex mt-4 text-center justify-content-between" v-if="this.$store.getters.user.role != 'student'">
+          <el-button v-if="!isShow" @click="Active" type="primary" plain>Kích hoạt</el-button>
+          <el-button v-if="isShow" @click="Active" type="danger" plain>Đóng chức năng</el-button>
+        </div>
+
       </el-card>
     </div>
+
 
   </div>
 </template>
@@ -132,9 +138,10 @@
 const ModelCode = 'training_point';
 import { saveData, getDetail } from '@/api/detailTrainingPoint';
 import { getSemester1Data, updateSemester2AndWholeYear, savePoint } from '@/api/resultTrainingPoint';
-import { getAll } from '@/api/training_point';
-import { updateStatus } from '@/api/detailTrainingPoint';
+import { getAll, updateStatus } from '@/api/training_point';
 import { saveDataCopy, getData, handleDeleteCopy } from '@/api/detailTrainingPointNhap';
+import { setIsComplete, updateIsComplete } from '@/api/student';
+
 
 
 export default {
@@ -160,7 +167,8 @@ export default {
       id_nhap: '',
       listMaxCores: [],
 
-      idUserForSubmit: ''
+      idUserForSubmit: '',
+      isShow: null
     };
   },
   created() {
@@ -245,6 +253,7 @@ export default {
             const firstTranningPoint = response.data.tranningPoints[0];
             if (firstTranningPoint && Array.isArray(firstTranningPoint.criteriaList)) {
               this.criteriaList = firstTranningPoint.criteriaList;
+              this.isShow = firstTranningPoint.isShow
               this.getListMaxCore
 
             } else {
@@ -354,7 +363,6 @@ export default {
 
       return criteriaLists;
     },
-
     handleSave() {
       if (!this.validateInputData()) {
         return;
@@ -368,6 +376,8 @@ export default {
           if (response && response.data && response.data.success) {
             //handleDeleteCopy(this.id_nhap)
             this.loadData()
+            this.resetText()
+            setIsComplete(this.$store.getters.user._id)
           } else {
 
           }
@@ -377,6 +387,25 @@ export default {
           this.$message.error('Lỗi khi lưu dữ liệu');
         });
     },
+
+    confirmSubmit() {
+      this.$confirm(
+        'Bạn có chắc chắn muốn nộp dữ liệu không?',
+        'Xác nhận',
+        {
+          confirmButtonText: 'OK',
+          cancelButtonText: 'Hủy',
+          type: 'warning'
+        }
+      )
+        .then(() => {
+          this.handleSave();
+        })
+        .catch(() => {
+        });
+    },
+
+
     handleSaveCopy() {
       // Kiểm tra xem học kỳ và năm học có được nhập không
       if (!this.semester || !this.schoolYear) {
@@ -524,7 +553,25 @@ export default {
       }
       return true;
 
-    }
+    },
+    resetText() {
+      this.Total_selfAssessment = 0;
+      this.Total_groupAssessment = 0;
+      this.Total_consultantAssessment = 0;
+    },
+    Active() {
+      updateStatus().then(response => {
+        if (response.data.success) {
+          this.isShow = !this.isShow
+        }
+      })
+        .catch(error => {
+        });
+      // if (this.isShow) {
+      //   updateIsComplete()
+      // }
+    },
+
   }
 }
 </script>

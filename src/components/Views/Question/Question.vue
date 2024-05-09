@@ -5,7 +5,6 @@
         <div style="display: flex;justify-content: center;align-items: center;">
           <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
 
-
           <div style="display: flex;flex-direction: column;">
             <span class="author">{{ user }}</span>
             <span class="date">{{ createdAt }}</span>
@@ -63,7 +62,7 @@
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
-            class="reply-input" disabled/>
+            class="reply-input" />
         </div>
         <div class="send-button mr-3">
           <i class="fa fa-paper-plane" style="color:rgb(22, 77, 228)" @click="sendReply" aria-hidden="true"></i>
@@ -82,8 +81,6 @@ import detailQuestionVue from './detailQuestion';
 import { format } from 'date-fns';
 import { updateLike, handleDelete } from '../../../api/question';
 import { id } from 'date-fns/locale';
-
-
 
 export default {
   props: {

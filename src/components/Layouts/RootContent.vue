@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" >
     <transition name="el-alert-fade" v-for="(alert, index) in alerts" :key="'alert' + index">
       <div role="alert" class="el-alert is-light mb-1" :class="'el-alert--' + alert.type">
         <i class="el-alert__icon is-big" :class="'el-icon-' + alert.type"></i>

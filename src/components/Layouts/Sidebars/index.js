@@ -2,6 +2,13 @@ export default {
   Admin: [
  
     {
+      name: "Dashboard",
+      url: "/dashboard",
+      icon: "el-icon-menu",
+      color_icon: "#ff4d4d",
+      type: '1',
+    },
+    {
       name: "Tài liệu / Bài đăng",
       url: "/post",
       icon: "el-icon-document",
@@ -81,17 +88,19 @@ export default {
 
     },
     {
-      name: "Tra cứu thông tin",
+      name: "Xem điểm rèn luyện",
       url: "/note_book",
       icon: "el-icon-search",
       color_icon: "#FF6600	",
-      type: '1',
+      type: '3',
     },
     {
-      name: "Cài đặt",
-      url: "/setting",
+      name: "Giới thiệu",
+      url: "/Introduce",
       icon: "el-icon-s-tools",
       color_icon: "#010101",
+      type: '4',
+
     },
     
   ],
@@ -112,22 +121,6 @@ export default {
 
     },
     {
-      name: "Quản trị Câu hỏi / Trả lời",
-      url: "/questionTables",
-      icon: "el-icon-s-grid",
-      color_icon: "#f9b651",
-      type: '1',
-
-    },
-    {
-      name: "Quản trị Tài liệu / Bài đăng",
-      url: "/postTables",
-      icon: "el-icon-menu",
-      color_icon: "#ca2c2a",
-      type: '1',
-
-    },
-    {
       name: "Chấm điểm rèn luyện",
       url: "/training_point",
       icon: "el-icon-reading",
@@ -136,14 +129,29 @@ export default {
 
     },
     {
-      name: "Tra cứu thông tin",
+      name: "Xem điểm rèn luyện",
       url: "/note_book",
       icon: "el-icon-search",
       color_icon: "#FF6600	",
-      type: '1',
+      type: '3',
+    },
+    {
+      name: "Giới thiệu",
+      url: "/Introduce",
+      icon: "el-icon-s-tools",
+      color_icon: "#010101",
+      type: '4',
+
     },
   ],
   consultant: [
+    {
+      name: "Dashboard",
+      url: "/dashboard",
+      icon: "el-icon-menu",
+      color_icon: "#ff4d4d",
+      type: '1',
+    },
     {
       name: "Tài liệu / Bài đăng",
       url: "/post",
@@ -208,11 +216,12 @@ export default {
 
     },
     {
-      name: "Tra cứu thông tin",
-      url: "/note_book",
-      icon: "el-icon-search",
-      color_icon: "#FF6600	",
-      type: '1',
+      name: "Giới thiệu",
+      url: "/Introduce",
+      icon: "el-icon-s-tools",
+      color_icon: "#010101",
+      type: '4',
+
     },
   ],
 };

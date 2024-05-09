@@ -15,7 +15,7 @@
           <div v-if="pinned" class="pinned-indicator">📌 Bài viết đã ghim</div>
         </div>
 
-        <el-dropdown @command="handleDropdownCommand" @click.stop v-if="this.$store.getters.user.role != 'student'">
+        <el-dropdown @command="handleDropdownCommand" @click.stop   v-if="_id === this.$store.getters.user._id">
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>
@@ -55,7 +55,7 @@
       <div class="attachments" v-if="attachmentPath.length > 0">
         <p><strong>Đính kèm:</strong></p>
         <ul>
-          <li v-for="(attachment, index) in attachmentPath" :key="index">
+          <li v-for="(attachment, index) in attachmentPath" :key="index" @click.stop>
             <a :href="attachment.path" target="_blank" :download="attachment.filename"
               @click.prevent="downloadAttachment(attachment)">
               <i :class="getFileIconClass(attachment.filename).class"
@@ -85,7 +85,7 @@
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
-            class="reply-input" disabled />
+            class="reply-input"  />
         </div>
         <div class="send-button mr-3">
           <i class="fa fa-paper-plane" style="color:rgb(22, 77, 228)" @click="sendReply" aria-hidden="true"></i>
@@ -127,6 +127,7 @@ export default {
       default: () => [],
     },
     id: String,
+    _id: String,
     user: String,
     createdAt: String,
     avatarUrl: String,

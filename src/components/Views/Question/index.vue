@@ -2,38 +2,18 @@
   <div class="question-container">
     <div class="container">
       <!-- Phần Header -->
-      <div class="header">
-        <el-carousel indicator-position="outside" autoplay style="height: 180%;overflow: hidden;">
-          <el-carousel-item>
-            <img src="../../../assets/slide1.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide2.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide3.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide5.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide6.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide7.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img src="../../../assets/slide8.jpg" alt="" class="carousel-slide" />
-          </el-carousel-item>
-
-        </el-carousel>
-        <div class="logo">
-          <el-avatar :size="150" :src="logo"></el-avatar>
-        </div>
-      </div>
-
+    
       <!-- Phần Main -->
       <div class="main">
+        <div>
+          <p class="title-ques mt-1">CÂU HỎI</p>
+          <div class="d-flex  align-items-center p-2">
+            <el-input v-model="search" size="medium" placeholder="Tìm theo tên câu hỏi..."
+              class="input-question-index">
+            </el-input>
+            <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
+          </div>
+        </div>
         <div class="question-button-container">
           <div class="avatar">
             <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
@@ -43,8 +23,8 @@
           </div>
         </div>
 
-        <el-scrollbar wrap-class="question-list" style="height:60vh; overflow-y: auto;">
-          <question v-for="mes in questions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
+        <el-scrollbar wrap-class="question-list" style="height:80vh; overflow-y: auto;">
+          <question v-for="mes in filteredQuestions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
             :avatarUrl="mes.user.avatarUrl" :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
             :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :id="mes._id" :comments="mes.comments"
             :status="mes.status" :_id="mes.user._id" @pinnedStatusUpdated="loadQuestions" @edit="openEditDialog" />
@@ -61,7 +41,7 @@
         <p class="font-weight-bold">Nội dung câu hỏi</p>
         <ckeditor :editor="editor" v-model="questionText"></ckeditor>
 
-        <div class="button-container-tall">
+        <div class="button-container-tall mt-2">
           <el-button @click="isQuestionPopupVisible = false" class="close-button" type="danger" icon="el-icon-close">Đóng</el-button>
           <el-button @click="resetQuestionText" class="refresh-button" type="warning" icon="el-icon-refresh">Làm mới</el-button>
           <el-button type="success" @click="onSaveButtonClick">Đăng</el-button>
@@ -99,6 +79,8 @@ export default {
       selectedQuestionId: null,
       editor: ClassicEditor,
       isEditing: false,
+      search: '',
+      questions: [],
 
     };
   },
@@ -107,7 +89,7 @@ export default {
     ckeditor: CKEditor.component,
   },
 
-  created() {
+  mounted() {
     this.loadQuestions();
   },
   updated() {
@@ -133,7 +115,13 @@ export default {
         // Nếu không, hiển thị "TẠO CÂU HỎI"
         return "TẠO CÂU HỎI";
       }
-    }
+    },
+    filteredQuestions() {
+      return this.questions.filter(question => {
+        // Kiểm tra tiêu đề của câu hỏi có chứa giá trị của `search` hay không
+        return question.title.toLowerCase().includes(this.search.toLowerCase());
+      });
+    },
   },
   methods: {
     onSaveButtonClick() {
@@ -263,10 +251,6 @@ export default {
 </script>
 
 <style>
-.question-list {
-  max-height: 100%;
-  overflow-y: auto;
-}
 
 .question-form {
   display: flex;
@@ -302,25 +286,26 @@ export default {
 }
 
 .question-button-container {
-  margin-top: 7%;
   display: flex;
   border: 1px solid white;
   border-radius: 10px;
-  padding: 2px;
+  padding: 4px;
   background-color: white;
   width: 85%;
   margin-left: auto;
-  z-index: 88;
 }
 
 .input-box {
+  margin: 0;
+  padding: 0;
   flex-grow: 1;
   background-color: rgb(165, 154, 154);
+  z-index: 89;
 }
 
 .reply-inputs {
   width: 100%;
-  padding: 10px;
+  padding: 4px;
   outline: none;
   border: none;
   background-color: rgb(247, 243, 243);
@@ -332,23 +317,7 @@ export default {
   margin-right: 10px;
 }
 
-.background-image {
-  width: 100%;
-  height: 160%;
-  background-image: url('../../../assets/8.jpg');
-  background-size: cover;
-  background-position: center;
-  opacity: 1;
-  border-radius: 25px;
-}
 
-.logo {
-    position: absolute;
-    top: 97%;
-    left: 8%;
-    transform: translateX(-50%);
-    z-index: 9;
-}
 
 .title-dialog-question {
   text-align: center;
@@ -366,26 +335,32 @@ export default {
     overflow: hidden;
 }
 
-/* Header */
-.header {
-    grid-row: 1;
-    position: relative;
-    height: 14vh;
+.container{
+  height: 100%;
+  background-color: rgb(247, 215, 196);
+  border-radius: 20px;
 }
 
 /* Main Section */
 .main {
     grid-row: 2;
-    padding-top: 20px;
 
 }
-.carousel-slide {
-  width: 100%;
-  height: 77%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 25px;
-  z-index: -1;
+.input-question-index{
+  width: 20%;
+}
+
+.title-ques{
+  font-size: xx-large;
+  font-family: 'Lobster', cursive;
+  color: rgb(255, 255, 255);
+  text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
+  text-align: center;
+
+}
+
+.ck-editor__main .ck-content{
+  height: 180px;
 }
 
 </style>

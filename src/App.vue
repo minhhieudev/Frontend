@@ -9,7 +9,6 @@ export default {
   mounted() {
     this.connectSocket()
     this.loadKhoaList()
-    this.loadNghanhList()
     this.loadLopList()
     this.loadCurrentUser()
     //this.loadNotifications()
@@ -39,10 +38,11 @@ export default {
   //background-repeat: no-repeat;
   background-size: cover;
   padding-top: 20px;
-  background-image: url(./assets/bg-1.jpg);
+ background-image: url(./assets/bg-1.jpg);
   //background: rgb(243, 236, 243);
   //background: linear-gradient(180deg, rgba(236, 243, 243, 1) 0%, rgba(208, 234, 228, 1) 8%, rgba(208, 234, 228, 1) 19%, rgba(213, 236, 230, 1) 33%, rgba(243, 245, 247, 1) 73%, rgba(243, 245, 247, 1) 86%, rgba(243, 245, 247, 1) 100%);
 }
+
 
 body {
   overflow: hidden;

@@ -95,17 +95,6 @@ export default {
         }
       })
     },
-
-    loadNghanhList() {
-      studentAPI.getNghanhList().then(({ data }) => {
-        if (data.success) {
-          this.$store.dispatch("setData", {
-            key: "nganhList",
-            data: data.nganhLists,
-          })
-        }
-      })
-    },
     loadLopList() {
       studentAPI.getClassList().then(({ data }) => {
         if (data.success) {
