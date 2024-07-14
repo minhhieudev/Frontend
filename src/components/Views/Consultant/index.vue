@@ -1,8 +1,8 @@
 <template>
-  <div class="Consultant custom-scroll-cv">     
+  <div class="Consultant custom-scroll-cv ml-3">
     <el-card>
-      <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH CỐ VẤN</h4>
-      <div class="action-cv justify-content-between mb-4">
+      <h4 class="font-weight-bold text-success text-center mb-3">DANH SÁCH CỐ VẤN</h4>
+      <div class="action-cv justify-content-between mb-2">
         <div class="d-flex justify-content-start">
           <div class="d-flex align-items-center p-2" style="color: rgb(1, 6, 12);">
             <i class="fa-solid fa-rotate-right" @click="resetFilters"></i>
@@ -25,39 +25,40 @@
         </div>
         <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
       </div>
+      <div style="max-height: 71vh; overflow-y: auto;">
 
-      <el-table :data="currentPageData" style="width: 100%" class="custom-table">
+        <el-table :data="currentPageData" style="width: 100%" class="custom-table">
 
-        <el-table-column label="STT" width="50">
-          <template slot-scope="{ $index, row }">
-            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-          </template>
-        </el-table-column>
+          <el-table-column label="STT" width="50">
+            <template slot-scope="{ $index, row }">
+              <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="fullName" label="Tên cố vấn" align="center">
-          <template slot-scope="{ row }">
-            {{ row.fullName }}
-          </template>
-        </el-table-column>
+          <el-table-column prop="fullName" label="Tên cố vấn" align="center">
+            <template slot-scope="{ row }">
+              {{ row.fullName }}
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="email" label="Email" align="center">
-          <template slot-scope="{ row }">
-            {{ row.email }}
-          </template>
-        </el-table-column>
+          <el-table-column prop="email" label="Email" align="center">
+            <template slot-scope="{ row }">
+              {{ row.email }}
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="position" label="Chức vụ/chức danh, đơn vị" align="center">
-          <template slot-scope="{ row }">
-            {{ row.position }}
-          </template>
-        </el-table-column>
+          <el-table-column prop="position" label="Chức vụ/chức danh, đơn vị" align="center">
+            <template slot-scope="{ row }">
+              {{ row.position }}
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="mission" label="Nhiệm vụ" align="center" >
-          <template slot-scope="{ row }">
-            {{ row.mission }}
-          </template>
-        </el-table-column>
-        <!-- 
+          <el-table-column prop="mission" label="Nhiệm vụ" align="center">
+            <template slot-scope="{ row }">
+              {{ row.mission }}
+            </template>
+          </el-table-column>
+          <!-- 
         <el-table-column prop="dateOfBirth" label="Ngày sinh" width="150" align="center">
           <template slot-scope="{ row }">
             {{ formatDate(row.dateOfBirth) }}
@@ -66,19 +67,21 @@
  -->
 
 
-        <el-table-column label="Thao tác" width="150">
-          <template slot-scope="{ row }">
-            <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
-              circle></el-button>
-            <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small"
-              circle></el-button>
-          </template>
-        </el-table-column>
+          <el-table-column label="Thao tác" width="150">
+            <template slot-scope="{ row }">
+              <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
+                circle></el-button>
+              <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small"
+                circle></el-button>
+            </template>
+          </el-table-column>
 
 
 
 
-      </el-table>
+        </el-table>
+      </div>
+
       <div class="mt-2">
         <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
           :page-size.sync="pagination.page_size" :total="filteredTableData.length"
@@ -206,7 +209,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 /* .custom-table th {
   background-color: #7ab7e0 !important;
   color: black !important;
@@ -267,8 +270,14 @@ export default {
   border-color: #409eff;
   box-shadow: 0 0 6px rgba(64, 158, 255, 0.5);
 }
-.custom-scroll-cv{
-  max-height: 87vh ;
-  overflow-y: auto; 
+
+
+.custom-scroll-cv .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.custom-scroll-cv .el-card {
+  border-radius: 25px;
+  background-color: white;
 }
 </style>

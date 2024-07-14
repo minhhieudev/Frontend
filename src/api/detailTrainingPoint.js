@@ -11,12 +11,19 @@ export function getCondition(semester, schoolYear) {
     },
   });
 }
-export function getAll() {
+export function getAll(schoolYear,semester, department, className) {
   return request({
-    url: `/detailTrainingPoint`, // Đã thay đổi địa chỉ API để lấy tất cả dữ liệu điểm rèn luyện
-    method: "get",
+    url: `/detailTrainingPoint/getCondition`, 
+    method: "post", // Thay đổi phương thức thành POST
+    data: {
+      schoolYear: schoolYear,
+      semester: semester,
+      department: department,
+      className: className
+    }
   });
 }
+
 export function getDetail(id) {
   return request({
     url: `/detailTrainingPoint/${id}`,

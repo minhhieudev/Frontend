@@ -61,9 +61,6 @@ import CKEditor from '@ckeditor/ckeditor5-vue2';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import { saveNotification } from '@/api/notification';
 
-
-
-
 export default {
   data() {
     return {
@@ -103,9 +100,7 @@ export default {
       return 'small';
     },
     cleanQuestionText() {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = this.questionText;
-      return tempDiv.textContent || tempDiv.innerText || '';
+      return this.questionText;
     },
     dialogTitle() {
       if (this.isEditing) {
@@ -333,12 +328,14 @@ export default {
     gap: 20px;
     height: 100%;
     overflow: hidden;
+
 }
 
 .container{
   height: 100%;
-  background-color: rgb(247, 215, 196);
-  border-radius: 20px;
+  background: linear-gradient(to right, #a8e6cf, #dcedc1);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  border-radius: 25px;
 }
 
 /* Main Section */
@@ -356,6 +353,7 @@ export default {
   color: rgb(255, 255, 255);
   text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
   text-align: center;
+  margin: 0
 
 }
 

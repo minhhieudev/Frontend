@@ -49,7 +49,7 @@ export default {
     },
     handleAvatarChange(file, fileList) {
       // Ensure only one file is selected
-      if (fileList.length === 1) {
+      if (fileList) {
         // Update avatarForm.file instead of accessing raw directly
         this.avatarForm.file = file;
         this.avatarForm.name = file.name;
@@ -74,9 +74,6 @@ export default {
       const uploadedFile = response.files[0];
       this.avatarForm.name= uploadedFile.filename
       this.avatarForm.path=`${process.env.VUE_APP_BACKEND_URL}${uploadedFile.path}`
-      console.log('H:'+ this.avatarForm.path)
-      
-
     },
 
     async confirmAvatar() {

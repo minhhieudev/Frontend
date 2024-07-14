@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div :id="id" class="post my-2 p-3" @click="openDetailQuestion($event)" ref="postContainer" :class="{ 'pinned': pinned }">
+    <div :id="id" class="post my-2 p-3 " @click="openDetailQuestion($event)" ref="postContainer"
+      :class="{ 'pinned': pinned }">
       <div class="info">
 
         <div style="display: flex;justify-content: center">
@@ -15,7 +16,7 @@
           <div v-if="pinned" class="pinned-indicator">📌 Bài viết đã ghim</div>
         </div>
 
-        <el-dropdown @command="handleDropdownCommand" @click.stop   v-if="_id === this.$store.getters.user._id">
+        <el-dropdown @command="handleDropdownCommand" @click.stop v-if="_id === this.$store.getters.user._id">
           <span class="el-dropdown-link">
             <i class="el-icon-more" @click.stop></i>
           </span>
@@ -40,14 +41,16 @@
 
       <!-- Hiển thị nội dung bài viết -->
       <div class="content" v-if="showFullContent">
-        {{ content }}
+        <div v-html="content"></div>
         <div class="toggle-button-full-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
           {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
         </div>
       </div>
+
       <div class="content" v-else>
-        {{ truncatedContent }}
-        <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength" @click="toggleContent">
+        <div v-html="truncatedContent"></div>
+        <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength"
+          @click.stop="toggleContent">
           {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
         </div>
       </div>
@@ -85,7 +88,7 @@
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
-            class="reply-input"  />
+            class="reply-input" />
         </div>
         <div class="send-button mr-3">
           <i class="fa fa-paper-plane" style="color:rgb(22, 77, 228)" @click="sendReply" aria-hidden="true"></i>
@@ -93,7 +96,7 @@
       </div>
     </div>
     <detailPostVue ref="childRef" :id="id" :title="title" :content="content" :avatarUrl="avatarUrl" :user="user"
-      :createdAt="createdAt" :likes="likes" :comments="comments" :attachmentPath="attachmentPath" />
+      :createdAt="createdAt" :likes="likesCount" :comments="comments" :attachmentPath="attachmentPath" />
 
 
   </div>
@@ -103,10 +106,11 @@
 <script>
 import detailPostVue from './detailPost';
 import { format } from 'date-fns';
-import { updateLike, updatePinnedStatus } from '../../../api/post';
+import { updateLike, updatePinnedStatus, } from '../../../api/post';
 import { id } from 'date-fns/locale';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { handleDelete } from '@/api/post';
+import { handleDeleteReply } from '@/api/reply';
 
 
 import axios from 'axios';
@@ -212,7 +216,7 @@ export default {
     },
     editPost() {
       // Gửi sự kiện "edit" lên component cha
-      this.$emit('edit', { id: this.id, title: this.title, content: this.content,typeof: this.postType,attachmentPath: this.attachmentPath, _id: this._id });
+      this.$emit('edit', { id: this.id, title: this.title, content: this.content, typeof: this.postType, attachmentPath: this.attachmentPath, _id: this._id });
     },
     onReplyInputChange() { },
     getFileIconClass(filename) {
@@ -253,6 +257,7 @@ export default {
           handleDelete(this.id)
             .then(({ data }) => {
               if (data.success) {
+                handleDeleteReply(this.id);
                 this.$emit('pinnedStatusUpdated');
               }
             })
@@ -358,12 +363,14 @@ export default {
 
 <style scoped>
 .post {
-  border: 1px solid #ccc;
+  border: 1px solid black;
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease-in-out;
   background-color: white !important;
   z-index: 999;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  width: 98%;
+  margin-left: 3px
 }
 
 
@@ -371,6 +378,7 @@ export default {
   margin-bottom: 10px;
   display: flex;
   justify-content: space-between;
+  
 }
 
 .author {
@@ -532,7 +540,7 @@ export default {
 
 .pinned {
   /* CSS để làm nổi bật bài đăng đã được ghim */
-  border: 2px solid yellow;
+  border: 2px solid rgb(224, 55, 4);
 }
 
 

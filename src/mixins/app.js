@@ -56,16 +56,7 @@ export default {
     };
   },
   methods: {
-    loadAllUsers() {
-      userAPI.getAll().then(({ data }) => {
-        if (data.success) {
-          this.$store.dispatch("setData", {
-            key: "allUsers",
-            data: data.docs,
-          });
-        }
-      });
-    },
+ 
     connectSocket() {
       this.$store.dispatch("setData", {
         key: "socket",

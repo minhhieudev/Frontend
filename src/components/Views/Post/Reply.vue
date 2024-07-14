@@ -41,7 +41,7 @@
 
 <script>
 import { formatRelative } from 'date-fns';
-import { updateLike } from '../../../api/answer';
+import { updateLike } from '../../../api/reply';
 
 
 export default {

@@ -1,12 +1,19 @@
 import request from "@/utils/request";
 const modelCode = "result_TrainingPoint";
 
-export function getAll() {
+export function getAll(schoolYear, department, className) {
   return request({
-    url: `/${modelCode}`, 
-    method: "get",
+    url: `/${modelCode}/getCondition`, 
+    method: "post", // Thay đổi phương thức thành POST
+    data: {
+      schoolYear: schoolYear,
+      department: department,
+      className: className
+    }
   });
 }
+
+
 export function getDetailForUser(id) {
   return request({
     url: `/${modelCode}/${id}`,

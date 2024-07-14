@@ -16,6 +16,12 @@ export function getAll() {
   });
 }
 
+export function updateLike(id) {
+  return request({
+    url: `/${modelCode}/${id}`,
+    method: "post",
+  });
+}
 
 export function getAnswersByQuestionId(id) {
   return request({
@@ -25,9 +31,9 @@ export function getAnswersByQuestionId(id) {
 }
 
 
-export function handleDelete(id) {
+export function handleDeleteAnswer(id) {
   return request({
-    url: `/${modelCode}/${id}`,
+    url: `/${modelCode}/deleteAnswer/${id}`,
     method: "delete",
   });
 }

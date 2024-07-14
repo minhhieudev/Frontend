@@ -12,13 +12,11 @@
         </el-form-item>
         <el-form-item>
           <el-button class="btn-block" type="primary" icon="el-icon-unlock" native-type="submit">
-            Đăng nhập</el-button
-          >
+            Đăng nhập
+          </el-button>
         </el-form-item>
         <!-- <div class="text-center">
-          <span class="text-secondary font-italic"
-            >or Sign In With</span
-          >
+          <span class="text-secondary font-italic">or Sign In With</span>
         </div> -->
       </el-form>
       <!-- <a href="/"><div class="mt-2">Trang chủ</div></a> -->
@@ -26,6 +24,7 @@
     </el-card>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -36,8 +35,9 @@ export default {
       isLoading: false,
       currentForm: 'login',
       form: {
-
-      }
+        email: 'admin',        
+        password: '123456',    
+      },
     }
   },
   methods: {

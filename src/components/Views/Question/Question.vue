@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div :id="id" class="question my-2 p-3 mx-0" @click="openDetailQuestion($event)" ref="questionContainer">
+    <div :id="id" class="question my-2 ml-2 p-3 mx-0" @click="openDetailQuestion($event)" ref="questionContainer">
       <div class="info">
         <div style="display: flex;justify-content: center;align-items: center;">
           <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
@@ -38,7 +38,7 @@
       </div>
       <div class="content" v-else>
         <div v-html="formattedTruncatedContent"></div>
-        <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength" @click="toggleContent">
+        <div class="toggle-button-truncated-content" v-if="content.length > maxContentLength" @click.stop="toggleContent">
           {{ showFullContent ? 'Thu gọn' : 'xem thêm' }}
         </div>
       </div>
@@ -70,7 +70,7 @@
       </div>
     </div>
     <detailQuestionVue ref="childRef" :id="id" :title="title" :content="content" :_id="_id" :avatarUrl="avatarUrl"
-      :user="user" :createdAt="createdAt" :likes="likes" :comments="comments" />
+      :user="user" :createdAt="createdAt" :likes="likesCount" :comments="comments" />
 
   </div>
 </template>
@@ -80,6 +80,8 @@
 import detailQuestionVue from './detailQuestion';
 import { format } from 'date-fns';
 import { updateLike, handleDelete } from '../../../api/question';
+import { handleDeleteAnswer } from '@/api/answer'
+
 import { id } from 'date-fns/locale';
 
 export default {
@@ -202,6 +204,7 @@ export default {
           handleDelete(this.id)
             .then(({ data }) => {
               if (data.success) {
+                handleDeleteAnswer(this.id);
                 this.$emit('pinnedStatusUpdated');
               }
             })
@@ -232,6 +235,9 @@ export default {
   /* Hiệu ứng khi hover */
   background-color: white !important;
   z-index: 999;
+  box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+  
+  width: 98%;
 }
 
 

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ml-3 form-sv">
     <el-card>
       <toolbar-widget :buttons="toolbarButtons"></toolbar-widget>
       <div class="col-md-6 mt-3">
@@ -161,3 +161,13 @@ export default {
   }
 }
 </script>
+<style scoped>
+.form-sv .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.form-sv .el-card {
+  border-radius: 25px;
+  background-color: white;
+}
+</style>

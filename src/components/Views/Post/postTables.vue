@@ -1,12 +1,12 @@
 <template>
-  <div class="Posts">
+  <div class="Posts ml-3">
     <el-card>
       <div class="action-post justify-content-between mb-4">
         <div class="d-flex justify-content-start">
           <div class="d-flex align-items-center p-2" style="color: rgb(1, 6, 12);">
             <i class="fa-solid fa-rotate-right" @click="resetFilters"></i>
-            <div class="d-flex  align-items-center ml-5 border-right">
-              <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
+            <div class="d-flex align-items-center ml-5 border-right">
+              <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter mr-3"></i>
 
               <el-select v-model="selectedType" placeholder="Loại" class="custom-input-post">
                 <el-option v-for="item in typeList" :key="item" :label="item" :value="item"></el-option>
@@ -14,7 +14,7 @@
             </div>
           </div>
 
-          <div class="d-flex  align-items-center p-2">
+          <div class="d-flex align-items-center p-2">
             <el-input v-model="search" size="medium" placeholder="Tìm theo tên Tài liệu / Bài đăng..."
               class="custom-input-post">
             </el-input>
@@ -25,67 +25,70 @@
         <el-button @click="goToAddNewPage()" type="success" round>Tạo mới</el-button>
       </div>
 
-      <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT" width="70">
-          <template slot-scope="{ $index, row }">
-            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="title" label="Tên Tài liệu / Bài đăng" >
-          <template slot-scope="{ row }">
-            <span style="font-weight: bold; color: #09af09;">{{ row.title }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="type" label="Loại" width="130">
-          <template slot-scope="{ row }">{{ row.postType }}</template>
-        </el-table-column>
-        <el-table-column prop="createdAt" label="Ngày đăng" width="150">
-          <template slot-scope="{ row }">{{ formatDate(row.createdAt) }}</template>
-        </el-table-column>
+      <div style="max-height: 71vh; overflow-y: auto;">
+        <el-table :data="filteredTableData" style="width: 100%" class="custom-table">
+          <el-table-column label="STT" width="70">
+            <template slot-scope="{ $index, row }">
+              <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="title" label="Tên Tài liệu / Bài đăng">
+            <template slot-scope="{ row }">
+              <span style="font-weight: bold; color: #09af09;">{{ row.title }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="type" label="Loại" width="130">
+            <template slot-scope="{ row }">{{ row.postType }}</template>
+          </el-table-column>
+          <el-table-column prop="createdAt" label="Ngày đăng" width="150">
+            <template slot-scope="{ row }">{{ formatDate(row.createdAt) }}</template>
+          </el-table-column>
 
-        <el-table-column label="Đính kèm">
-          <template slot-scope="{ row }" class="d-flex">
-            <div class="d-flex">
-              <div v-for="attachment in row.attachmentPath" :key="attachment._id" class="mx-2">
-                <el-dropdown @command="(command) => handleCommand(command, attachment)">
-                  <el-button type="text" :class="getFileButtonClass(attachment)">
-                    <i class="size-icon" :class="getFileIconClass(attachment.filename).class"
-                      :style="{ color: getFileIconClass(attachment.filename).color }"></i>
-                  </el-button>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item disabled>{{ attachment.filename }}</el-dropdown-item>
-                    <el-dropdown-item divided icon="el-icon-download" command="download">Tải xuống</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-arrow-up" command="preview">Xem trực tiếp</el-dropdown-item>
-                    <el-dropdown-item icon="el-icon-top-right" command="open-in-new-tab">Mở trong tab
-                      mới</el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown>
+          <el-table-column label="Đính kèm">
+            <template slot-scope="{ row }" class="d-flex">
+              <div class="d-flex">
+                <div v-for="attachment in row.attachmentPath" :key="attachment._id" class="mx-2">
+                  <el-dropdown @command="(command) => handleCommand(command, attachment)">
+                    <el-button type="text" :class="getFileButtonClass(attachment)">
+                      <i class="size-icon" :class="getFileIconClass(attachment.filename).class"
+                        :style="{ color: getFileIconClass(attachment.filename).color }"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item disabled>{{ attachment.filename }}</el-dropdown-item>
+                      <el-dropdown-item divided icon="el-icon-download" command="download">Tải xuống</el-dropdown-item>
+                      <el-dropdown-item icon="el-icon-arrow-up" command="preview">Xem trực tiếp</el-dropdown-item>
+                      <el-dropdown-item icon="el-icon-top-right" command="open-in-new-tab">Mở trong tab
+                        mới</el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
               </div>
-            </div>
-          </template>
-        </el-table-column>
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="user.fullname" label="Người đăng">
-          <template slot-scope="{ row }">
-           <div class="d-flex align-items-center">
-            <el-avatar  :src="row.user.avatarUrl"></el-avatar>
-            <p class="p-1 mt-1">{{ row.user.fullname }}</p>
-           </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="Thao tác" width="150">
-          <template slot-scope="scope">
-            <router-link :to="{ name: 'Post', params: { id: scope.row._id } }" @click="scrollToQuestion(scope.row._id)">
-              <el-button type="primary" icon="el-icon-view" size="small" circle></el-button>
-            </router-link>
-            <el-button v-if="!isStudentRole" class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)"
-              icon="el-icon-delete" size="small" circle></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column prop="user.fullname" label="Người đăng">
+            <template slot-scope="{ row }">
+              <div class="d-flex align-items-center">
+                <el-avatar :src="row.user.avatarUrl"></el-avatar>
+                <p class="p-1 mt-1">{{ row.user.fullname }}</p>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="Thao tác" width="150">
+            <template slot-scope="scope">
+              <router-link :to="{ name: 'Post', params: { id: scope.row._id } }"
+                @click="scrollToQuestion(scope.row._id)">
+                <el-button type="primary" icon="el-icon-view" size="small" circle></el-button>
+              </router-link>
+              <el-button v-if="!isStudentRole" class="ml-3" type="danger" @click.prevent="confirmDelete(scope.row)"
+                icon="el-icon-delete" size="small" circle></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div class="mt-2">
         <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
-          :page-size.sync="pagination.page_size" :total="filteredTableData.length"
+          :page-size.sync="pagination.page_size" :total="totalItems"
           :current-page.sync="pagination.current_page" @current-change="handleCurrentPageChange"
           @size-change="handlePageSizeChange" />
       </div>
@@ -93,10 +96,13 @@
   </div>
 </template>
 
+
 <script>
-import { getAll, handleDelete } from '@/api/post';
+import { getPaginatedPosts, handleDelete } from '@/api/post';
 import { format } from 'date-fns';
-import axios from 'axios'; // Add this line
+import axios from 'axios'; // Add this
+import { handleDeleteReply } from '@/api/reply';
+
 import '@fortawesome/fontawesome-free/css/all.css';
 
 const ModelCode = "Post";
@@ -104,6 +110,8 @@ export default {
   data() {
     return {
       tableData: [],
+      totalItems: 0,
+      totalPages: 0,
       pagination: {
         current_page: 1,
         page_size: 10,
@@ -123,31 +131,25 @@ export default {
         (!this.selectedType || data.postType === this.selectedType)
       );
     },
-    currentPageData() {
-      const start = (this.pagination.current_page - 1) * this.pagination.page_size;
-      const end = start + this.pagination.page_size;
-
-      return this.filteredTableData.slice(start, end);
-    },
     isStudentRole() {
       return this.$store.getters.user.role === 'student';
     },
-
   },
   methods: {
     goToAddNewPage() {
-      this.$router.push({ name: 'post_main' })
+      this.$router.push({ name: 'post_main' });
     },
     handlePageSizeChange(newSize) {
       this.pagination.page_size = newSize;
       this.pagination.current_page = 1;
+      this.loadData();
     },
     handleCurrentPageChange(newPage) {
       this.pagination.current_page = newPage;
+      this.loadData();
     },
     handleCommand(command, attachment) {
       if (command === 'download') {
-        console.log(command + attachment)
         axios({
           url: attachment.path,
           method: 'GET',
@@ -156,8 +158,6 @@ export default {
         })
           .then(response => {
             const url = window.URL.createObjectURL(new Blob([response.data]));
-            console.log('text' + url);
-
             const link = document.createElement('a');
             link.href = url;
             link.setAttribute('download', attachment.filename);
@@ -169,23 +169,10 @@ export default {
             console.error('Lỗi khi tải xuống tệp:', error);
           });
       } else if (command === 'preview') {
-        // Logic xem trước với tham số 'attachment'
-        // Ví dụ, bạn có thể mở một modal hoặc một component mới để xem trước tệp
         this.$message.info(`Xem trước tệp: ${attachment.filename}`);
       } else if (command === 'open-in-new-tab') {
-        // Logic mở trong tab mới với tham số 'attachment'
-        // Ví dụ, bạn có thể mở một tab trình duyệt mới để xem tệp
-        console.error('Lỗi khi tải xuống tệp:', attachment.path);
-
-        // window.open(attachment.path, '_blank');
+        window.open(attachment.path, '_blank');
       }
-    },
-    goToAddNewPage() {
-      this.$router.push({ name: 'post_main' });
-    },
-
-    gotoDetail(row) {
-      this.$router.push({ name: `Post`, params: { id: row._id } });
     },
     confirmDelete(row) {
       this.$confirm(`Xác nhận xóa ${ModelCode}?`, 'Cảnh báo', {
@@ -195,9 +182,9 @@ export default {
         .then(() => {
           handleDelete(row._id)
             .then(({ data }) => {
-              console.log(data);
               if (data.success) {
                 this.loadData();
+                handleDeleteReply(row._id);
               }
             })
             .finally(() => {
@@ -207,26 +194,23 @@ export default {
         .catch();
     },
     loadData() {
-
-      getAll()
+      getPaginatedPosts(this.pagination.current_page, this.pagination.page_size)
         .then((response) => {
           if (response && response.data && response.data.success) {
-            this.tableData = response.data.posts.reverse();
+            this.tableData = response.data.data.posts;
+            this.totalItems = response.data.data.pagination.total;
+            this.totalPages = response.data.data.pagination.totalPages;
           } else {
             console.error("Không thành công: ", response.data);
           }
         })
         .catch((error) => {
-          console.error("Lỗi khi tải câu hỏi: ", error);
+          console.error("Lỗi khi tải bài đăng: ", error);
         });
     },
-
     formatDate(date) {
-      return format(new Date(date), 'dd/MM/yyyy ');
+      return format(new Date(date), 'dd/MM/yyyy');
     },
-
-
-
     getFileIconClass(filename) {
       const fileExtension = filename.split('.').pop().toLowerCase();
       let icon = {
@@ -261,7 +245,6 @@ export default {
 
       return icon;
     },
-
     getFileButtonClass(attachment) {
       const extension = attachment.filename.split('.').pop().toLowerCase();
       if (extension === 'pdf') {
@@ -274,12 +257,10 @@ export default {
         return 'default-button';
       }
     },
-    handleDropdownClick(command, attachment) {
-      console.log('hello');
-    },
     resetFilters() {
       this.selectedType = '';
-      this.search = ''
+      this.search = '';
+      this.loadData();
     },
   },
 };
@@ -328,5 +309,14 @@ export default {
 
 .el-dropdown-menu {
   border-radius: 5px;
+}
+
+.Posts .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.Posts .el-card {
+  border-radius: 25px;
+  background-color: white;
 }
 </style>

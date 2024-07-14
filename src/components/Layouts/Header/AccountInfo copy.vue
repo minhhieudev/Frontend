@@ -1,28 +1,16 @@
 <template>
   <div :class="{ 'in-drawer pb-3': inDrawer }">
     <ul class="left-navbar">
-      <!-- <li class="order-2" v-if="!$isMobile">
-            <el-switch v-model="theme" active-color="#04747C" size="mini" @change="changeTheme" />
-        </li> -->
-      <!-- <li class="bg order-4">
-        <i class="el-icon-bell">
-          <span class="badge badge-danger">4</span>
-        </i>
-      </li> -->
       <li class="order-1 order-md-5 pl-5 pr-md-0">
         <el-dropdown trigger="click" @command="handleCommand" class="align-text-center">
           <span class="text-black" style="cursor: pointer">
-            <b>{{ this.$store.getters.user.fullname }}</b>
-            <el-badge :value="this.$store.getters.user.is_admin ? 'Admin' : ''" class="item">
-              <img :src="this.paths"
-                alt="avatar" :width="30" class="avatar rounded-pill mb-1 mr-2 ml-2" />
+            <b>{{ user.fullname }}</b>
+            <el-badge :value="user.is_admin ? 'Admin' : ''" class="item">
+              <img :src="avatarPath" alt="avatar" :width="30" class="avatar rounded-pill mb-1 mr-2 ml-2" />
             </el-badge>
-
-            <!-- <span class="user-notification" v-if="isNewTheme">1</span> -->
-            <!-- <span class="user-text"> {{ user.first_name }} {{ user.last_name }} </span> -->
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item icon="fa fa-user-o" disabled>{{ this.$store.getters.user.email }}</el-dropdown-item>
+            <el-dropdown-item icon="fa fa-user-o" disabled>{{ user.email }}</el-dropdown-item>
             <el-dropdown-item icon="el-icon-s-custom" command="change_avatar">Đổi avatar</el-dropdown-item>
             <el-dropdown-item icon="el-icon-s-custom" command="change_pass">Đổi mật khẩu</el-dropdown-item>
             <el-dropdown-item command="logout" icon="fa fa-sign-out">Đăng xuất</el-dropdown-item>
@@ -30,13 +18,11 @@
         </el-dropdown>
       </li>
     </ul>
-    <!-- Include AvatarChangeDialog component with ref -->
     <AvatarChangeDialog ref="avatarChangeDialog" @change-avatar="handleChangeAvatar" />
     <PassChangeDialog ref="passChangeDialog" @change-pass="handleChangePass" />
-
-
   </div>
 </template>
+
 <script>
 import { setOne } from '../../../utils/app'
 import AvatarChangeDialog from './AvatarChangeDialog'
@@ -52,7 +38,6 @@ export default {
   data() {
     return {
       showDialogLockSession: false,
-      centerDialogVisible: false,
       countdown: 60,
       isSetting: false,
       lock: {
@@ -61,27 +46,33 @@ export default {
       },
       theme: false,
       dataUser: {},
-      paths: ''
+      paths: '',
     }
   },
   components: {
-    AvatarChangeDialog, 
-    PassChangeDialog, 
+    AvatarChangeDialog,
+    PassChangeDialog,
+  },
+
+  computed: {
+    user() {
+      return this.$store.getters.user || {};
+    },
+    avatarPath() {
+      // Return currentUser.avatarUrl if available, otherwise fallback to user.avatarUrl
+      const currentUser = this.$store.getters.currentUser;
+      return currentUser && currentUser.avatarUrl ? currentUser.avatarUrl : this.user.avatarUrl || '';
+    }
   },
 
   created() {
-    console.log(this.$store.getters.user)
-    console.log('Av:',this.$store.getters.currentUser.avatarUrl)
-    //this.getUser()
-    this.paths =this.$store.getters.currentUser.avatarUrl
-
+    const currentUser = this.$store.getters.currentUser;
+    if (currentUser) {
+      this.avatarPath = currentUser.avatarUrl || '';
+    }
   },
 
   methods: {
-    getUser() {
-      this.paths =this.$store.getters.currentUser.avatarUrl
-    },
-
     changeTheme() {
       const theme = this.theme ? 'v2' : ''
       setOne('layout', 'THEME', theme)
@@ -103,7 +94,7 @@ export default {
           this.showAvatarChangeDialog();
           break;
         case 'change_pass':
-        this.showPassChangeDialog();
+          this.showPassChangeDialog();
           break;
         case 'lock_session':
           this.showDialogLockSession = true
@@ -119,8 +110,7 @@ export default {
       this.$refs.passChangeDialog.dialogVisible = true;
     },
     handleChangeAvatar(newAvatarUrl) {
-      this.paths = newAvatarUrl;
-
+      this.$set(this.user, 'avatarUrl', newAvatarUrl); // Assume user has avatarUrl property
     },
 
     lockSession() {
@@ -152,11 +142,7 @@ export default {
 
     }
   },
-  computed: {
-    user() {
-      return this.$store.getters.user
-    }
-  },
+
   mounted() {
     this.$watch(
       'lock',
@@ -173,6 +159,7 @@ export default {
     }
     this.theme = this.isNewTheme
   },
+
   watch: {
     isSetting(value) {
       if (!value) {
@@ -184,10 +171,13 @@ export default {
         this.countdown = 60
         this.handleCounter()
       }
-    }
+    },
+
+
   }
-}
+};
 </script>
+
 <style lang="scss" scoped>
 .left-navbar {
   list-style: none;

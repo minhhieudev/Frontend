@@ -9,6 +9,7 @@
           <i class="el-alert__closebtn el-icon-close" @click="dismissAlert(index)"></i>
         </div>
       </div>
+      <div>Hello</div>
     </transition>
     <div class="">
       <div class="p-1 p-md-2">

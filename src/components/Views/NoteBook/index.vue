@@ -1,5 +1,5 @@
 <template>
-  <div class="a2 p-4">
+  <div class="a2 p-4 ml-3">
     <inforUser></inforUser>
     <div class="card-container mt-3">
       <el-card v-for="(item, index) in data" :key="index" :style="getCardColor(index)" class="box-card">

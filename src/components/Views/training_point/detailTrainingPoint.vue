@@ -1,11 +1,10 @@
 <template>
-  <div class="custom-scroll">
+  <div class="customs ml-3">
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-3">DANH SÁCH PHIẾU ĐIỂM</h4>
-
-      <div class="action-trainingPoint mb-4">
+      <div class="action-trainingPoint mb-3">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
-        <div class="filter-options ">
+        <div class="filter-options-duyet ">
           <span v-for="(option, index) in filterOptions" :key="index" :class="{ 'selected': selectedFilter === option }"
             @click="selectFilter(option)">
             {{ option }}
@@ -34,6 +33,8 @@
           <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
         </el-select>
 
+        <i @click="loadDetailTrainingPoint()" class="fa-solid fa-filter"></i>
+
         <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..."
           class="search-input-trainingPoint">
         </el-input>
@@ -41,86 +42,78 @@
 
 
       </div>
-      <el-table :data="currentPageData" align="center" class="custom-table">
-        <el-table-column label="STT" width="50">
-          <template slot-scope="{ $index, row }">
-            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="studentCode" label="MSV" width="100" align="center">
-          <template slot-scope="{ row }">
-            {{ row.studentDetails.studentCode }}
-          </template>
-        </el-table-column>
+      <div style="max-height: 69vh; overflow-y: auto;">
 
-        <el-table-column label="Xem phiếu điểm " width="130" align="center">
-          <template slot-scope="{ row }">
-            <el-button @click.prevent="gotoDetail(row)" type="warning" plain size="mini" round>
-              Phiếu điểm
-            </el-button>
-          </template>
-        </el-table-column>
-
-        <!-- Trạng thái Column -->
-        <el-table-column label="Trạng thái" align="center">
-          <template slot-scope="{ row }">
-            <el-button v-if="row.status" type="success" size="mini" round class="answered-button">
-              Đã duyệt
-            </el-button>
-            <el-button v-else type="danger" size="mini" round class="unanswered-button">
-              Chưa duyệt
-            </el-button>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="fullName" label="Tên sinh viên" width="150" align="center">
-          <template slot-scope="{ row }">
-            {{ row.studentDetails.fullName }}
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="createdAt" label="Ngày chấm" align="center">
-          <template slot-scope="{ row }">{{ formatDate(row.createdAt) }}</template>
-        </el-table-column>
-
-        <el-table-column prop="semester" label="Học kỳ" width="80" align="center">
-          <template slot-scope="{ row }">
-            {{ row.semester }}
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="schoolYear" label="Năm học" width="120" align="center">
-          <template slot-scope="{ row }">
-            {{ row.schoolYear }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="Điểm rèn luyện" align="center">
-          <el-table-column prop="Total_selfAssessment" label="SV tự chấm" align="center">
-            <template slot-scope="{ row }">
-              {{ row.Total_selfAssessment }}
+        <el-table :data="currentPageData" align="center" class="custom-table">
+          <el-table-column label="STT" width="50">
+            <template slot-scope="{ $index, row }">
+              <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
             </template>
           </el-table-column>
-          <el-table-column prop="Total_groupAssessment" label="Lớp chấm" align="center">
+          <el-table-column prop="studentCode" label="MSV" width="100" align="center">
             <template slot-scope="{ row }">
-              {{ row.Total_groupAssessment }}
+              {{ row.studentDetails.studentCode }}
             </template>
           </el-table-column>
-          <el-table-column prop="Total_consultantAssessment" label="Cố vấn" align="center">
+
+          <el-table-column label="Xem phiếu điểm " width="120" align="center">
             <template slot-scope="{ row }">
-              {{ row.Total_consultantAssessment }}
+              <el-button @click.prevent="gotoDetail(row)" type="warning" plain size="mini" round>
+                Phiếu điểm
+              </el-button>
             </template>
           </el-table-column>
-        </el-table-column>
-        <el-table-column label="Thao tác" width="80" align="center">
-          <template slot-scope="scope">
-            <el-button type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small"
-              circle></el-button>
 
-          </template>
-        </el-table-column>
+          <!-- Trạng thái Column -->
+          <el-table-column label="Trạng thái" align="center" width="130">
+            <template slot-scope="{ row }">
+              <el-button v-if="row.status" type="success" size="mini" round class="answered-button">
+                Đã duyệt
+              </el-button>
+              <el-button v-else type="danger" size="mini" round class="unanswered-button">
+                Chưa duyệt
+              </el-button>
+            </template>
+          </el-table-column>
 
-      </el-table>
+          <el-table-column prop="fullName" label="Tên sinh viên" width="180" align="center">
+            <template slot-scope="{ row }">
+              {{ row.studentDetails.fullName }}
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="createdAt" label="Ngày chấm" align="center">
+            <template slot-scope="{ row }">{{ formatDate(row.createdAt) }}</template>
+          </el-table-column>
+
+          <el-table-column label="Điểm rèn luyện" align="center">
+            <el-table-column prop="Total_selfAssessment" label="SV tự chấm" align="center">
+              <template slot-scope="{ row }">
+                {{ row.Total_selfAssessment }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="Total_groupAssessment" label="Lớp chấm" align="center">
+              <template slot-scope="{ row }">
+                {{ row.Total_groupAssessment }}
+              </template>
+            </el-table-column>
+            <el-table-column prop="Total_consultantAssessment" label="Cố vấn" align="center">
+              <template slot-scope="{ row }">
+                {{ row.Total_consultantAssessment }}
+              </template>
+            </el-table-column>
+          </el-table-column>
+          <el-table-column label="Thao tác" width="80" align="center">
+            <template slot-scope="scope">
+              <el-button type="danger" @click.prevent="confirmDelete(scope.row)" icon="el-icon-delete" size="small"
+                circle></el-button>
+
+            </template>
+          </el-table-column>
+
+        </el-table>
+      </div>
+
       <div class="mt-2">
         <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
           :page-size.sync="pagination.page_size" :total="filteredTableData.length"
@@ -142,7 +135,7 @@ export default {
   data() {
     return {
       tableData: [],
-      namList:[],
+      namList: [],
       pagination: {
         current_page: 1,
         page_size: 10
@@ -158,11 +151,11 @@ export default {
       filterOptions: ['Tất cả', 'Chưa duyệt', 'Đã duyệt'],
       selectedFilter: 'Tất cả', // default filter option
       selectedSemester: '',
-      selectedNam:''
+      selectedNam: ''
     };
   },
   created() {
-    this.loadDetailTrainingPoint()
+
     this.loadInfoToFilter()
 
   },
@@ -210,12 +203,29 @@ export default {
 
   },
   methods: {
+    generateSchoolYears() {
+      const currentYear = new Date().getFullYear(); // Lấy năm hiện tại
+      const startYear = 2021; // Năm bắt đầu là 2021
+      const endYear = currentYear; // Năm kết thúc là năm hiện tại cộng thêm một năm
+      const years = [];
 
+      // Lặp qua các năm từ startYear đến endYear
+      for (let year = startYear; year <= endYear; year++) {
+        // Tạo chuỗi năm học dạng "YYYY - YYYY"
+        const schoolYear = `${year}-${year + 1}`;
+        // Thêm vào danh sách
+        years.push(schoolYear);
+      }
+
+      // Cập nhật danh sách schoolYears trong dữ liệu
+      this.namList = years;
+      this.selectedNam = this.namList[this.namList.length - 2];
+    },
     gotoDetail(row) {
       this.$router.push({ name: 'detailTrainingPoint_edit', params: { id: row._id } });
     },
     loadDetailTrainingPoint() {
-      getAll()
+      getAll(this.selectedNam, this.selectedSemester, this.selectedKhoa, this.selectedLop)
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.tableData = response.data.detailTrainingPoints;
@@ -265,27 +275,23 @@ export default {
       this.khoaList = this.$store.getters.khoaList
       this.nghanhList = this.$store.getters.nghanhList
       this.lopList = this.$store.getters.lopList
+      this.generateSchoolYears()
     },
     resetData() {
       this.selectedKhoa = '';
       this.selectedNganh = '';
       this.selectedLop = '';
       this.search = '';
-      this.selectedSemester='';
+      this.selectedSemester = '';
       this.selectedNam = '';
     }
   },
   watch: {
-    uniqueSchoolYears: {
-      handler(newValues) {
-        this.namList = newValues;
-      },
-      immediate: true,
-    },
+
   },
 }
 </script>
-<style>
+<style scoped>
 .action-trainingPoint {
   display: flex;
   justify-content: space-between;
@@ -353,18 +359,18 @@ export default {
   /* White text for contrast */
 }
 
-.filter-options span.selected {
+.filter-options-duyet span.selected {
   background-color: #0c8eca;
   color: #fff;
 }
 
-.filter-options {
+.filter-options-duyet {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.filter-options span {
+.filter-options-duyet span {
   cursor: pointer;
   padding: 4px;
   font-size: 14px;
@@ -376,8 +382,17 @@ export default {
   text-align: center;
 }
 
-.custom-scroll {
-  max-height: 87vh;
-  overflow-y: auto;
+
+.el-select {
+  width: 10%;
+}
+
+.customs .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.customs .el-card {
+  border-radius: 25px;
+  background-color: white;
 }
 </style>

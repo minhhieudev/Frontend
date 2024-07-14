@@ -87,4 +87,20 @@ export function getInfoUser(id){
   })
 }
 
+export function deleteAnswer(id) {
+  return request({
+    url: `/${modelCode}/${id}`, 
+    method: "delete",
+  });
+}
 
+export function changePassword(id, currentPassword, newPassword) {
+  return request({
+    url: `/${modelCode}/changePassword/${id}`,
+    method: 'post',
+    data: {
+      currentPassword,
+      newPassword,
+    },
+  });
+}

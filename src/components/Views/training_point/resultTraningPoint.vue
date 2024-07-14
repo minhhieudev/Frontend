@@ -1,5 +1,7 @@
 <template>
-  <div class="Result custom-scroll-result">
+  <div class="Result custom-scroll-result ml-3"
+    style="box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;">
+
     <el-card>
       <div class="search-bar">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
@@ -18,7 +20,6 @@
           </el-dropdown-menu>
         </el-dropdown>
 
-        <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
 
         <el-select v-model="selectedNam" placeholder="Năm học" filterable>
           <el-option v-for="item in namList" :key="item" :label="item" :value="item"></el-option>
@@ -27,10 +28,12 @@
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable>
           <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
-        
+
         <el-select v-model="selectedLop" filterable placeholder="Lớp">
           <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
         </el-select>
+
+        <i @click="loadData" class="fa-solid fa-filter"></i>
 
         <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..." class="custom-input-result">
         </el-input>
@@ -48,11 +51,11 @@
           <template slot-scope="{ row }">{{ row.studentDetails.studentCode }}</template>
         </el-table-column>
 
-        <el-table-column prop="fullName" label="Tên SV" width="150" align="center">
+        <el-table-column prop="fullName" label="Tên SV" width="180" align="center">
           <template slot-scope="{ row }">{{ row.studentDetails.fullName }}</template>
         </el-table-column>
 
-        <el-table-column prop="className" label="Lớp" width="100" align="center">
+        <el-table-column prop="className" label="Lớp" width="110" align="center">
           <template slot-scope="{ row }">{{ row.studentDetails.className }}</template>
         </el-table-column>
 
@@ -84,35 +87,8 @@
           @size-change="handlePageSizeChange" />
       </div>
 
-      <!-- Thống kê số lượng kết quả rèn luyện -->
-      <h4 class="table-title text-center text-success">THỐNG KÊ KẾT QUẢ RÈN LUYỆN</h4>
-      <div class="container-statistical">
-        <el-card v-for="(semester, key) in [semester1Statistics, semester2Statistics, wholeYearStatistics]" :key="key"
-          :style="getCardColor(key)" class="box-card">
-          <div slot="header" class="clearfix text-center">
-            <p :style="getColorStyle(key)">{{ getSemesterLabel(key) }}</p>
-          </div>
-          <el-row>
-            <el-col :span="12">
-              <div class="items" :key="index">
-                <p>XUẤT SẮC: {{ semester.excellent }}</p>
-                <p>GIỎI: {{ semester.good }}</p>
-                <p>KHÁ: {{ semester.fair }}</p>
-              </div>
-            </el-col>
-            <el-col :span="12">
-              <div class="items" :key="index">
-                <p>TRUNG BÌNH: {{ semester.average }}</p>
-                <p>YẾU: {{ semester.weak }}</p>
-                <p>KÉM: {{ semester.least }}</p>
-              </div>
-            </el-col>
-          </el-row>
-        </el-card>
-      </div>
-
-      <div class="chart-container py-3 text-center">
-        <h3 style="color: red;"lass="mt-2">BIỂU ĐỒ THỐNG KÊ</h3>
+      <div class="chart-container py-2 text-center ">
+        <h3 style="color: red;" lass="mt-2">BIỂU ĐỒ THỐNG KÊ</h3>
         <canvas id="trainingChart"></canvas>
       </div>
 
@@ -159,8 +135,9 @@ export default {
   },
 
   created() {
-    this.loadData()
+
     this.loadInfoToFilter()
+
   },
   computed: {
     filteredTableData() {
@@ -190,13 +167,10 @@ export default {
 
 
     },
-    uniqueSchoolYears() {
-      const uniqueYears = [...new Set(this.tableData.map(item => item.schoolYear))];
-      return uniqueYears;
-    },
+
     dataChart() {
       const data = {
-        labels: ['Xuất sắc', 'Giỏi', 'Khá', 'Trung bình', 'Yếu', 'Kém'],
+        labels: ['Xuất sắc', 'Tốt', 'Khá', 'Trung bình', 'Yếu', 'Kém'],
         datasets: [
           {
             label: 'Học kỳ 1',
@@ -225,20 +199,48 @@ export default {
     }
   },
   watch: {
-    uniqueSchoolYears: {
-      handler(newValues) {
-        this.namList = newValues;
-      },
-      immediate: true,
-    },
-    dataChart:{
-      handler(){
+    dataChart: {
+      handler() {
         this.createChart()
 
       }
     }
   },
   methods: {
+    generateSchoolYears() {
+      console.log('1')
+      const currentYear = new Date().getFullYear(); // Lấy năm hiện tại
+      const startYear = 2021; // Năm bắt đầu là 2021
+      const endYear = currentYear; // Năm kết thúc là năm hiện tại cộng thêm một năm
+      const years = [];
+
+      // Lặp qua các năm từ startYear đến endYear
+      for (let year = startYear; year <= endYear; year++) {
+        // Tạo chuỗi năm học dạng "YYYY - YYYY"
+        const schoolYear = `${year}-${year + 1}`;
+        // Thêm vào danh sách
+        years.push(schoolYear);
+      }
+
+      // Cập nhật danh sách schoolYears trong dữ liệu
+      this.namList = years;
+      this.selectedNam = this.namList[this.namList.length - 2];
+      if (this.selectedNam) {
+        getAll(this.selectedNam)
+          .then((response) => {
+            if (response && response.data && response.data.success) {
+              this.tableData = response.data.resultTrainingPoints;
+            } else {
+              console.error("Không thành công: ", response.data);
+            }
+          })
+          .catch((error) => {
+            console.error("Lỗi khi tải điểm rèn luyện: ", error);
+          });
+      }
+
+    },
+
     createChart() {
 
       const ctx = document.getElementById('trainingChart').getContext('2d');
@@ -271,7 +273,7 @@ export default {
           case 'Xuất sắc':
             statistics.excellent++;
             break;
-          case 'Giỏi':
+          case 'Tốt':
             statistics.good++;
             break;
           case 'Khá':
@@ -291,7 +293,8 @@ export default {
       return statistics;
     },
     loadData() {
-      getAll()
+      getAll(this.selectedNam, this.selectedKhoa, this.selectedLop)
+        //getAll()
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.tableData = response.data.resultTrainingPoints;
@@ -324,6 +327,8 @@ export default {
       this.selectedLop = '';
       this.search = ''
     },
+
+
     getCardColor(index) {
       const colors = [
         "rgb(168, 245, 219)",
@@ -369,9 +374,12 @@ export default {
 
 
     loadInfoToFilter() {
+      console.log('2')
+
       this.khoaList = this.$store.getters.khoaList
       this.nghanhList = this.$store.getters.nghanhList
       this.lopList = this.$store.getters.lopList
+      this.generateSchoolYears()
     },
 
     exportToCSV() {
@@ -586,7 +594,7 @@ export default {
 
 </script>
 
-<style>
+<style scoped>
 .search-bar {
   display: flex;
   justify-content: space-between;
@@ -686,7 +694,19 @@ export default {
   max-height: 87vh;
   overflow-y: auto;
 }
-.el-select{
+
+.el-select {
   width: 10%;
 }
+
+/* .custom-scroll-result .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.custom-scroll-result .el-card {
+  border-radius: 25px;
+  background-color: white;
+} */
+
+.chart-container {}
 </style>

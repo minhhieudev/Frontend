@@ -13,10 +13,25 @@ export function getCollection(data) {
 }
 
 
-export function getAll () {
+export function getAll(department, className) {
   return request({
-    url: `/${modelCode}`,
-    method: 'get'
+    url: `/${modelCode}/getCondition`, 
+    method: "post", // Thay đổi phương thức thành POST
+    data: {
+      department: department,
+      className: className
+    }
+  });
+}
+
+export function saveStudents(dataSV, user) {
+  return request({
+    url: `/${modelCode}/saveStudents`, 
+    method: 'post',
+    data: {
+      dataSV: dataSV,
+      user: user
+    }
   })
 }
 export function getClassList() {

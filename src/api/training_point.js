@@ -22,9 +22,9 @@ export function saveData(data) {
   });
 }
 
-export function updateStatus() {
-  return request({
-    url: `/${modelCode}/updateIsShow`, 
-    method: "post",
-  });
-}
+// export function updateStatus() {
+//   return request({
+//     url: `/${modelCode}/updateIsShow`, 
+//     method: "post",
+//   });
+// }

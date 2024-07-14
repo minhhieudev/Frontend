@@ -197,12 +197,13 @@ header {
       height: $new-header-height;
     }
 
-    background-image: url(https://png.pngtree.com/background/20210716/original/pngtree-soft-pink-background-picture-image_1332401.jpg);
+    //background-image: url(https://png.pngtree.com/background/20210716/original/pngtree-soft-pink-background-picture-image_1332401.jpg);
     //     background: rgb(175, 238, 247);
     // background: linear-gradient(90deg, rgb(125, 208, 247) 0%, rgb(127, 217, 233) 8%, rgb(176, 219, 233) 19%, rgb(182, 228, 231) 33%, rgb(187, 222, 238) 73%, rgb(185, 225, 240) 86%, rgb(185, 217, 238) 100%);
 
-    box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12),
-    0px 4px 4px rgba(0, 0, 0, 0.04);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
 
     a>img {
       width: 125px;
@@ -313,10 +314,5 @@ header {
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
-}
-
-
-.custom {
-  background-image: url('https://img.freepik.com/free-vector/modern-flowing-colorful-wave-banner-background_1035-19861.jpg?w=2000');
 }
 </style>

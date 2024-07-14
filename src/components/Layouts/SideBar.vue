@@ -25,9 +25,9 @@
         <sidebar-item v-for="(sidebar, index) in sidebars" :sidebar="sidebar" v-if="sidebar.type === '1'" :key="index"
           :index="index" @active_item="handleClickItem"></sidebar-item>
       </ul>
-      <div v-if="this.$store.getters.user.role == 'Admin'">
+      <div v-if="this.$store.getters.user.role !== 'student'">
         <div class="categoryManagement">
-          <p>QUẢN LÝ DANH MỤC </p>
+          <p>QUẢN TRỊ CHUNG </p>
           <el-icon style="color: rgb(24, 61, 228);" class="el-icon-caret-bottom"></el-icon>
         </div>
         <ul class="sidebar-menu">
@@ -126,8 +126,9 @@ export default {
   top: 0;
   left: 0;
   height: calc(100% - 40px);
-  background-image: url(../../../src/assets/4.jpg);
-  //background-color: rgb(247, 239, 220);
+  //background-image: url(../../../src/assets/4.jpg);
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 
   z-index: 1010;
 
@@ -138,8 +139,8 @@ export default {
       button {
         //background: #468a5f;
         color: #333;
-        padding-top: 4px;
-        padding-bottom: 4px;
+        padding-top: 3px;
+        padding-bottom: 3px;
       }
 
       .active {

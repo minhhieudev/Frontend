@@ -1,120 +1,131 @@
 <template>
-  <div style="font-weight: 500">
-    <div class="content-container" v-if="isShow || this.$store.getters.user.role != 'student'">
+
+  <div style="font-weight: 500;z-index: 999;" class="ml-3">
+    <div class="content-container">
+
       <el-card class="table-info center">
         <h4 class="table-title text-center">BẢNG ĐÁNH GIÁ KẾT QUẢ RÈN LUYỆN SINH VIÊN (HỌC KỲ)</h4>
+        <div style="max-height: 76vh; overflow-y: auto;">
 
-        <el-row>
-          <el-col :span="6" :offset="6">
-            <el-form label-width="80px">
-              <el-form-item label="Học kỳ" class="bold-text">
-                <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoints "
-                  size="mini"></el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col :span="6">
-            <el-form label-width="80px">
-              <el-form-item label="Năm học" class="bold-text">
-                <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoints"
-                  size="mini"></el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-        </el-row>
+          <el-row>
+            <el-col :span="6" :offset="6">
+              <el-form label-width="80px">
+                <el-form-item label="Học kỳ" class="bold-text">
+                  <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoints "
+                    size="mini"></el-input>
+                </el-form-item>
+              </el-form>
+            </el-col>
 
-        <el-form ref="formData" :model="formData" label-width="80px" class="text-center">
-          <el-row type="flex" class="row-bg" justify="space-between">
             <el-col :span="6">
-              <div class="grid-content ">
-                <el-form-item label="Họ và tên" class="bold-text">
-                  <el-input v-model="formData.fullName" placeholder="Họ và tên"
-                    class="custom-input-trainingPoints"></el-input>
+              <el-form label-width="80px">
+                <el-form-item label="Năm học" class="bold-text">
+                  <el-input v-model="schoolYear" placeholder="Nhập năm học" class="custom-input-trainingPoints"
+                    size="mini"></el-input>
                 </el-form-item>
-                <el-form-item label="Lớp" class="bold-text">
-                  <el-input v-model="formData.className" placeholder="Lớp"
-                    class="custom-input-trainingPoints"></el-input>
-                </el-form-item>
-              </div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content bg-white"></div>
-            </el-col>
-            <el-col :span="6">
-              <div class="grid-content ">
-                <el-form-item label="Mã SV" class="bold-text">
-                  <el-input v-model="formData.studentCode" placeholder="Mã sinh viên"
-                    class="custom-input-trainingPoints"></el-input>
-                </el-form-item>
-                <el-form-item label="Khoa" class="bold-text">
-                  <el-input v-model="formData.department" placeholder="Khoa"
-                    class="custom-input-trainingPoints"></el-input>
-                </el-form-item>
-              </div>
+              </el-form>
             </el-col>
           </el-row>
-        </el-form>
 
-        <el-table :data="flattenedCriteriaList" style="width: 100%">
-          <el-table-column label="STT" width="50" style="font-weight: bold;" align="center">
-            <template slot-scope="scope">
-              <span :class="{ 'bold-text': scope.row.stt }">{{ scope.row.stt }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="Nội dung và tiêu chí đánh giá">
-            <template slot-scope="scope">
-              <span :class="{
-      'bold-text': scope.row.level === 1,
-      'bold-text2': hasAsterisk(scope.row.text)
-    }">
-                {{ scope.row.level === 1 ? scope.row.text : scope.row.text }}
-              </span>
-            </template>
-          </el-table-column>
-          <el-table-column label="Mức điểm tối đa" width="50" align="center">
-            <template slot-scope="scope">
-              <span>
-                {{ (scope.row.level == 2) && (!hasAsterisk(scope.row.text)) ? scope.row.maxScore : '' }}
-              </span>
-            </template>
-          </el-table-column>
+          <el-form ref="formData" :model="formData" label-width="80px" class="text-center">
+            <el-row type="flex" class="row-bg" justify="space-between">
+              <el-col :span="6">
+                <div class="grid-content ">
+                  <el-form-item label="Họ và tên" class="bold-text">
+                    <el-input v-model="formData.fullName" placeholder="Họ và tên"
+                      class="custom-input-trainingPoints"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Lớp" class="bold-text">
+                    <el-input v-model="formData.className" placeholder="Lớp"
+                      class="custom-input-trainingPoints"></el-input>
+                  </el-form-item>
+                </div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content bg-white"></div>
+              </el-col>
+              <el-col :span="6">
+                <div class="grid-content ">
+                  <el-form-item label="Mã SV" class="bold-text">
+                    <el-input v-model="formData.studentCode" placeholder="Mã sinh viên"
+                      class="custom-input-trainingPoints"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Khoa" class="bold-text">
 
-          <el-table-column label="Điểm" height="5" align="center">
-            <el-table-column label="SV tự chấm" width="70" align="center">
+                    <el-select v-model="formData.department" placeholder="Khoa" filterable class="custom-input-cv">
+                      <el-option v-for="item in  this.$store.getters.khoaList" :key="item" :label="item"
+                        :value="item"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </div>
+              </el-col>
+            </el-row>
+          </el-form>
+
+          <el-table :data="flattenedCriteriaList" style="width: 100%">
+            <el-table-column label="STT" width="50" style="font-weight: bold;" align="center">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.selfAssessment" placeholder="Nhập điểm"
-                  @input="Update_Total_selfAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+                <span :class="{ 'bold-text': scope.row.stt }">{{ scope.row.stt }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="Lớp chấm" width="70" align="center">
+            <el-table-column label="Nội dung và tiêu chí đánh giá">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.groupAssessment" placeholder="Nhập điểm"
-                  @input="Update_Total_groupAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+                <span :class="{
+              'bold-text': scope.row.level === 1,
+              'bold-text2': hasAsterisk(scope.row.text)
+            }">
+                  {{ scope.row.level === 1 ? scope.row.text : scope.row.text }}
+                </span>
+              </template>
+            </el-table-column>
+            <el-table-column label="Mức điểm tối đa" width="50" align="center">
+              <template slot-scope="scope">
+                <span>
+                  {{ (scope.row.level == 2) && (!hasAsterisk(scope.row.text)) ? scope.row.maxScore : '' }}
+                </span>
               </template>
             </el-table-column>
 
-            <el-table-column label="Cố vấn (xét duyệt)" width="70" align="center">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.consultantAssessment" placeholder="Nhập điểm"
-                  @input="Update_Total_consultantAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
-              </template>
+            <el-table-column label="Điểm" height="5" align="center">
+              <el-table-column label="SV tự chấm" width="70" align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.selfAssessment" placeholder="Nhập điểm"
+                    @input="Update_Total_selfAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+                </template>
+              </el-table-column>
+              <el-table-column label="Lớp chấm" width="70" align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.groupAssessment" placeholder="Nhập điểm"
+                    @input="Update_Total_groupAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+                </template>
+              </el-table-column>
+
+              <el-table-column v-if="this.$store.getters.user.role !== 'student'" label="Cố vấn (xét duyệt)" width="70"
+                align="center">
+                <template slot-scope="scope">
+                  <el-input v-model="scope.row.consultantAssessment" placeholder="Nhập điểm"
+                    @input="Update_Total_consultantAssessment" v-if="scope.row.stt && scope.row.level == 1"></el-input>
+                </template>
+              </el-table-column>
             </el-table-column>
-          </el-table-column>
-        </el-table>
+          </el-table>
+          <el-form label-width="140px" class="d-flex justify-content-around mt-2">
+            <el-form-item label="Sinh viên tự chấm" class="bold-text">
+              <div>{{ Total_selfAssessment }}</div>
+            </el-form-item>
+            <el-form-item label="Lớp chấm" class="bold-text">
+              <div>{{ Total_groupAssessment }}</div>
 
-        <el-form label-width="140px" class="d-flex justify-content-around mt-2">
-          <el-form-item label="Sinh viên tự chấm" class="bold-text">
-            <el-input class="input-trainingPoint" placeholder="" v-model="Total_selfAssessment"></el-input>
-          </el-form-item>
-          <el-form-item label="Lớp chấm" class="bold-text">
-            <el-input class="input-trainingPoint" placeholder="" v-model="Total_groupAssessment"></el-input>
-          </el-form-item>
+            </el-form-item>
 
-          <el-form-item label="Cố vấn chấm" class="bold-text">
-            <el-input class="input-trainingPoint" placeholder="" v-model="Total_consultantAssessment"></el-input>
-          </el-form-item>
+            <el-form-item label="Cố vấn chấm" class="bold-text">
+              <div>{{ Total_consultantAssessment }}</div>
 
-        </el-form>
+            </el-form-item>
+
+          </el-form>
+        </div>
+
         <div class="d-flex justify-content-between">
           <el-button type="primary" round @click="confirmSubmit">Nộp</el-button>
           <el-button type="info" round @click="loadDetailTrainingPointCopy">Chấm tiếp</el-button>
@@ -122,12 +133,10 @@
           <el-button v-if="this.$store.getters.user.role != 'student'" type="success" round @click="handleSubmit"
             class="text-left">Xác nhận</el-button>
         </div>
-        <div class="d-flex mt-4 text-center justify-content-between" v-if="this.$store.getters.user.role != 'student'">
-          <el-button v-if="!isShow" @click="Active" type="primary" plain>Kích hoạt</el-button>
-          <el-button v-if="isShow" @click="Active" type="danger" plain>Đóng chức năng</el-button>
-        </div>
+       
 
       </el-card>
+
     </div>
 
 
@@ -136,11 +145,11 @@
 
 <script>
 const ModelCode = 'training_point';
-import { saveData, getDetail } from '@/api/detailTrainingPoint';
+import { saveData, getDetail, updateStatus } from '@/api/detailTrainingPoint';
 import { getSemester1Data, updateSemester2AndWholeYear, savePoint } from '@/api/resultTrainingPoint';
-import { getAll, updateStatus } from '@/api/training_point';
+import { getAll, } from '@/api/training_point';
 import { saveDataCopy, getData, handleDeleteCopy } from '@/api/detailTrainingPointNhap';
-import { setIsComplete, updateIsComplete } from '@/api/student';
+import { saveDataStatistic, updateIsComplete } from '@/api/statistic';
 
 
 
@@ -353,8 +362,10 @@ export default {
 
       const criteriaLists = {
         user: this.$store.getters.user._id,
-        semester: this.semester,
+        semester: String(this.semester),
         schoolYear: this.schoolYear,
+        department: this.formData.department,
+        className: this.formData.className,
         criteriaList: criteriaList,
         Total_selfAssessment: this.Total_selfAssessment,
         Total_groupAssessment: this.Total_groupAssessment,
@@ -363,6 +374,18 @@ export default {
 
       return criteriaLists;
     },
+    createResult() {
+      const data = {
+        className: this.formData.className,
+        studentCode: this.formData.studentCode,
+        fullName: this.formData.fullName,
+        user: this.$store.getters.user._id,
+        semester: this.semester,
+        schoolYear: this.schoolYear,
+        isComplete: true,
+      }
+      saveDataStatistic(data);
+    },
     handleSave() {
       if (!this.validateInputData()) {
         return;
@@ -370,27 +393,25 @@ export default {
       if (this.Total_groupAssessment == 0) {
         this.Total_groupAssessment = this.Total_selfAssessment
       }
-
       saveData(this.combineObjects(this.resultArray))
         .then(response => {
           if (response && response.data && response.data.success) {
-            //handleDeleteCopy(this.id_nhap)
             this.loadData()
             this.resetText()
-            setIsComplete(this.$store.getters.user._id)
+            this.createResult()
+
           } else {
 
           }
         })
         .catch(error => {
           console.error('Lỗi khi lưu dữ liệu: ', error);
-          this.$message.error('Lỗi khi lưu dữ liệu');
         });
     },
 
     confirmSubmit() {
       this.$confirm(
-        'Bạn có chắc chắn muốn nộp dữ liệu không?',
+        'Bạn có chắc chắn muốn nộp phiếu điểm không?',
         'Xác nhận',
         {
           confirmButtonText: 'OK',
@@ -414,24 +435,44 @@ export default {
         });
         return;
       }
-      handleDeleteCopy(this.id_nhap)
+      getData(this.$store.getters.user._id)
         .then(response => {
-          if (response) {
-            saveDataCopy(this.combineObjects(this.resultArray))
+          if (response && response.data && response.data.success) {
+            handleDeleteCopy(this.$store.getters.user._id)
               .then(response => {
-                if (response && response.data) {
+                if (response) {
+                  saveDataCopy(this.combineObjects(this.resultArray))
+                    .then(response => {
+                      if (response && response.data) {
 
-                } else {
+                      } else {
+                      }
+                    })
+                    .catch(error => {
+                      console.error('Lỗi khi lưu dữ liệu: ', error);
+                      this.$message.error('Lỗi khi lưu dữ liệu');
+                    });
                 }
               })
-              .catch(error => {
-                console.error('Lỗi khi lưu dữ liệu: ', error);
-                this.$message.error('Lỗi khi lưu dữ liệu');
-              });
+
+          } else {
+            console.error("Có lỗi ! ", response.data);
           }
         })
+        .catch(error => {
+          saveDataCopy(this.combineObjects(this.resultArray))
+            .then(response => {
+              if (response && response.data) {
 
+              } else {
+              }
+            })
+            .catch(error => {
+              console.error('Lỗi khi lưu dữ liệu: ', error);
+              this.$message.error('Lỗi khi lưu dữ liệu');
+            });
 
+        });
     },
     async handleSubmit() {
       if (!this.semester || !this.schoolYear) {
@@ -440,6 +481,8 @@ export default {
       }
 
       const data = {
+        department: this.formData.department,
+        className: this.formData.className,
         schoolYear: this.schoolYear,
         semester1: { point: '', classify: '', note: '' },
         semester2: { point: '', classify: '', note: '' },
@@ -459,7 +502,7 @@ export default {
           const response = await savePoint(data);
 
           if (response && response.data) {
-            this.$message.success('Lưu dữ liệu thành công ');
+            //this.$message.success('Lưu dữ liệu thành công ');
             await updateStatus(this.$route.params.id, this.Total_selfAssessment);
             this.$router.push({ name: 'detailTrainingPoint_main' })
           } else {
@@ -560,17 +603,18 @@ export default {
       this.Total_consultantAssessment = 0;
     },
     Active() {
-      updateStatus().then(response => {
-        if (response.data.success) {
-          this.isShow = !this.isShow
-        }
-      })
-        .catch(error => {
-        });
+      // updateStatus().then(response => {
+      //   if (response.data.success) {
+      //     this.isShow = !this.isShow
+      //   }
+      // })
+      //   .catch(error => {
+      //   });
       // if (this.isShow) {
       //   updateIsComplete()
       // }
     },
+
 
   }
 }
@@ -624,15 +668,15 @@ export default {
   color: black;
 }
 
-.container {
-  max-height: 500px;
-  /* Chiều cao cố định của phần tử chứa nội dung */
-  overflow-y: scroll;
-  /* Tạo thanh cuộn dọc */
+
+
+
+.content-container .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
-.content-container {
-  max-height: 87vh;
-  overflow-y: auto;
+.content-container .el-card {
+  border-radius: 25px;
+  background-color: white;
 }
 </style>

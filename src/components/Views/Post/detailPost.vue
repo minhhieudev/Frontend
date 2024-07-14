@@ -20,7 +20,7 @@
           </div>
           <div class="comment-container">
             <el-icon style="color: rgb(24, 61, 228);" class="el-icon-chat-dot-square"></el-icon>
-            <span class="comments">{{ comments }}</span>
+            <span class="comments">{{ replyCount }}</span>
           </div>
         </div>
         <div class="attachments" v-if="attachmentPath.length > 0">
@@ -41,8 +41,8 @@
             <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
           <div class="input-box">
-            <input v-model="replyText"  @keyup.enter="sendReply"
-              placeholder="Nhập phản hồi của bạn..." class="reply-input" />
+            <input v-model="replyText" @keyup.enter="sendReply" placeholder="Nhập phản hồi của bạn..."
+              class="reply-input" />
           </div>
           <div class="emoji-button " @click="showEmojiPicker">
             😃
@@ -55,7 +55,7 @@
       </div>
       <emoji-picker v-if="isEmojiPickerVisible" @emoji-selected="insertEmoji" />
       <div class="answer-list mt-2" style="max-height: 200px; overflow-y: auto;">
-        <answer v-for="ans in reply" :key="ans.id" :content="ans.content" :avatarUrl="ans.user.avatarUrl"
+        <reply v-for="ans in reply" :key="ans.id" :_id="ans._id" :content="ans.content" :avatarUrl="ans.user.avatarUrl"
           :user="ans.user.fullname" :createdAt="formatDate(ans.createdAt)" :likes="ans.likes" />
       </div>
 
@@ -66,12 +66,14 @@
 
 
 <script>
-import Answer from '../Question/Answer';
+import Reply from '../Post/Reply';
 import { saveData, getReplyByPostId } from '@/api/reply'
 import { format } from 'date-fns';
 import EmojiPicker from '../Question/EmojiPicker';
 import { updateComments } from '@/api/post';
 import axios from 'axios';
+import { updateLike } from '../../../api/reply';
+
 
 
 
@@ -80,6 +82,7 @@ export default {
     title: String,
     content: String,
     id: String,
+    _id: String,
     user: String,
     createdAt: String,
     avatarUrl: String,
@@ -112,11 +115,12 @@ export default {
     },
     replyCount() {
       return this.reply.length;
-    }
+    },
+  
   },
   created() {
-this.loadReply()
   },
+
   data() {
     return {
       replyText: '',
@@ -126,7 +130,7 @@ this.loadReply()
     };
   },
   components: {
-    Answer,
+    Reply,
     EmojiPicker,
   },
   methods: {
@@ -144,7 +148,6 @@ this.loadReply()
     },
 
     loadReply() {
-      console.log('load')
       getReplyByPostId(this.id)
         .then((response) => {
           if (response && response.data && response.data.success) {
@@ -160,7 +163,7 @@ this.loadReply()
     },
     childFunction() {
       this.isInviteMemberVisible = true;
-    this.loadReply();
+      this.loadReply();
 
     },
     showInviteDialog() {
@@ -259,7 +262,7 @@ this.loadReply()
 };
 </script>
 
-<style >
+<style>
 .popup {
   top: 0;
   left: 0;
@@ -399,7 +402,8 @@ this.loadReply()
   font-size: 14px;
   word-break: break-all;
 }
-.custom-dialog .el-dialog{
+
+.custom-dialog .el-dialog {
   border-radius: 20px;
 }
-</style>   
+</style>

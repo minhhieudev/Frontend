@@ -4,6 +4,7 @@
     <section class="content minus-180" v-if="isLoaded" v-loading="loadingStatus > 0">
       <header-component/>
       <root-content :key="client"/>
+      <chat/>
     </section>
   </div>
 </template>
@@ -14,6 +15,8 @@ import RootContent from './RootContent'
 import SideBarComponent from './SideBar'
 import { firstRequest } from '../../api/helper'
 import { getOne } from '../../utils/app'
+import chat from './chat'
+
 
 export default {
   data () {
@@ -26,6 +29,7 @@ export default {
     HeaderComponent,
     RootContent,
     SideBarComponent,
+    chat
     
   },
   created() {

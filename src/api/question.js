@@ -73,3 +73,14 @@ export function updateQuestion(id,newQuestion) {
     },
   });
 }
+
+export function getPaginatedQuestions(page, pageSize) {
+  return request({
+    url: `/${modelCode}/paginated`,
+    method: "get",
+    params: {
+      page: page,
+      pageSize: pageSize,
+    },
+  });
+}

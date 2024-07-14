@@ -1,5 +1,5 @@
 <template>
-  <div class="custom-scroll-user">
+  <div class="custom-scroll-user ml-3">
     <el-card>
       <div class="action-user">
         <!-- Lọc theo lớp -->
@@ -27,33 +27,36 @@
 
         <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
       </div>
-      <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT" width="120">
-          <template slot-scope="{ $index, row }">
-            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="email" label="Email"></el-table-column>
-        <el-table-column label="Tên">
-          <template slot-scope="{ row }">
-            {{ getName(row) }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="role" label="Quyền">
-          <template slot-scope="{ row }">
-            {{ getRole(row) }}
-          </template>
-        </el-table-column>
-        <el-table-column label="Thao tác" width="150">
-          <template slot-scope="{ row }">
 
-            <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
-              circle></el-button>
-            <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small"
-              circle></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <div style="max-height: 71vh; overflow-y: auto;">
+        <el-table :data="currentPageData" style="width: 100%" class="custom-table">
+          <el-table-column label="STT" width="120">
+            <template slot-scope="{ $index, row }">
+              <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="email" label="Email"></el-table-column>
+          <el-table-column label="Tên">
+            <template slot-scope="{ row }">
+              {{ getName(row) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="role" label="Quyền">
+            <template slot-scope="{ row }">
+              {{ getRole(row) }}
+            </template>
+          </el-table-column>
+          <el-table-column label="Thao tác" width="150">
+            <template slot-scope="{ row }">
+
+              <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
+                circle></el-button>
+              <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small"
+                circle></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
       <div class="mt-2">
         <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
           :page-size.sync="pagination.page_size" :total="filteredTableData.length"
@@ -282,8 +285,14 @@ export default {
   border-radius: 50%;
 }
 
-.custom-scroll-user {
-  max-height: 87vh;
-  overflow-y: auto;
+
+
+.custom-scroll-user .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.custom-scroll-user .el-card {
+  border-radius: 25px;
+  background-color: white;
 }
 </style>

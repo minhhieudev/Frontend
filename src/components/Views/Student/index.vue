@@ -1,75 +1,83 @@
 <template>
-  <div class="user custom-scroll-sv">
+  <div class="user custom-scroll-sv ml-3">
     <el-card>
       <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH SINH VIÊN</h4>
       <div class="action-student mb-4">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
         <i class="fa-solid fa-download"></i>
-        <i style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
 
         <!-- Khoa Dropdown -->
         <el-select v-model="selectedKhoa" placeholder="Khoa" filterable class="input-student">
-          <el-option v-for="item in khoaList" :key="item" :label="item" :value="item"></el-option>
+          <el-option v-for="item in this.$store.getters.khoaList" :key="item" :label="item" :value="item"></el-option>
         </el-select>
 
         <!-- Lớp Dropdown -->
         <el-select v-model="selectedLop" filterable placeholder="Lớp" class="input-student">
-          <el-option v-for="className in lopList" :key="className" :label="className" :value="className"></el-option>
+          <el-option v-for="className in this.$store.getters.lopList" :key="className" :label="className"
+            :value="className"></el-option>
         </el-select>
 
+        <i @click="loadData" style="color: rgb(3, 49, 49);" class="fa-solid fa-filter"></i>
+
         <el-input v-model="search" size="medium" placeholder="Tìm theo tên, email..." class="search-input">
+
         </el-input>
         <i class="fa-solid fa-magnifying-glass"></i>
         <div class="">
           <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
         </div>
       </div>
+      <div style="max-height: 71vh; overflow-y: auto;">
 
-      <el-table :data="currentPageData" style="width: 100%" class="custom-table">
-        <el-table-column label="STT" width="50">
-          <template slot-scope="{ $index, row }">
-            <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column prop="studentCode" label="MSV" width="100" align="center">
-          <template slot-scope="{ row }">
-            {{ row.studentCode }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="fullName" label="Tên sinh viên" align="center">
-          <template slot-scope="{ row }">
-            {{ row.fullName }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="email" label="Email" align="center">
-          <template slot-scope="{ row }">
-            {{ row.email }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="className" label="Lớp" align="center">
-          <template slot-scope="{ row }">
-            {{ row.className }}
-          </template>
-        </el-table-column>
-        <el-table-column prop="department" label="Khoa" align="center">
-          <template slot-scope="{ row }">
-            {{ row.department }}
-          </template>
-        </el-table-column>
-        <!-- <el-table-column prop="isComplete" label="Chấm" align="center">
+        <el-table :data="currentPageData" style="width: 100%" class="custom-table">
+          <el-table-column label="STT" width="50">
+            <template slot-scope="{ $index, row }">
+              <span>{{ ($index + 1) + (pagination.current_page - 1) * pagination.page_size }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="studentCode" label="MSV" width="100" align="center">
+            <template slot-scope="{ row }">
+              {{ row.studentCode }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="fullName" label="Tên sinh viên" align="center">
+            <template slot-scope="{ row }">
+              {{ row.fullName }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="email" label="Email" align="center">
+            <template slot-scope="{ row }">
+              {{ row.email }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="className" label="Lớp" align="center">
+            <template slot-scope="{ row }">
+              {{ row.className }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="department" label="Khoa" align="center">
+            <template slot-scope="{ row }">
+              {{ row.department }}
+            </template>
+          </el-table-column>
+          <!-- <el-table-column prop="isComplete" label="Chấm" align="center">
           <template slot-scope="{ row }">
             {{ row.isComplete }}
           </template>
         </el-table-column> -->
-        <el-table-column label="Thao tác" width="150">
-          <template slot-scope="{ row }">
-            <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
-              circle></el-button>
-            <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small"
-              circle></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+          <el-table-column label="Thao tác" width="150">
+            <template slot-scope="{ row }">
+              <el-button type="primary" icon="el-icon-edit" @click.prevent="gotoDetail(row)" size="small"
+                circle></el-button>
+              <el-button type="danger" @click.prevent="confirmDelete(row)" icon="el-icon-delete" size="small"
+                circle></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      <div v-if="currentPageData.length === 0" style="text-align: center;font-weight: bold;color: red;">Chọn khoa, lớp để xem danh sách sinh viên</div>
+
+      </div>
+
       <div class="mt-2">
         <el-pagination background layout="jumper, prev, pager, next, sizes, total" :page-sizes="[10, 25, 50, 100]"
           :page-size.sync="pagination.page_size" :total="filteredTableData.length"
@@ -99,23 +107,16 @@ export default {
       search: '',
       selectedKhoa: '',
       selectedNganh: '',
+      selectedNam: '',
       selectedLop: '',
       khoaList: [],
       nganhList: [],
       lopList: [],
     };
   },
-  created() {
-    this.loadData();
-    this.loadInfoToFilter();
-    this.api()
-
-  },
 
   methods: {
-    api() {
-      getClasses()
-    },
+
     goToAddNewPage() {
       this.$router.push({ name: `${ModelCode}_new` })
     },
@@ -137,7 +138,7 @@ export default {
       }).catch()
     },
     loadData() {
-      getAll()
+      getAll(this.selectedKhoa, this.selectedLop)
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.tableData = response.data.students;
@@ -167,14 +168,10 @@ export default {
       this.selectedNganh = '';
       this.selectedLop = '';
       this.search = ''
+      this.tableData = []
     },
-  
 
-    loadInfoToFilter() {
-      this.khoaList = this.$store.getters.khoaList
-      this.nghanhList = this.$store.getters.nghanhList
-      this.lopList = this.$store.getters.lopList
-    }
+
   },
   computed: {
     filteredTableData() {
@@ -246,8 +243,14 @@ export default {
   border-radius: 50%;
 }
 
-.custom-scroll-sv {
-  max-height: 87vh;
-  overflow-y: auto;
+
+
+.custom-scroll-sv .el-card.is-always-shadow {
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+}
+
+.custom-scroll-sv .el-card {
+  border-radius: 25px;
+  background-color: white;
 }
 </style>

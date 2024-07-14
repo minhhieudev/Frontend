@@ -24,19 +24,19 @@ export default {
 
     },
     {
-      name: "Quản trị câu hỏi / Trả lời",
+      name: "Quản trị Câu hỏi / Trả lời",
       url: "/questionTables",
       icon: "el-icon-s-grid",
       color_icon: "#f9b651",
-      type: '1',
+      type: '2',
 
     },
     {
-      name: "Quản trị tài liệu / Bài đăng",
+      name: "Quản trị Tài liệu / Bài đăng",
       url: "/postTables",
       icon: "el-icon-menu",
       color_icon: "#ca2c2a",
-      type: '1',
+      type: '2',
 
     },
     {
@@ -87,13 +87,7 @@ export default {
       type: '3',
 
     },
-    {
-      name: "Xem điểm rèn luyện",
-      url: "/note_book",
-      icon: "el-icon-search",
-      color_icon: "#FF6600	",
-      type: '3',
-    },
+   
     {
       name: "Giới thiệu",
       url: "/Introduce",
@@ -168,19 +162,19 @@ export default {
 
     },
     {
-      name: "Quản trị câu hỏi / Trả lời",
+      name: "Quản trị Câu hỏi / Trả lời",
       url: "/questionTables",
       icon: "el-icon-s-grid",
       color_icon: "#f9b651",
-      type: '1',
+      type: '2',
 
     },
     {
-      name: "Quản trị tài liệu / Bài đăng",
+      name: "Quản trị Tài liệu / Bài đăng",
       url: "/postTables",
       icon: "el-icon-menu",
       color_icon: "#ca2c2a",
-      type: '1',
+      type: '2',
 
     },
     {

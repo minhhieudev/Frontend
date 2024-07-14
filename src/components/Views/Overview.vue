@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard" v-loading="loading" v-if="this.$store.getters.user.role != 'student'">
-    <div class="  ">
+    <div class=" ml-2 ">
       <section id="content">
         <main>
           <ul class="box-info p-0">
@@ -9,7 +9,7 @@
               <i class="bx bxs-dollar-circle fa-solid el-icon-date"></i>
               <span class="text">
                 <h3 class="A1">
-                  <el-select v-model="getSelectedSemester" size="large" style="" filterable class="custom-input-tk ">
+                  <el-select v-model="selectedSemester" size="large" style="" filterable class="custom-input-tk ">
                     <el-option :value="1" label="Kỳ 1"></el-option>
                     <el-option :value="2" label="Kỳ 2"></el-option>
                   </el-select>
@@ -22,16 +22,14 @@
               </span>
             </li>
 
-
-
             <li class="bg-white">
               <i class='bx bxs-calendar-check'></i>
               <span class="text">
-                <h3>{{ countComplete() }} / {{ this.tableData.length }}</h3>
+                <h3>{{ countComplete() }} / {{ this.listClass.length }}</h3>
                 <p style="font-weight: bold;">Lớp đã hoàn thành</p>
               </span>
             </li>
-            <li class="bg-white">
+            <li class="bg-white ">
               <i class=" bx bxs-group fa-solid el-icon-s-release"></i>
 
               <span class="text">
@@ -42,14 +40,16 @@
 
           </ul>
 
-          <div class="table-data" style="display: flex;height: 69vh">
-            <div class="order " style="background-color: white">
+          <div class="table-data" style="display: flex;height: 67vh">
+            <div class="order"
+              style="background-color: white;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
               <div class="head">
                 <h5 class="font-weight-bold">DANH SÁCH - {{ getClassTitle }} </h5>
                 <!-- Lớp Dropdown -->
                 <div class="d-flex align-items-center justify-content-end font-weight-bold">
                   <div class="d-flex align-items-center justify-content-end font-weight-bold ">
-                    <el-select v-model="selected" filterable placeholder="Tình trạng" class="input-select3 mr-3" size="mini">
+                    <el-select v-model="selected" filterable placeholder="Tình trạng" class="input-select3 mr-3"
+                      size="mini">
                       <el-option v-for="option in List" :key="option.label" :label="option.label"
                         :value="option.value"></el-option>
                     </el-select>
@@ -61,24 +61,26 @@
                 </div>
               </div>
 
-              <el-table :data="filteredTableData" style="width: 100%;max-height: 69vh;text-align: center">
-                <el-table-column prop="fullName" label="Họ và tên" align="center">
-                  <template slot-scope="{ row }">
-                    {{ row.fullName }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="studentCode" label="Mã sinh viên">
-                  <template slot-scope="{ row }">
-                    {{ row.studentCode }}
-                  </template>
-                </el-table-column>
-                <el-table-column prop="isComplete" label="Tình trạng">
-                  <template slot-scope="{ row }">
-                    <el-button class="p-1 w-40" v-if="row.isComplete" type="success" plain>Đã hoàn thành</el-button>
-                    <el-button class="p-1 w-40" v-else type="danger" plain>Còn thiếu</el-button>
-                  </template>
-                </el-table-column>
-              </el-table>
+              <div style="max-height: 55vh; overflow-y: auto;">
+                <el-table :data="filteredTableData" style="width: 100%;">
+                  <el-table-column prop="fullName" label="Họ và tên" align="center">
+                    <template slot-scope="{ row }">
+                      {{ row.fullName }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="studentCode" label="Mã sinh viên">
+                    <template slot-scope="{ row }">
+                      {{ row.studentCode }}
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="isComplete" label="Tình trạng">
+                    <template slot-scope="{ row }">
+                      <el-button class="p-1 w-40" v-if="row.isComplete" type="success" plain>Hoàn thành</el-button>
+                      <el-button class="p-1 w-40" v-else type="danger" plain>Còn thiếu</el-button>
+                    </template>
+                  </el-table-column>
+                </el-table>
+              </div>
             </div>
 
             <div class="todo" style="background-color: white;">
@@ -91,7 +93,8 @@
                   <div class="d-flex align-items-center justify-content-end  font-weight-bold ">
                     <div class="d-flex justify-content-around">
                       <i class="fa-solid el-icon-refresh-left mr-3" @click="resetData"></i>
-                      <el-select v-model="selected2" filterable placeholder="Khoa" class="input-select mr-3" size="mini">
+                      <el-select v-model="selected2" filterable placeholder="Khoa" class="input-select mr-3"
+                        size="mini">
                         <el-option v-for="option in this.$store.getters.khoaList" :key="option" :label="option"
                           :value="option"></el-option>
                       </el-select>
@@ -108,13 +111,13 @@
                 <ul class="p-0">
                   <li v-for="item in filteredTableData2" :key="item.id" class="mt-4 rounded p-1"
                     @click="findClassByName(item.className)"
-                    :class="{ 'border border-primary': selectedItem === item.className }">
+                    :class="{ 'border border-primary bg': selectedItem === item.className }">
                     <div class="d-flex justify-content-between">
                       <p class="text-info font-weight-bold">{{ item.className }}</p>
                       <p class="text-danger font-weight-bold">{{ calculateStudentSummary(item) }}</p>
                     </div>
                     <el-progress :stroke-width="15" :percentage="calculateIncompletePercentage(item)"
-                      :status="calculateIncompletePercentage(item) == 100 ? 'success' : ''"></el-progress>
+                      :status="calculateIncompletePercentage(item) == 100 ? 'success' : 'exception'"></el-progress>
                   </li>
                 </ul>
               </div>
@@ -129,17 +132,14 @@
 </template>
 
 <script>
-import { getAll, getClasses } from '@/api/student';
 import { getCondition } from '@/api/detailTrainingPoint';
-
+import { getConditionStatistic } from '@/api/statistic';
 
 export default {
-
-  components: {},
   data() {
     return {
       loading: false,
-      tableData: [],
+      listClass: [],
       listStudents: [],
       dataFilter: [],
       selectedItem: null,
@@ -155,33 +155,23 @@ export default {
       search2: '',
       studentList: [],
       listPhieu: [],
-      selectedSemester: 1, // Giá trị mặc định là kỳ 1
-      selectedSchoolYear: '', // Giá trị mặc định là năm học cuối cùng
-      schoolYears: [], // Danh sách các năm học sẽ được khởi tạo động
+      selectedSemester: 1,
+      selectedSchoolYear: '',
+      schoolYears: [],
     };
   },
+
   created() {
     if (this.$store.getters.user.role == 'student') {
       this.$router.push({ name: 'post_main' })
     }
     else {
       this.generateSchoolYears();
-      this.selectedSchoolYear = this.schoolYears[0];
-      this.loadData()
-      this.countComplete()
-      this.getTotalStudent()
     }
-
-    // Đặt giá trị mặc định của selectedSchoolYear là năm học cuối cùng
-    //this.selectedSchoolYear = this.schoolYears[this.schoolYears.length - 1];
   },
+
   computed: {
-    getSelectedSemester() {
-      return this.selectedSemester
-    },
-    getSelectedSchoolYear() {
-      return this.selectedSchoolYear
-    },
+
     getClassTitle() {
       return this.classTitle
     },
@@ -191,7 +181,7 @@ export default {
 
     getClassList() {
       const list = []
-      this.tableData.filter(data => {
+      this.listClass.filter(data => {
         list.push(data.className)
       });
 
@@ -206,8 +196,9 @@ export default {
       });
     },
 
+
     filteredTableData2() {
-      return this.tableData.filter(data => {
+      return this.listClass.filter(data => {
         const classMatches = !this.search2 || data.className.toLowerCase().includes(this.search2.toLowerCase());
         const statusMatches = this.selected2 === null || data.listStudents[0].department === this.selected2;
 
@@ -219,7 +210,6 @@ export default {
 
   methods: {
     generateSchoolYears() {
-      console.log('3333333333333333333333333333')
       const currentYear = new Date().getFullYear(); // Lấy năm hiện tại
       const startYear = 2021; // Năm bắt đầu là 2021
       const endYear = currentYear; // Năm kết thúc là năm hiện tại cộng thêm một năm
@@ -235,20 +225,19 @@ export default {
 
       // Cập nhật danh sách schoolYears trong dữ liệu
       this.schoolYears = years;
+      this.selectedSchoolYear = this.schoolYears[this.schoolYears.length - 1];
+      this.setSemesterBasedOnCurrentDate();
     },
-    getTotalStudent() {
-      getAll()
-        .then((response) => {
-          if (response && response.data && response.data.success) {
-            this.studentList = response.data.students;
-          } else {
-            console.error("Không thành công: ", response.data);
-          }
-        })
-        .catch((error) => {
-          console.error("Lỗi khi lấy danh sách sinh viên: ", error);
-        });
-
+    setSemesterBasedOnCurrentDate() {
+      const currentMonth = new Date().getMonth() + 1; // Lấy tháng hiện tại (tháng trong JavaScript bắt đầu từ 0)
+      if (currentMonth >= 1 && currentMonth <= 6) {
+        return
+      } else {
+        this.selectedSemester = 2;
+      }
+    },
+    fetchConditionData() {
+      // Lấy phiếu điểm theo điều kiện để thống kê
       getCondition(this.selectedSemester, this.selectedSchoolYear).then((response) => {
         if (response && response.data && response.data.success) {
           this.listPhieu = response.data.result;
@@ -259,8 +248,8 @@ export default {
         .catch((error) => {
           console.error("Lỗi khi lấy danh sách phiếu điểm: ", error);
         });
-
     },
+
     count(item) {
       if (item && Array.isArray(item.listStudents)) {
         const totalStudents = item.listStudents.length;
@@ -276,7 +265,7 @@ export default {
     countComplete() {
       let totalCompleteClasses = 0;
 
-      this.tableData.forEach(item => {
+      this.listClass.forEach(item => {
         totalCompleteClasses += this.count(item);
       });
 
@@ -284,7 +273,6 @@ export default {
       this.totalCompleteClasses = totalCompleteClasses;
       return totalCompleteClasses
     },
-
 
     calculateStudentSummary(item) {
       if (item && Array.isArray(item.listStudents)) {
@@ -299,10 +287,7 @@ export default {
     calculateIncompletePercentage(item) {
       if (item && Array.isArray(item.listStudents)) {
         const totalStudents = item.listStudents.length;
-
         const incompleteStudents = item.listStudents.filter(student => student.isComplete).length;
-
-
         const percentage = totalStudents === 0 ? 0 : (incompleteStudents / totalStudents) * 100;
         return Math.round(percentage);
       } else {
@@ -314,7 +299,7 @@ export default {
       this.selected = this.search = null
       this.selectedItem = className;
       this.classTitle = className
-      const result = this.tableData.find(item => item.className == className);
+      const result = this.listClass.find(item => item.className == className);
       // Trả về phần tử đã tìm được, nếu không tìm được trả về undefined
       this.dataFilter = result.listStudents;
     },
@@ -324,45 +309,32 @@ export default {
       this.selected2 = null;
       this.search2 = ''
     },
-    loadData() {
-      getClasses()
-        .then((response) => {
-          if (response && response.data && response.data.success) {
-            this.tableData = response.data.data;
+    fetchStatisticData() {
+      this.dataFilter = [];
+      this.selectedItem = null;
 
-          } else {
-            console.error("Không thành công: ", response.data);
-          }
-        })
-        .catch((error) => {
-          console.error("Lỗi khi tải DỮ LIỆU: ", error);
-        });
-
-    },
-    // Hàm gọi API getCondition
-    fetchConditionData() {
-      getCondition(this.selectedSemester, this.selectedSchoolYear).then((response) => {
+      getConditionStatistic(this.selectedSemester, this.selectedSchoolYear).then((response) => {
         if (response && response.data && response.data.success) {
-          this.listPhieu = response.data.result;
+          this.listClass = response.data.statistic;
+          this.countComplete()
         } else {
           console.error("Không thành công: ", response.data);
         }
       })
         .catch((error) => {
-          console.error("Lỗi khi gọi API getCondition: ", error);
+          console.error("Lỗi: ", error);
         });
     },
   },
   watch: {
-    // Theo dõi thay đổi của selectedSemester
+    // Gọi khi chọn năm hoặc kì
     selectedSemester(newSemester, oldSemester) {
-      // Khi selectedSemester thay đổi, gọi API getCondition
       this.fetchConditionData();
+      this.fetchStatisticData();
     },
-    // Theo dõi thay đổi của selectedSchoolYear
     selectedSchoolYear(newSchoolYear, oldSchoolYear) {
-      // Khi selectedSchoolYear thay đổi, gọi API getCondition
       this.fetchConditionData();
+      this.fetchStatisticData();
     }
   },
 };
@@ -397,23 +369,16 @@ li {
   --light-orange: #FFE0D3;
 }
 
-
-
-
 /* CONTENT */
 #content {
   widows: 100%;
 }
-
-
 
 /* MAIN */
 #content main {
   width: 100%;
   padding: 0 10px;
   font-family: var(--poppins);
-  max-height: calc(100vh - 56px);
-  overflow-y: auto;
 }
 
 #content main .box-info {
@@ -429,6 +394,8 @@ li {
   display: flex;
   align-items: center;
   grid-gap: 24px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
 }
 
 #content main .box-info li .bx {
@@ -477,6 +444,7 @@ li {
   margin-top: 24px;
   width: 100%;
   color: var(--dark);
+
 }
 
 #content main .table-data>div {
@@ -506,6 +474,7 @@ li {
 #content main .table-data .order {
   flex-grow: 1;
   flex-basis: 500px;
+
 }
 
 #content main .table-data .order table {
@@ -541,14 +510,11 @@ li {
   background: var(--grey);
 }
 
-
-
-
-
-
 #content main .table-data .todo {
   flex-grow: 1;
   flex-basis: 300px;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
 }
 
 #content main .table-data .todo .todo-list {
@@ -564,6 +530,7 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 #content main .table-data .todo .todo-list li .bx {
@@ -604,27 +571,34 @@ li {
   width: 150px;
 
 }
+
 .custom-input-tk .el-input__inner {
   border: none !important;
   background-color: white;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 18px;
   width: 150px;
 
 }
-.input-tk2 .el-input__inner{
-  width: 120px;
-}
-.input-tk1 .el-input__inner{
+
+.input-tk2 .el-input__inner {
   width: 120px;
 }
 
-.input-select{
+.input-tk1 .el-input__inner {
+  width: 120px;
+}
+
+.input-select {
   width: 130px;
 
 }
-.input-select3{
+
+.input-select3 {
   width: 160px;
 
+}
+.bg{
+  background-color: #dfedfa
 }
 </style>

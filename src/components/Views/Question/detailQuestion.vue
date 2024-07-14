@@ -1,5 +1,5 @@
 <template>
-  <div style="z-index: 9999;">
+  <div style="z-index: 9999;" >
     <el-dialog class="custom-dialog " :visible.sync="isInviteMemberVisible">
       <div class="question p-1 ">
         <div class="info ">
@@ -24,11 +24,11 @@
             <span class="comments">{{ answersCount }}</span>
           </div>
         </div>
-        <div class="reply-container" >
+        <div class="reply-container">
           <div class="avatar">
             <el-avatar :size="avatarSize" :src=this.$store.getters.currentUser.avatarUrl></el-avatar>
           </div>
-          <div class="input-box" :class="{ 'disabled': isPostButtonDisabled  }">
+          <div class="input-box" :class="{ 'disabled': isPostButtonDisabled }">
             <input v-model="replyText" @input="onReplyInputChange" @keyup.enter="sendReply"
               placeholder="Nhập phản hồi của bạn..." class="reply-input" />
           </div>
@@ -43,7 +43,7 @@
       </div>
       <emoji-picker v-if="isEmojiPickerVisible" @emoji-selected="insertEmoji" />
       <div class="answer-list mt-2" style="max-height: 200px; overflow-y: auto;">
-        <answer v-for="ans in answers" :key="ans.id" :content="ans.content" :avatarUrl="ans.user.avatarUrl"
+        <answer v-for="ans in answers" :key="ans.id" :_id="ans._id" :content="ans.content" :avatarUrl="ans.user.avatarUrl"
           :user="ans.user.fullname" :createdAt="formatDate(ans.createdAt)" :likes="ans.likes" />
       </div>
     </el-dialog>
@@ -60,14 +60,14 @@ import { format } from 'date-fns';
 import EmojiPicker from './EmojiPicker';
 import { updateStatus } from '@/api/question';
 import { saveNotification } from '@/api/notification';
-import { addNotification} from '@/api/user';
+import { addNotification } from '@/api/user';
 
 
 export default {
   props: {
     title: String,
     content: String,
-    _id:String,
+    _id: String,
     id: String,
     user: String,
     createdAt: String,
@@ -99,7 +99,7 @@ export default {
       return this.answers.length;
     },
     isPostButtonDisabled() {
-      
+
       //return (this.$store.getters.user._id !== this._id) && (this.$store.getters.user.role === student) ;
     },
   },
@@ -118,7 +118,7 @@ export default {
     Answer,
     EmojiPicker,
   },
- 
+
   methods: {
 
     formatDate(date) {
@@ -144,8 +144,8 @@ export default {
         .then((response) => {
           if (response && response.data && response.data.success) {
             this.answers = response.data.answers;
+            this.saveAnswerCount();
 
-            //this.saveAnswerCount();
 
           } else {
             console.error("Không thành công: ", response.data);
@@ -180,16 +180,18 @@ export default {
 
               if (responseData && responseData.success) {
                 this.loadAnswers();
+
                 this.replyText = "";
                 updateStatus(this.id);
-                addNotification(this._id,{
+                addNotification(this._id, {
                   user: {
                     _id: this.$store.getters.currentUser._id,
                     fullname: this.$store.getters.currentUser.fullname,
                     avatarUrl: this.$store.getters.currentUser.avatarUrl
                   },
-                  content: " đã trả lời câu hỏi của bạn: "+ newReply.content,
+                  content: " đã trả lời câu hỏi của bạn: " + newReply.content,
                 })
+
               } else {
                 console.error("Lỗi khi lưu phản hồi: ", responseData);
               }
@@ -218,7 +220,7 @@ export default {
 };
 </script>
 
-<style >
+<style>
 .question {
   border: 1px solid #ccc;
   border-radius: 10px;
@@ -354,7 +356,8 @@ export default {
   pointer-events: none;
   /* Disable click events */
 }
-.custom-dialog .el-dialog{
+
+.custom-dialog .el-dialog {
   border-radius: 20px;
 }
-</style>   
+</style>

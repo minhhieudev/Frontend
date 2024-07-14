@@ -74,3 +74,14 @@ export function updatePost(id,newPost) {
     },
   });
 }
+
+export function getPaginatedPosts(page, pageSize) {
+  return request({
+    url: `/${modelCode}/paginated`,
+    method: "get",
+    params: {
+      page: page,
+      pageSize: pageSize,
+    },
+  });
+}

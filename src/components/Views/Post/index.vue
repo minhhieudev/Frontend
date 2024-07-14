@@ -6,12 +6,12 @@
         <div>
           <p class="title-post">BÀI ĐĂNG</p>
           <div class="d-flex justify-content-between">
-            <div class="d-flex align-items-center p-2" style="color: rgb(1, 6, 12);">
+            <div class="d-flex align-items-center " style="color: rgb(1, 6, 12);">
               <!-- <i class="fa-solid fa-rotate-right" @click="resetFilters"></i> -->
               <div class="d-flex  align-items-center ml-5 border-right">
                 <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
 
-                <el-select v-model="selectedType" placeholder="Loại" class=" input-select">
+                <el-select v-model="selectedType" placeholder="Loại" class=" input-select" >
                   <el-option label="Tất cả" value="Tất cả"></el-option>
                   <el-option v-for="item in typeList.slice(1)" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <el-scrollbar wrap-class="post-list" style="height:80vh; overflow-y: auto;">
+        <el-scrollbar wrap-class="post-list" style="height:80vh; overflow-y: auto;" class="item">
           <postItem style="widows: 100%;" v-for="mes in filteredPosts" :key="mes._id" :title="mes.title"
             :content="mes.content" :pinned="mes.pinned" :attachmentPath="mes.attachmentPath" :postType="mes.postType"
             :avatarUrl="mes.user.avatarUrl" :user="mes.user.fullname" :createdAt="formatDate(mes.createdAt)"
@@ -62,7 +62,10 @@
 
         <p class="font-weight-bold">Nội dung bài đăng</p>
 
-        <ckeditor :editor="editor" v-model="postText"></ckeditor>
+        <div class="cus">
+          <ckeditor :editor="editor" v-model="postText"></ckeditor>
+
+        </div>
         <p v-if="isEditing" style="color: red" class="mt-2">Chọn lại tệp đính kèm</p>
         <p class="font-weight-bold mt-1">Đính kèm</p>
         <el-upload class="upload-demo" ref="upload" :action="uploadActionURL" :auto-upload="false"
@@ -138,9 +141,8 @@ export default {
   ,
   computed: {
     cleanPostText() {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = this.postText;
-      return tempDiv.textContent || tempDiv.innerText || '';
+      console.log(this.postText)
+      return this.postText;
     },
     isPostButtonDisabled() {
       return this.$store.getters.user.role !== 'student';
@@ -494,8 +496,11 @@ export default {
   grid-template-rows: auto 1fr;
   height: 100%;
   overflow: hidden;
-  background-color: rgb(202, 235, 245);
-  border-radius: 20px
+  border-radius: 25px;
+  background: linear-gradient(to right, #b3cde0, #cfe0e8);
+  box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+  margin: auto;
+
 }
 
 .input-post-index {}
@@ -506,9 +511,7 @@ export default {
 
 }
 
-.ck-editor__main .ck-content {
-  height: 180px;
-}
+
 
 .title-post {
   font-size: xx-large;
@@ -516,10 +519,25 @@ export default {
   color: rgb(255, 255, 255);
   text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;
   text-align: center;
+  margin: 0
 }
 
 .input-select5 {
   width: 130px;
 
 }
+.input-select .el-input__inner {
+  border: none;
+  background-color: white;
+  font-weight: bold;
+
+}
+.cus .ck-editor__main .ck-content {
+  height: 150px;
+}
+
+.pos {
+ 
+}
 </style>
+
