@@ -1,8 +1,8 @@
 <template>
   <div class="user custom-scroll-sv ml-3">
     <el-card>
-      <h4 class="font-weight-bold text-success text-center mb-5">DANH SÁCH SINH VIÊN</h4>
-      <div class="action-student mb-4">
+      <h4 class="font-weight-bold text-success text-center mb-2">DANH SÁCH SINH VIÊN</h4>
+      <div class="action-student mb-2">
         <i class="fa-solid fa-rotate-right" @click="resetData"></i>
         <i class="fa-solid fa-download"></i>
 
@@ -27,7 +27,7 @@
           <el-button @click="goToAddNewPage()" type="success" round size="medium">Tạo mới</el-button>
         </div>
       </div>
-      <div style="max-height: 71vh; overflow-y: auto;">
+      <div style="max-height: 68vh; overflow-y: auto;">
 
         <el-table :data="currentPageData" style="width: 100%" class="custom-table">
           <el-table-column label="STT" width="50">

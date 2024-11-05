@@ -14,7 +14,7 @@
           <span class="text-black" style="cursor: pointer">
             <b>{{ this.$store.getters.user.fullname }}</b>
             <el-badge :value="this.$store.getters.user.is_admin ? 'Admin' : ''" class="item">
-              <img :src="this.paths"
+              <img :src="paths || 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'"
                 alt="avatar" :width="30" class="avatar rounded-pill mb-1 mr-2 ml-2" />
             </el-badge>
 

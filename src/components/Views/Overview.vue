@@ -1,9 +1,9 @@
 <template>
   <div id="dashboard" v-loading="loading" v-if="this.$store.getters.user.role != 'student'">
-    <div class=" ml-2 ">
+    <div class=" mx-auto  ">
       <section id="content">
         <main>
-          <ul class="box-info p-0">
+          <ul class="box-info p-0 mb-0">
 
             <li class="bg-white">
               <i class="bx bxs-dollar-circle fa-solid el-icon-date"></i>
@@ -40,7 +40,7 @@
 
           </ul>
 
-          <div class="table-data" style="display: flex;height: 67vh">
+          <div class="table-data" style="display: flex;height: 60%">
             <div class="order"
               style="background-color: white;box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;">
               <div class="head">
@@ -85,7 +85,7 @@
 
             <div class="todo" style="background-color: white;">
               <div class="head">
-                <h6 class="font-weight-bold">TÌNH TRẠNG CHẤM ĐIỂM </h6>
+                <h6 class="font-weight-bold">TIẾN ĐỘ </h6>
                 <!-- Lớp Dropdown -->
                 <div class="d-flex align-items-center justify-content-end font-weight-bold">
 
@@ -107,7 +107,7 @@
                 </div>
               </div>
 
-              <div style="max-height: 55vh; overflow-y: auto;">
+              <div style="max-height: 54vh; overflow-y: auto;">
                 <ul class="p-0">
                   <li v-for="item in filteredTableData2" :key="item.id" class="mt-4 rounded p-1"
                     @click="findClassByName(item.className)"
@@ -384,7 +384,7 @@ li {
 #content main .box-info {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  grid-gap: 24px;
+  grid-gap: 16px;
 }
 
 #content main .box-info li {
@@ -440,8 +440,8 @@ li {
 #content main .table-data {
   display: flex;
   flex-wrap: wrap;
-  grid-gap: 24px;
-  margin-top: 24px;
+  grid-gap: 9px;
+  margin-top: 8px;
   width: 100%;
   color: var(--dark);
 
@@ -600,5 +600,9 @@ li {
 }
 .bg{
   background-color: #dfedfa
+}
+
+.box-info {
+  margin-bottom: 3px
 }
 </style>

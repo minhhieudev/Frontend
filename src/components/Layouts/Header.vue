@@ -1,5 +1,5 @@
 <template>
-  <header class="navbar app-navbar px-4 bg-white v2-theme custom">
+  <header class="navbar app-navbar  bg-white v2-theme custom py-0">
     <header-left />
     <!-- <Search /> -->
     <div class="ml-auto mr-1 d-flex" v-if="!$isMobile">
@@ -134,7 +134,7 @@ export default {
   max-height: 300px;
   overflow-y: auto;
   background-color: #f2f7f6;
-  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.04);
+  //box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.12), 0px 4px 4px rgba(0, 0, 0, 0.04);
   border-radius: 8px; // Điều chỉnh độ cong của các góc
   overflow-x: hidden;
 }

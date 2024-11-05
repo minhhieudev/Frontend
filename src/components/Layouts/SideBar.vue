@@ -115,17 +115,18 @@ export default {
 }
 
 .sidebar {
-  margin: 15px;
+  margin: 8px; 
+  margin-top: 8px;
   border-radius: 20px;
 
-  height: 500px; // Set a fixed height
+  height: 98vh; // Set a fixed height
   overflow-y: auto;
 
   width: 260px !important;
   position: fixed;
   top: 0;
   left: 0;
-  height: calc(100% - 40px);
+ 
   //background-image: url(../../../src/assets/4.jpg);
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
@@ -145,6 +146,7 @@ export default {
 
       .active {
         background: #51e5f0;
+        color: white
       }
 
       .sidebar-item {
@@ -217,7 +219,7 @@ export default {
 }
 
 .custom-container {
-  padding: 4px;
+  padding: 3px;
   background-color: aqua;
   color: white;
   font-weight: bold;
@@ -287,8 +289,8 @@ export default {
 }
 
 .title-app {
-  font-family: 'Roboto Mono', monospace;
-  text-shadow: 1px 1px 2px black, 0 0 25px rgb(102, 102, 253), 0 0 5px darkblue;
+  //font-family: 'Roboto Mono', monospace;
+  //text-shadow: 1px 1px 2px black, 0 0 25px rgb(102, 102, 253), 0 0 5px darkblue;
   font-size: larger;
   font-weight: bold;
   padding: 1px;

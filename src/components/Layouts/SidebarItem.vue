@@ -1,5 +1,5 @@
 <template>
-  <li class="sidebar-menu-item p-1 mt-2" v-click-outside="clickOutSide">
+  <li class="sidebar-menu-item p-1 mt-1" v-click-outside="clickOutSide">
     <template>
       <el-button plain :type="(getSidebarActive || getRouteActive) ? 'primary' : ''" class="px-2 w-100" :class="{'border-0': !getSidebarActive && !getRouteActive, 'active': (getSidebarActive || getRouteActive)}" @click="showSidebarItem(sidebar, index, hasChildren)">
         <div class="d-flex flex-wrap align-items-center justify-content-center flex-column sidebar-item  ">

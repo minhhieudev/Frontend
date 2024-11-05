@@ -4,14 +4,13 @@
       <!-- Phần Main -->
       <div class="main">
         <div>
-          <p class="title-post">BÀI ĐĂNG</p>
           <div class="d-flex justify-content-between">
             <div class="d-flex align-items-center " style="color: rgb(1, 6, 12);">
               <!-- <i class="fa-solid fa-rotate-right" @click="resetFilters"></i> -->
               <div class="d-flex  align-items-center ml-5 border-right">
                 <i style="color: rgb(20, 197, 197);" class="fa-solid fa-filter  mr-3"></i>
 
-                <el-select v-model="selectedType" placeholder="Loại" class=" input-select" >
+                <el-select size="mini" v-model="selectedType" placeholder="Loại" class=" input-select" >
                   <el-option label="Tất cả" value="Tất cả"></el-option>
                   <el-option v-for="item in typeList.slice(1)" :key="item" :label="item" :value="item"></el-option>
                 </el-select>
@@ -19,7 +18,7 @@
               </div>
             </div>
             <div class="d-flex  align-items-center p-2">
-              <el-input v-model="search" size="medium" placeholder="Tìm theo tiêu đề..." class="custom-input-question">
+              <el-input v-model="search" size="mini" placeholder="Tìm theo tiêu đề..." class="custom-input-question">
               </el-input>
               <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>
             </div>
@@ -514,7 +513,7 @@ export default {
 
 
 .title-post {
-  font-size: xx-large;
+  font-size: 20px;
   font-family: 'Lobster', cursive;
   color: rgb(255, 255, 255);
   text-shadow: 1px 1px 2px black, 0 0 25px blue, 0 0 5px darkblue;

@@ -6,9 +6,8 @@
       <!-- Phần Main -->
       <div class="main">
         <div>
-          <p class="title-ques mt-1">CÂU HỎI</p>
           <div class="d-flex  align-items-center p-2">
-            <el-input v-model="search" size="medium" placeholder="Tìm theo tên câu hỏi..."
+            <el-input v-model="search" size="mini" placeholder="Tìm theo tên câu hỏi..."
               class="input-question-index">
             </el-input>
             <el-button icon="el-icon-search" class="ml-2" type="success" circle></el-button>

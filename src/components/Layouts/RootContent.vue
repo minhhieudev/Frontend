@@ -12,7 +12,7 @@
       <div>Hello</div>
     </transition>
     <div class="">
-      <div class="p-1 p-md-2">
+      <div class="mt-0 h-[200px]">
         <div :class="!$isMobile ? 'p-1':''">
           <!-- <breadcrumb v-if="$isMobile" class="mb-3"/> -->
           <div v-if="subtitle" class="content-title pb-4 mt-n4">{{ subtitle }}</div>

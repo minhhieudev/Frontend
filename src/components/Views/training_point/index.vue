@@ -11,8 +11,8 @@
             <el-col :span="6" :offset="6">
               <el-form label-width="80px">
                 <el-form-item label="Học kỳ" class="bold-text">
-                  <el-input v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoints "
-                    size="mini"></el-input>
+                  <el-input size="mini" v-model="semester" placeholder="Nhập học kỳ" class="custom-input-trainingPoints "
+                    ></el-input>
                 </el-form-item>
               </el-form>
             </el-col>
@@ -33,11 +33,11 @@
                 <div class="grid-content ">
                   <el-form-item label="Họ và tên" class="bold-text">
                     <el-input v-model="formData.fullName" placeholder="Họ và tên"
-                      class="custom-input-trainingPoints"></el-input>
+                      class="custom-input-trainingPoints" size="mini"></el-input>
                   </el-form-item>
                   <el-form-item label="Lớp" class="bold-text">
                     <el-input v-model="formData.className" placeholder="Lớp"
-                      class="custom-input-trainingPoints"></el-input>
+                      class="custom-input-trainingPoints" size="mini"></el-input>
                   </el-form-item>
                 </div>
               </el-col>
@@ -48,11 +48,11 @@
                 <div class="grid-content ">
                   <el-form-item label="Mã SV" class="bold-text">
                     <el-input v-model="formData.studentCode" placeholder="Mã sinh viên"
-                      class="custom-input-trainingPoints"></el-input>
+                      class="custom-input-trainingPoints" size="mini"></el-input>
                   </el-form-item>
                   <el-form-item label="Khoa" class="bold-text">
 
-                    <el-select v-model="formData.department" placeholder="Khoa" filterable class="custom-input-cv">
+                    <el-select size="mini" v-model="formData.department" placeholder="Khoa" filterable class="custom-input-cv">
                       <el-option v-for="item in  this.$store.getters.khoaList" :key="item" :label="item"
                         :value="item"></el-option>
                     </el-select>
@@ -643,7 +643,7 @@ export default {
 .table-title {
   font-size: 20px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .bold-text {
@@ -678,5 +678,9 @@ export default {
 .content-container .el-card {
   border-radius: 25px;
   background-color: white;
+}
+
+.el-form-item{
+  margin-bottom: 0px
 }
 </style>

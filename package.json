@@ -60,7 +60,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.10.0",
     "@vue/cli-plugin-unit-jest": "^4.5.13",
-    "@vue/cli-service": "^3.10.0",
+    "@vue/cli-service": "^3.12.1",
     "node-sass": "^4.14.1",
     "sass-loader": "^7.2.0",
     "vue-template-compiler": "^2.6.11"

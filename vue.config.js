@@ -13,6 +13,6 @@ module.exports = {
     port: 8081
   },
   publicPath: process.env.NODE_ENV === 'production'
-  ? '/Frontend/' // Thay tên repository của các bạn vào đây nhé
+  ? '/phan-mem-co-van-hoc-tap-dev/' // Thay tên repository của các bạn vào đây nhé
   : '/'
 }
