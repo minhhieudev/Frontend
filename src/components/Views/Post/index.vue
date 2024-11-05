@@ -26,7 +26,13 @@
         </div>
         <div v-if="isPostButtonDisabled" class="post-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
+            <el-avatar 
+              :size="avatarSize" 
+              :src="this.$store.getters.currentUser && this.$store.getters.currentUser.avatarUrl 
+                    ? this.$store.getters.currentUser.avatarUrl 
+                    : 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'">
+            </el-avatar>
+
           </div>
           <div class="input-box">
             <input @input="onReplyInputChange" placeholder="Nhập thông tin muốn đăng tải ..." class="reply-inputs"
@@ -37,7 +43,10 @@
         <el-scrollbar wrap-class="post-list" style="height:80vh; overflow-y: auto;" class="item">
           <postItem style="widows: 100%;" v-for="mes in filteredPosts" :key="mes._id" :title="mes.title"
             :content="mes.content" :pinned="mes.pinned" :attachmentPath="mes.attachmentPath" :postType="mes.postType"
-            :avatarUrl="mes.user.avatarUrl" :user="mes.user.fullname" :createdAt="formatDate(mes.createdAt)"
+           :avatarUrl="mes.user && mes.user.avatarUrl ? mes.user.avatarUrl : 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'"
+            :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
+            :createdAt="mes.createdAt ? formatDate(mes.createdAt) : ''"
+
             :likes="mes.likes" :comments="mes.comments" :id="mes._id" :_id="mes.user._id"
             @pinnedStatusUpdated="loadData" @edit="openEditPost" />
         </el-scrollbar>

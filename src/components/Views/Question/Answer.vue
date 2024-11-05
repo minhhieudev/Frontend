@@ -1,7 +1,7 @@
 <template>
   <div class="answer">
     <div class="info">
-      <el-avatar :size="avatarSize" :src="avatarUrl">
+      <el-avatar :size="avatarSize" :src="avatarUrl ? avatarUrl : ''">
       </el-avatar>
       <div>
         <div class="custom-flex">

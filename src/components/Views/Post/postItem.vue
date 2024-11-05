@@ -6,7 +6,11 @@
 
         <div style="display: flex;justify-content: center">
           <div style="display: flex;justify-content: center;align-items: center;">
-            <el-avatar :size="avatarSize" :src="avatarUrl"></el-avatar>
+           <el-avatar 
+            :size="avatarSize" 
+            :src="avatarUrl ? avatarUrl : 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'">
+          </el-avatar>
+
             <div style="display: flex;flex-direction: column;">
               <span class="author ml-2">{{ user }} ( CVHT )</span>
               <span class="date">{{ createdAt }}</span>
@@ -84,7 +88,13 @@
       <!-- Ô nhập phản hồi -->
       <div class="reply-container">
         <div class="avatar">
-          <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
+         <el-avatar 
+          :size="avatarSize" 
+          :src="this.$store.getters.currentUser && this.$store.getters.currentUser.avatarUrl 
+                ? this.$store.getters.currentUser.avatarUrl 
+                : 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'">
+        </el-avatar>
+
         </div>
         <div class="input-box">
           <input v-model="replyText" @input="onReplyInputChange" placeholder="Nhập phản hồi của bạn..."
@@ -95,7 +105,7 @@
         </div>
       </div>
     </div>
-    <detailPostVue ref="childRef" :id="id" :title="title" :content="content" :avatarUrl="avatarUrl" :user="user"
+    <detailPostVue ref="childRef" :id="id" :title="title" :content="content" :avatarUrl="avatarUrl ? avatarUrl : ''" :user="user"
       :createdAt="createdAt" :likes="likesCount" :comments="comments" :attachmentPath="attachmentPath" />
 
 

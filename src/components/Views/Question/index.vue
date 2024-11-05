@@ -15,18 +15,37 @@
         </div>
         <div class="question-button-container">
           <div class="avatar">
-            <el-avatar :size="avatarSize" :src="this.$store.getters.currentUser.avatarUrl"></el-avatar>
-          </div>
+           <el-avatar 
+            :size="avatarSize" 
+            :src="this.$store.getters.currentUser && this.$store.getters.currentUser.avatarUrl 
+                  ? this.$store.getters.currentUser.avatarUrl 
+                  : 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'">
+          </el-avatar>
+        </div>
           <div class="input-box">
             <input @input="onReplyInputChange" placeholder="Nhập nội dung câu hỏi..." class="reply-inputs" @click="showQuestionPopup" />
           </div>
         </div>
 
         <el-scrollbar wrap-class="question-list" style="height:80vh; overflow-y: auto;">
-          <question v-for="mes in filteredQuestions" :ref="mes._id" :key="mes._id" :title="mes.title" :content="mes.content"
-            :avatarUrl="mes.user.avatarUrl" :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
-            :createdAt="formatDate(mes.createdAt)" :likes="mes.likes" :id="mes._id" :comments="mes.comments"
-            :status="mes.status" :_id="mes.user._id" @pinnedStatusUpdated="loadQuestions" @edit="openEditDialog" />
+          <question 
+            v-for="mes in filteredQuestions" 
+            :ref="mes._id" 
+            :key="mes._id" 
+            :title="mes.title" 
+            :content="mes.content"
+            :avatarUrl="mes.user && mes.user.avatarUrl ? mes.user.avatarUrl : 'https://res.cloudinary.com/dpxcvonet/image/upload/v1729304643/jjfd84acjaamikeefdzr.jpg'" 
+            :user="mes.user && mes.user.fullname ? mes.user.fullname : 'Không tên'"
+            :createdAt="formatDate(mes.createdAt)" 
+            :likes="mes.likes" 
+            :id="mes._id" 
+            :comments="mes.comments"
+            :status="mes.status" 
+            :_id="mes.user && mes.user._id ? mes.user._id : null" 
+            @pinnedStatusUpdated="loadQuestions" 
+            @edit="openEditDialog" 
+          />
+
         </el-scrollbar>
       </div>
     </div>
